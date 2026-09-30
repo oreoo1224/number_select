@@ -1,0 +1,421 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#205a43">
+  <meta name="description" content="선택한 조건을 적용해 1~45 중 6개 번호 조합을 무작위로 생성하고 최대 1,000개까지 브라우저에 저장하는 번호 조합 도구입니다.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="번호 조합기">
+  <title>번호 조합 생성기</title>
+  <style>
+    :root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#202d2a;background:#f3f5f0;color-scheme:light}
+    *{box-sizing:border-box}html{-webkit-text-size-adjust:100%}body{margin:0;padding:calc(22px + env(safe-area-inset-top)) 16px calc(28px + env(safe-area-inset-bottom));background:#f3f5f0}
+    main{max-width:780px;margin:auto}header{margin:10px 0 26px}.eyebrow{color:#427360;font-size:12px;letter-spacing:1.7px;font-weight:800;text-transform:uppercase}
+    h1{font-size:30px;line-height:1.25;margin:8px 0 10px}h2{font-size:19px;margin:0 0 16px}p{line-height:1.65;color:#56645d}.panel{background:#fff;border:1px solid #dce3db;border-radius:20px;padding:24px;margin:16px 0;box-shadow:0 3px 14px rgba(26,57,44,.04)}
+    label{display:block;font-weight:700;margin-bottom:8px}input,select,button{font:inherit;border-radius:11px;padding:12px;border:1px solid #bccbc1;min-height:46px}input[type="text"],input:not([type]){width:100%;background:#fff;color:#202d2a;font-variant-numeric:tabular-nums}select{background:#fff;color:#202d2a}
+    button{background:#205a43;color:#fff;border:0;cursor:pointer;font-weight:700;touch-action:manipulation;-webkit-tap-highlight-color:transparent}button.secondary{background:#eaf0e8;color:#234c3a}button.danger{background:#f6eeee;color:#8d3030}button:disabled{opacity:.45;cursor:not-allowed}
+    .controls{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-top:18px}.note{font-size:13px;margin:8px 0;color:#647168}.error{color:#a12828;min-height:20px}.value{font-size:27px;font-weight:800;font-variant-numeric:tabular-nums}.counter{font-size:14px;color:#5b6961;font-weight:600}
+    .rule-toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px}.rule-toolbar button{min-height:38px;padding:8px 12px}.active-count{margin-left:auto;font-size:13px;font-weight:800;color:#35614f}
+    .rule-list{display:grid;gap:9px}.rule{display:flex;align-items:flex-start;gap:12px;padding:13px 14px;border:1px solid #e0e6df;border-radius:14px;background:#fbfcfa;cursor:pointer}.rule:hover{border-color:#c7d4ca}.rule input{width:21px;height:21px;min-height:0;padding:0;margin:2px 0 0;accent-color:#205a43;flex:0 0 auto}.rule strong{display:block;font-size:14px;margin-bottom:3px}.rule small{display:block;color:#6b776f;line-height:1.45}.rule:has(input:checked){background:#f0f6f1;border-color:#aac2b2}
+    .basis-wrap.disabled{opacity:.48}.basis-wrap.disabled input{pointer-events:none;background:#f2f3f1}
+    .game{padding:15px 0;border-bottom:1px solid #e7ece5;display:flex;gap:10px;align-items:center;flex-wrap:wrap}.game:last-child{border-bottom:0}.balls{display:flex;gap:7px;flex-wrap:nowrap}.ball{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;font-weight:800;color:#fff;background:#276344;font-variant-numeric:tabular-nums;flex:0 0 auto}.ball.b1{background:#aa7700}.ball.b2{background:#2766a1}.ball.b3{background:#b74a50}.ball.b4{background:#646c76}.ball.b5{background:#3c7744}.gameinfo{font-size:12px;color:#637269}
+    summary{cursor:pointer;font-weight:700}footer{font-size:12px;color:#69756d;line-height:1.75;margin:20px 2px}a{color:#286047}.install-tip{display:none}
+    @media(max-width:520px){body{padding-left:12px;padding-right:12px}.panel{padding:18px;border-radius:17px}.ball{width:35px;height:35px;font-size:14px}.balls{gap:5px}h1{font-size:26px}.controls>*{flex:1 1 auto}.controls label{flex-basis:100%}.controls select{flex:0 0 105px}.controls button{flex:1 1 130px}.game{gap:8px}.game>span:first-child{width:28px}.gameinfo{flex-basis:100%;margin-left:36px}.active-count{width:100%;margin-left:0}.rule{padding:12px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="eyebrow">Number combination tool</div>
+    <h1>번호 조합 생성기</h1>
+    <p>원하는 조건만 골라 1~45 중 6개 번호 조합을 무작위로 생성합니다. 생성 기록과 조건 설정은 이 브라우저에 저장됩니다.</p>
+  </header>
+
+  <section class="panel">
+    <h2>1. 제외 조건 선택</h2>
+    <div class="rule-toolbar">
+      <button id="selectAll" type="button" class="secondary">전체 선택</button>
+      <button id="clearRules" type="button" class="secondary">전체 해제</button>
+      <span id="activeCount" class="active-count">8 / 8개 적용</span>
+    </div>
+    <div class="rule-list" id="ruleList">
+      <label class="rule"><input class="rule-check" type="checkbox" data-bit="1" checked><span><strong>3개 이상 연속수 제외</strong><small>예: 12, 13, 14처럼 3개 이상 연속된 수가 포함된 조합을 제외합니다.</small></span></label>
+      <label class="rule"><input class="rule-check" type="checkbox" data-bit="2" checked><span><strong>홀수 또는 짝수 5개 이상 제외</strong><small>홀짝 비율이 5:1 또는 6:0인 조합을 제외합니다.</small></span></label>
+      <label class="rule"><input class="rule-check" id="overlapRule" type="checkbox" data-bit="4" checked><span><strong>기준 번호와 3개 이상 중복 제외</strong><small>아래에 입력한 기준 번호 6개와 3개 이상 겹치는 조합을 제외합니다.</small></span></label>
+      <label class="rule"><input class="rule-check" type="checkbox" data-bit="8" checked><span><strong>1~22 / 23~45 한쪽에 5개 이상 제외</strong><small>낮은 구간 또는 높은 구간에 번호가 지나치게 몰린 조합을 제외합니다.</small></span></label>
+      <label class="rule"><input class="rule-check" type="checkbox" data-bit="16" checked><span><strong>10단위 구간 하나에 5개 이상 제외</strong><small>1~10, 11~20, 21~30, 31~40, 41~45 중 한 구간에 5개 이상 몰린 조합을 제외합니다.</small></span></label>
+      <label class="rule"><input class="rule-check" type="checkbox" data-bit="32" checked><span><strong>같은 끝자리 4개 이상 제외</strong><small>예: 3, 13, 23, 33처럼 끝자리가 같은 번호가 4개 이상인 조합을 제외합니다.</small></span></label>
+      <label class="rule"><input class="rule-check" type="checkbox" data-bit="64" checked><span><strong>6개 전체가 같은 간격인 조합 제외</strong><small>예: 5, 10, 15, 20, 25, 30처럼 모든 번호 간격이 일정한 조합을 제외합니다.</small></span></label>
+      <label class="rule"><input class="rule-check" type="checkbox" data-bit="128" checked><span><strong>합계 89~187만 허용</strong><small>6개 번호 합계가 89 미만이거나 187을 초과하는 조합을 제외합니다.</small></span></label>
+    </div>
+    <p class="note">처음에는 기존 프로그램과 동일하게 8개 조건이 모두 선택되어 있습니다. 체크를 끄면 해당 조건은 생성 과정에서 적용하지 않습니다.</p>
+  </section>
+
+  <section class="panel" id="basisWrap">
+    <h2>2. 기준 번호</h2>
+    <div class="basis-wrap" id="basisInner">
+      <label for="previous">기준 번호 6개 입력</label>
+      <input id="previous" type="text" value="9, 18, 24, 38, 43, 44" inputmode="numeric" autocomplete="off" aria-describedby="source">
+      <p class="note" id="source">‘기준 번호와 3개 이상 중복 제외’ 조건을 켰을 때만 사용됩니다.</p>
+    </div>
+    <p id="error" class="error" role="alert"></p>
+    <p id="status" class="note" role="status" aria-live="polite">8개 조건이 적용되어 있습니다.</p>
+  </section>
+
+  <section class="panel">
+    <h2>3. 번호 생성</h2>
+    <div class="controls">
+      <label for="games" style="margin:0">생성 수</label>
+      <select id="games">
+        <option value="1">1개</option><option value="5" selected>5개</option><option value="10">10개</option><option value="25">25개</option><option value="50">50개</option>
+      </select>
+      <button id="draw" type="button">번호 생성</button>
+      <button id="save" type="button" class="secondary" disabled>이번 결과 TXT</button>
+    </div>
+    <div id="results" aria-live="polite"><p class="note">조건을 선택한 뒤 번호 생성을 눌러 시작하세요.</p></div>
+    <p class="note">누적 기록 전체와 새로 생성하는 묶음 내부에서 완전히 같은 조합은 만들지 않습니다. 최대 1,000개까지 저장됩니다.</p>
+  </section>
+
+  <section class="panel">
+    <h2>4. 누적 보관함 <span id="historyCount" class="counter">0 / 1,000</span></h2>
+    <p id="storageStatus" class="note" role="status"></p>
+    <div class="controls">
+      <button id="exportAll" type="button" class="secondary">전체 TXT</button>
+      <button id="backup" type="button" class="secondary">JSON 백업</button>
+      <button id="restore" type="button" class="secondary">백업 불러오기</button>
+      <button id="clearHistory" type="button" class="danger">기록 초기화</button>
+      <input type="file" id="importFile" accept=".json,application/json" hidden>
+    </div>
+    <details style="margin-top:18px">
+      <summary>최근 저장 50개 보기</summary>
+      <div id="historyList"></div>
+    </details>
+    <p class="note">같은 브라우저의 로컬 저장소에 기록됩니다. 브라우저 데이터를 지우거나 다른 기기를 사용하면 기록이 이어지지 않으므로 필요한 경우 JSON 백업을 보관해 주세요.</p>
+  </section>
+
+  <section class="panel install-tip" id="installTip">
+    <h2>홈 화면에 설치</h2>
+    <p class="note" id="installText"></p>
+    <button id="installButton" type="button" style="display:none">앱처럼 설치</button>
+  </section>
+
+  <footer>
+    이 도구는 번호 조합 생성 및 통계적 조건 필터링을 위한 도구이며, 결과를 예측하거나 보장하지 않습니다. 선택 조건은 가능한 조합을 걸러낼 뿐 각 개별 조합의 추첨 확률을 바꾸지 않습니다.<br>
+    기록과 설정은 서버로 전송하지 않고 사용 중인 브라우저에 저장합니다.<br>개인정보: 생성 기록과 설정은 사용 중인 브라우저의 로컬 저장소에만 저장됩니다.
+  </footer>
+</main>
+<script>
+'use strict';
+
+const BOUNDS = { min: 89, max: 187 };
+const STORAGE_KEY = 'number-combination-history-v3';
+const OLD_STORAGE_KEYS = ['number-combination-history-v2', 'lotto-filter-history-v1'];
+const SETTINGS_KEY = 'number-combination-settings-v1';
+const ALL_RULES_MASK = 255;
+const $ = (id) => document.getElementById(id);
+const fmt = (n) => n.toLocaleString('ko-KR');
+let lastRows = [];
+let historyRows = [];
+let storageReadable = true;
+let memoryOnly = false;
+let deferredInstallPrompt = null;
+
+function ruleChecks() { return [...document.querySelectorAll('.rule-check')]; }
+function getActiveMask() {
+  return ruleChecks().reduce((mask, el) => el.checked ? mask | Number(el.dataset.bit) : mask, 0);
+}
+function activeRuleCount() { return ruleChecks().filter(el => el.checked).length; }
+
+function readPrevious() {
+  const raw = $('previous').value.trim();
+  const values = raw.split(/[\s,]+/).filter(Boolean).map(Number);
+  if (values.length !== 6 || values.some(n => !Number.isInteger(n) || n < 1 || n > 45) || new Set(values).size !== 6) {
+    throw new Error('기준 번호는 1~45의 서로 다른 정수 6개를 쉼표 또는 공백으로 입력해 주세요.');
+  }
+  return values.sort((a, b) => a - b);
+}
+
+function failureMask(a, prev) {
+  let mask = 0, odd = 0, low = 0, sum = 0, overlap = 0, run = 1;
+  const bins = [0, 0, 0, 0, 0];
+  const ends = Array(10).fill(0);
+
+  for (let i = 0; i < 6; i++) {
+    const n = a[i];
+    odd += n % 2;
+    low += n <= 22;
+    sum += n;
+    overlap += prev.has(n);
+    bins[Math.floor((n - 1) / 10)]++;
+    ends[n % 10]++;
+    if (i) {
+      run = n === a[i - 1] + 1 ? run + 1 : 1;
+      if (run >= 3) mask |= 1;
+    }
+  }
+
+  if (odd < 2 || odd > 4) mask |= 2;
+  if (overlap >= 3) mask |= 4;
+  if (low < 2 || low > 4) mask |= 8;
+  if (bins.some(n => n >= 5)) mask |= 16;
+  if (ends.some(n => n >= 4)) mask |= 32;
+  if (a.slice(2).every((n, i) => n - a[i + 1] === a[1] - a[0])) mask |= 64;
+  if (sum < BOUNDS.min || sum > BOUNDS.max) mask |= 128;
+  return mask;
+}
+
+function randomBelow(n) {
+  const buf = new Uint32Array(1);
+  const max = 4294967296;
+  const limit = Math.floor(max / n) * n;
+  do crypto.getRandomValues(buf); while (buf[0] >= limit);
+  return buf[0] % n;
+}
+
+function randomCombination() {
+  const pool = Array.from({ length: 45 }, (_, i) => i + 1);
+  for (let i = 0; i < 6; i++) {
+    const j = i + randomBelow(45 - i);
+    [pool[i], pool[j]] = [pool[j], pool[i]];
+  }
+  return pool.slice(0, 6).sort((a, b) => a - b);
+}
+
+function generate(count, prev, existing, activeMask) {
+  const rows = [];
+  const keys = new Set(existing.map(a => a.join(',')));
+  for (let tries = 0; tries < 150000 && rows.length < count; tries++) {
+    const row = randomCombination();
+    const key = row.join(',');
+    if ((failureMask(row, prev) & activeMask) === 0 && !keys.has(key)) {
+      keys.add(key);
+      rows.push(row);
+    }
+  }
+  if (rows.length !== count) throw new Error('선택한 조건에 맞는 조합을 충분히 만들지 못했습니다. 조건을 줄이거나 다시 시도해 주세요.');
+  return rows;
+}
+
+function normalizeRows(rows) {
+  if (!Array.isArray(rows) || rows.length > 1000) throw new Error('저장 기록은 최대 1,000개 조합이어야 합니다.');
+  const seen = new Set();
+  return rows.map(a => {
+    if (!Array.isArray(a) || a.length !== 6 || a.some(n => !Number.isInteger(n) || n < 1 || n > 45) || new Set(a).size !== 6) {
+      throw new Error('올바르지 않은 저장 번호가 있습니다.');
+    }
+    const row = [...a].sort((x, y) => x - y);
+    const key = row.join(',');
+    if (seen.has(key)) throw new Error('백업 안에 중복 조합이 있습니다.');
+    seen.add(key);
+    return row;
+  });
+}
+
+function parseBackup(raw) {
+  const d = JSON.parse(raw);
+  if (![1, 2, 3].includes(d.version)) throw new Error('지원하지 않는 백업 형식입니다.');
+  return normalizeRows(d.rows);
+}
+
+function refreshHistory() {
+  if (memoryOnly || !storageReadable) return;
+  try {
+    let raw = localStorage.getItem(STORAGE_KEY);
+    if (raw === null) {
+      for (const oldKey of OLD_STORAGE_KEYS) {
+        const oldRaw = localStorage.getItem(oldKey);
+        if (oldRaw !== null) { raw = oldRaw; break; }
+      }
+    }
+    if (raw !== null) historyRows = parseBackup(raw);
+  } catch (e) {
+    storageReadable = false;
+    memoryOnly = true;
+    $('storageStatus').textContent = '브라우저 저장소를 읽을 수 없어 현재 화면에서만 보관합니다. 필요한 경우 JSON 백업을 이용해 주세요.';
+  }
+}
+
+function persistHistory() {
+  try {
+    if (!storageReadable) throw new Error();
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({ version: 3, rows: historyRows }));
+    memoryOnly = false;
+    $('storageStatus').textContent = '브라우저에 자동 저장했습니다.';
+  } catch (e) {
+    memoryOnly = true;
+    $('storageStatus').textContent = '브라우저 자동 저장을 사용할 수 없습니다. 현재 기록을 JSON으로 백업해 주세요.';
+  }
+}
+
+function saveSettings() {
+  try {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ mask: getActiveMask(), previous: $('previous').value }));
+  } catch (_) {}
+}
+
+function loadSettings() {
+  try {
+    const raw = localStorage.getItem(SETTINGS_KEY);
+    if (!raw) return;
+    const s = JSON.parse(raw);
+    if (Number.isInteger(s.mask) && s.mask >= 0 && s.mask <= ALL_RULES_MASK) {
+      ruleChecks().forEach(el => { el.checked = Boolean(s.mask & Number(el.dataset.bit)); });
+    }
+    if (typeof s.previous === 'string' && s.previous.length <= 100) $('previous').value = s.previous;
+  } catch (_) {}
+}
+
+function updateRuleUI() {
+  const count = activeRuleCount();
+  const overlapOn = $('overlapRule').checked;
+  $('activeCount').textContent = `${count} / 8개 적용`;
+  $('basisInner').classList.toggle('disabled', !overlapOn);
+  $('previous').disabled = !overlapOn;
+  $('status').textContent = count === 0 ? '조건 없이 무작위 조합을 생성합니다.' : `${count}개 조건이 적용되어 있습니다.`;
+  $('error').textContent = '';
+  saveSettings();
+}
+
+function gameMarkup(row, index) {
+  const odd = row.filter(n => n % 2).length;
+  const sum = row.reduce((s, n) => s + n, 0);
+  return `<div class="game"><span>${index}.</span><div class="balls">${row.map(n => `<span class="ball b${Math.ceil(n / 10)}">${n}</span>`).join('')}</div><span class="gameinfo">합계 ${sum} · 홀짝 ${odd}:${6 - odd}</span></div>`;
+}
+
+function renderHistory() {
+  $('historyCount').textContent = `${fmt(historyRows.length)} / 1,000`;
+  const start = Math.max(0, historyRows.length - 50);
+  $('historyList').innerHTML = historyRows.slice(-50).map((row, i) => gameMarkup(row, start + i + 1)).join('') || '<p class="note">저장된 번호가 없습니다.</p>';
+  $('exportAll').disabled = !historyRows.length;
+  $('backup').disabled = !historyRows.length;
+  $('clearHistory').disabled = !historyRows.length;
+}
+
+function downloadFile(name, text, type) {
+  const blob = new Blob([text], { type });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = name;
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+}
+
+ruleChecks().forEach(el => el.addEventListener('change', updateRuleUI));
+$('selectAll').addEventListener('click', () => { ruleChecks().forEach(el => { el.checked = true; }); updateRuleUI(); });
+$('clearRules').addEventListener('click', () => { ruleChecks().forEach(el => { el.checked = false; }); updateRuleUI(); });
+$('previous').addEventListener('input', () => { $('error').textContent = ''; saveSettings(); });
+
+$('draw').addEventListener('click', () => {
+  try {
+    $('error').textContent = '';
+    const activeMask = getActiveMask();
+    const previous = (activeMask & 4) ? readPrevious() : [];
+    refreshHistory();
+    const count = Number($('games').value);
+    if (![1, 5, 10, 25, 50].includes(count)) throw new Error('생성 수가 올바르지 않습니다.');
+    if (historyRows.length + count > 1000) throw new Error(`보관함에 ${1000 - historyRows.length}개만 남았습니다. 생성 수를 줄여 주세요.`);
+    lastRows = generate(count, new Set(previous), historyRows, activeMask);
+    const firstIndex = historyRows.length + 1;
+    historyRows.push(...lastRows);
+    persistHistory();
+    renderHistory();
+    $('results').innerHTML = lastRows.map((row, i) => gameMarkup(row, firstIndex + i)).join('');
+    $('save').disabled = false;
+    const ruleText = activeRuleCount() ? `${activeRuleCount()}개 조건 적용` : '조건 없음';
+    $('status').textContent = `${ruleText} · ${count}개 생성 완료`;
+  } catch (e) {
+    $('error').textContent = e.message || String(e);
+  }
+});
+
+$('save').addEventListener('click', () => {
+  if (!lastRows.length) return;
+  const lines = [`번호 조합 결과 · ${lastRows.length}개`, `적용 조건: ${activeRuleCount()} / 8개`, ...lastRows.map((row, i) => `${i + 1}. ${row.join(', ')}`)];
+  downloadFile('number-combinations.txt', '\ufeff' + lines.join('\n'), 'text/plain;charset=utf-8');
+});
+
+$('exportAll').addEventListener('click', () => {
+  if (!historyRows.length) return;
+  const lines = [`누적 기록 · ${historyRows.length}개`, ...historyRows.map((row, i) => `${i + 1}. ${row.join(', ')}`)];
+  downloadFile('number-history.txt', '\ufeff' + lines.join('\n'), 'text/plain;charset=utf-8');
+});
+
+$('backup').addEventListener('click', () => {
+  if (!historyRows.length) return;
+  downloadFile('number-backup.json', JSON.stringify({ version: 3, rows: historyRows }, null, 2), 'application/json');
+});
+
+$('restore').addEventListener('click', () => $('importFile').click());
+$('importFile').addEventListener('change', async () => {
+  try {
+    const file = $('importFile').files[0];
+    if (!file) return;
+    if (file.size > 1000000) throw new Error('백업 파일이 너무 큽니다.');
+    const incoming = parseBackup(await file.text());
+    refreshHistory();
+    const merged = new Map(historyRows.map(r => [r.join(','), r]));
+    incoming.forEach(r => merged.set(r.join(','), r));
+    if (merged.size > 1000) throw new Error('기존 기록과 합치면 1,000개를 넘습니다.');
+    historyRows = [...merged.values()];
+    persistHistory();
+    renderHistory();
+    $('error').textContent = '';
+    $('status').textContent = `${incoming.length}개가 들어 있는 백업을 불러왔습니다.`;
+  } catch (e) {
+    $('error').textContent = e.message || String(e);
+  } finally { $('importFile').value = ''; }
+});
+
+$('clearHistory').addEventListener('click', () => {
+  if (!confirm('누적 기록을 모두 지울까요? 백업하지 않은 기록은 복원할 수 없으며 지운 조합이 다시 생성될 수 있습니다.')) return;
+  historyRows = [];
+  lastRows = [];
+  persistHistory();
+  renderHistory();
+  $('results').innerHTML = '<p class="note">조건을 선택한 뒤 번호 생성을 눌러 시작하세요.</p>';
+  $('save').disabled = true;
+  $('status').textContent = '누적 기록을 초기화했습니다.';
+});
+
+window.addEventListener('beforeinstallprompt', (e) => {
+  e.preventDefault();
+  deferredInstallPrompt = e;
+  $('installTip').style.display = 'block';
+  $('installButton').style.display = 'inline-block';
+  $('installText').textContent = '이 사이트를 홈 화면에 설치하면 일반 앱처럼 실행할 수 있습니다.';
+});
+
+$('installButton').addEventListener('click', async () => {
+  if (!deferredInstallPrompt) return;
+  deferredInstallPrompt.prompt();
+  await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt = null;
+  $('installButton').style.display = 'none';
+});
+
+function showIOSInstallHelp() {
+  const ua = navigator.userAgent;
+  const isIOS = /iPhone|iPad|iPod/i.test(ua) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+  const standalone = window.matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  if (isIOS && !standalone) {
+    $('installTip').style.display = 'block';
+    $('installText').textContent = '아이폰·아이패드에서는 Safari의 공유 버튼 → “홈 화면에 추가”를 누르면 앱처럼 사용할 수 있습니다.';
+  }
+}
+
+loadSettings();
+updateRuleUI();
+refreshHistory();
+renderHistory();
+if (!memoryOnly) $('storageStatus').textContent = '같은 브라우저에서 누적 기록을 자동 복원합니다.';
+showIOSInstallHelp();
+
+
+</script>
+</body>
+</html>
