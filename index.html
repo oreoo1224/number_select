@@ -101,12 +101,12 @@
 /* Responsive condition selection */
 .hero{position:relative}.help-button{display:none;position:absolute;right:4px;top:14px;width:44px;height:44px;border:0;background:transparent;color:#726880;cursor:pointer}.is-home .help-button{display:grid;place-items:center}.help-button span{width:23px;height:23px;border:1.8px solid currentColor;border-radius:50%;font-size:16px;line-height:21px;font-weight:800}
 .help-button:focus-visible,summary:focus-visible{outline:3px solid #7659f4;outline-offset:3px}
-#step1{padding:26px}.condition-title{margin:0 0 24px;font-size:28px;letter-spacing:-.8px}
+#step1{padding:26px}.step .condition-title{margin:0 0 22px;font-size:24px;font-weight:800;line-height:1.4;letter-spacing:-.5px;word-break:keep-all}
 .custom-numbers{background:white;padding:20px;border:1px solid #e2dced;margin-bottom:18px;display:grid;grid-template-columns:1fr 1fr;gap:16px 24px}.custom-numbers h3,.custom-hint,.custom-error{grid-column:1/-1}.custom-numbers h3{margin:0}.custom-row+.custom-row{margin-top:0}.custom-hint{margin:0;font-size:12px}.custom-error{margin:0}
 .custom-label{position:relative;min-height:32px;padding-right:50px}.custom-label input{appearance:none;-webkit-appearance:none;position:absolute;right:0;width:42px;height:25px;border:0;border-radius:20px;background:#c8cad6;cursor:pointer}.custom-label input:after{content:'';position:absolute;left:3px;top:3px;width:19px;height:19px;background:white;border-radius:50%;transition:transform .15s}.custom-label input:checked{background:#7659f4}.custom-label input:checked:after{transform:translateX(17px)}.custom-label input:focus-visible{outline:3px solid #7659f4;outline-offset:3px}
-.additional-conditions{border:1px solid #e2dced;border-radius:17px;background:white;scroll-margin-top:16px}.additional-conditions>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:18px 20px;min-height:64px;cursor:pointer;list-style:none;font-size:18px;font-weight:800}.additional-conditions>summary::-webkit-details-marker{display:none}.optional-tag{font-size:11px;color:#7155df;background:#f2edff;border-radius:20px;padding:5px 8px;margin-left:5px;white-space:nowrap}.condition-summary{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;color:#786c8b;white-space:nowrap}.disclosure-arrow{font-size:22px;transition:transform .15s}.additional-conditions[open] .disclosure-arrow{transform:rotate(180deg)}.additional-content{padding:0 20px 20px}.additional-content .toolbar{margin:0 0 12px}.additional-content .rule-list{grid-template-columns:1fr 1fr;gap:9px}.additional-content .rule{grid-template-columns:22px minmax(0,1fr);padding:12px;min-height:58px;gap:9px}.additional-content .rule strong{font-size:14px;margin:0;line-height:1.55}.additional-content .example,.additional-content .rule-count{display:none}.additional-content .combo-stats{margin:20px 0 0;background:#faf8ff;padding:16px}.combo-stats-head{flex-wrap:wrap}.combo-stat-label{font-size:12px}.combo-stat-value{font-size:18px}.combo-stat-note{font-size:12px}.stats-progress{height:7px}.combo-stat:has(#statsRemaining){color:#7254e9}#step1 .step-actions{justify-content:flex-end}#toStep2{flex:0 1 260px;font-size:16px}
+.additional-conditions{border:1px solid #e2dced;border-radius:17px;background:white;margin-top:0;padding-top:0;scroll-margin-top:16px}.additional-conditions>summary{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:18px 20px;min-height:64px;cursor:pointer;list-style:none;font-size:18px;font-weight:800}.additional-conditions>summary::-webkit-details-marker{display:none}.optional-tag{font-size:11px;color:#7155df;background:#f2edff;border-radius:20px;padding:5px 8px;margin-left:5px;white-space:nowrap}.condition-summary{display:flex;align-items:center;gap:12px;font-size:12px;font-weight:600;color:#786c8b;white-space:nowrap}.disclosure-arrow{font-size:22px;transition:transform .15s}.additional-conditions[open] .disclosure-arrow{transform:rotate(180deg)}.additional-content{padding:0 20px 20px}.additional-content .toolbar{margin:0 0 12px}.additional-content .rule-list{grid-template-columns:1fr 1fr;gap:9px}.additional-content .rule{grid-template-columns:22px minmax(0,1fr);padding:12px;min-height:58px;gap:9px}.additional-content .rule strong{font-size:14px;margin:0;line-height:1.55}.additional-content .example,.additional-content .rule-count{display:none}.additional-content .combo-stats{margin:20px 0 0;background:#faf8ff;padding:16px}.combo-stats-head{flex-wrap:wrap}.combo-stat-label{font-size:12px}.combo-stat-value{font-size:18px}.combo-stat-note{font-size:12px}.stats-progress{height:7px}.combo-stat:has(#statsRemaining){color:#7254e9}#step1 .step-actions{justify-content:flex-end}#toStep2{flex:0 1 260px;font-size:16px}
 .help-dialog{border:0;border-radius:22px;padding:24px;color:#26233a;width:min(520px,calc(100% - 32px));max-height:85dvh;overflow:auto;box-shadow:0 20px 80px #160c3940}.help-dialog::backdrop{background:#21163380;backdrop-filter:blur(4px)}.help-steps{padding-left:24px;margin:20px 0}.help-steps li{padding-left:5px;margin-bottom:20px}.help-steps li::marker{color:#7659f4;font-weight:800}.help-steps h3{font-size:16px;margin:0 0 7px}.help-steps p{font-size:14px;line-height:1.7;color:#6c6379;margin:0}.help-dialog>.primary{width:100%}
-@media(max-width:700px){#step1{padding:18px 14px}.condition-title{font-size:24px;margin-bottom:20px}.custom-numbers{grid-template-columns:1fr;gap:15px;padding:16px}.custom-numbers h3{font-size:17px}.additional-conditions>summary{padding:16px 12px;font-size:17px}.optional-tag{font-size:10px;padding:4px 6px;margin-left:2px}.condition-summary{font-size:11px;gap:6px}.additional-content{padding:0 12px 14px}.additional-content .rule-list{grid-template-columns:1fr}.additional-content .rule{min-height:48px;padding:10px}.additional-content .rule strong{font-size:13px}.additional-content .combo-stats{padding:12px}.combo-stat-grid{grid-template-columns:1fr 1fr;gap:8px}.combo-stat-value{font-size:18px}#toStep2{flex:1}.combo-stats-title{font-size:13px}.help-dialog{padding:20px}}
+@media(max-width:700px){#step1{padding:18px 14px}.step .condition-title{font-size:22px;margin-bottom:18px}.custom-numbers{grid-template-columns:1fr;gap:15px;padding:16px}.custom-numbers h3{font-size:17px}.additional-conditions>summary{padding:16px 12px;font-size:17px}.optional-tag{font-size:10px;padding:4px 6px;margin-left:2px}.condition-summary{font-size:11px;gap:6px}.additional-content{padding:0 12px 14px}.additional-content .rule-list{grid-template-columns:1fr}.additional-content .rule{min-height:48px;padding:10px}.additional-content .rule strong{font-size:13px}.additional-content .combo-stats{padding:12px}.combo-stat-grid{grid-template-columns:1fr 1fr;gap:8px}.combo-stat-value{font-size:18px}#toStep2{flex:1}.combo-stats-title{font-size:13px}.help-dialog{padding:20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.disclosure-arrow,.custom-label input:after{transition:none}}
 </style>
 </head>
@@ -118,7 +118,7 @@
     <div id="homeIntro" class="home-intro"><div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div><h1>나만의 조합,<br><span>새로운 행운.</span></h1><p>원하는 조건으로 만드는 6개의 숫자</p></div>
   </header>
   <section id="homeScreen">
-  <section class="card latest-card" aria-live="polite">
+  <section class="card latest-card" aria-live="polite" aria-busy="true">
     <div class="row-between">
       <span class="tag auto">직전 회차 자동 적용</span>
       <span id="drawRoundBadge" class="latest-meta">확인 중…</span>
@@ -529,6 +529,8 @@ async function loadLatestDraw(){
     $('latestStatus').classList.add('warn');
     $('manualFallback').classList.add('show');
     $('manualPrevious').value = FALLBACK_DRAW.winning_numbers.join(', ');
+  }finally{
+    document.querySelector('.latest-card').setAttribute('aria-busy','false');
   }
   updateReviewBox();
 }
@@ -841,7 +843,6 @@ updateRuleUI();
 refreshHistory();
 renderHistory();
 if(!memoryOnly)$('storageStatus').textContent='같은 브라우저에서 누적 기록을 자동 복원합니다.';
-renderLatestDraw();
 loadLatestDraw();
 </script>
 <script>
@@ -955,7 +956,7 @@ document.querySelectorAll('.brand-icon,.modal-brand-icon').forEach(img=>{img.src
 <script>
 (() => {
   const extra=document.getElementById('additionalConditions');
-  extra.open=window.matchMedia('(min-width:701px)').matches;
+  extra.open=false;
   // Scroll only after a user opens the panel, never on initial layout.
   extra.querySelector('summary').addEventListener('click',()=>{
     if(!extra.open) requestAnimationFrame(()=>requestAnimationFrame(()=>{
