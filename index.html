@@ -355,7 +355,9 @@ const STANDALONE_EXCLUDED = {1:458420,2:1521520,4:194130,8:1521520,16:36160,32:2
 let maskFrequency = null;
 let statsWorker = null;
 let statsKey = '';
-const FALLBACK_DRAW = { draw_no: 1243, draw_date: '2026-09-26', winning_numbers: [9,18,24,38,43,44], bonus_number: 35 };
+const OFFICIAL_DRAW_URL = 'https://www.dhlottery.co.kr/lt645/selectPstLt645Info.do';
+// Offline backup from the official results; shown only when automatic lookup fails.
+const FALLBACK_DRAW = { draw_no: 1247, draw_date: '2026-10-24', winning_numbers: [8,14,21,22,42,45], bonus_number: 24 };
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('ko-KR');
 let historyRows = [];
@@ -495,9 +497,31 @@ function calculateMaskFrequency(prevNumbers){
 }
 
 function validateDraw(d){
-  return d && Number.isInteger(Number(d.draw_no)) && /^\d{4}-\d{2}-\d{2}$/.test(String(d.draw_date||'')) &&
+  return d && Number.isInteger(Number(d.draw_no)) && Number(d.draw_no)>0 && /^\d{4}-\d{2}-\d{2}$/.test(String(d.draw_date||'')) &&
     Array.isArray(d.winning_numbers) && d.winning_numbers.length===6 && d.winning_numbers.every(n=>Number.isInteger(Number(n))&&n>=1&&n<=45) &&
     new Set(d.winning_numbers.map(Number)).size===6;
+}
+async function fetchOfficialDraw(round){
+  const requestedRound=round===undefined?null:Number(round);
+  if(requestedRound!==null&&(!Number.isInteger(requestedRound)||requestedRound<1))throw Error('invalid round');
+  const url=new URL(OFFICIAL_DRAW_URL);
+  if(requestedRound!==null)url.searchParams.set('srchLtEpsd',String(requestedRound));
+  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
+  try{
+    const response=await fetch(url.href,{cache:'no-store',credentials:'omit',signal:controller.signal});
+    if(!response.ok)throw Error(`draw HTTP ${response.status}`);
+    const payload=await response.json(),rows=payload?.data?.list;
+    if(!Array.isArray(rows)||!rows.length)throw Error('draw unavailable');
+    const row=requestedRound===null?rows.reduce((latest,item)=>Number(item.ltEpsd)>Number(latest.ltEpsd)?item:latest):rows.find(item=>Number(item.ltEpsd)===requestedRound);
+    if(!row)throw Error('requested draw unavailable');
+    const date=String(row.ltRflYmd||'');
+    if(!/^\d{8}$/.test(date))throw Error('invalid draw date');
+    const data={draw_no:Number(row.ltEpsd),draw_date:`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}`,winning_numbers:[1,2,3,4,5,6].map(n=>Number(row[`tm${n}WnNo`])).sort((a,b)=>a-b),bonus_number:Number(row.bnsWnNo)};
+    const bonus=data.bonus_number;
+    if(!validateDraw(data)||!Number.isInteger(bonus)||bonus<1||bonus>45||data.winning_numbers.includes(bonus))throw Error('invalid draw data');
+    if(requestedRound!==null&&data.draw_no!==requestedRound)throw Error('draw mismatch');
+    return data;
+  }finally{clearTimeout(timer);}
 }
 function renderLatestDraw(){
   const d = latestDraw;
@@ -516,22 +540,7 @@ function staleDays(dateStr){
 async function loadLatestDraw(){
   latestLoadFailed = false;
   try{
-    const stamp = Date.now();
-    const base = 'https://raw.githubusercontent.com/johyunchol/lottogo-python/main/src/constant';
-    const roundRes = await fetch(`${base}/round_no/latest_round_no.json?v=${stamp}`, {cache:'no-store'});
-    if(!roundRes.ok) throw new Error(`latest round HTTP ${roundRes.status}`);
-    const roundData = await roundRes.json();
-    const round = Number(roundData.latest_round_no);
-    if(!Number.isInteger(round) || round < 1) throw new Error('invalid latest round');
-
-    const drawRes = await fetch(`${base}/draw_no/${round}.json?v=${stamp}`, {cache:'no-store'});
-    if(!drawRes.ok) throw new Error(`draw HTTP ${drawRes.status}`);
-    const data = await drawRes.json();
-    if(!validateDraw(data) || Number(data.draw_no)!==round) throw new Error('invalid draw data');
-
-    data.winning_numbers = data.winning_numbers.map(Number);
-    data.draw_no = Number(data.draw_no);
-    data.bonus_number = data.bonus_number ? Number(data.bonus_number) : null;
+    const data = await fetchOfficialDraw();
     latestDraw = data;
     renderLatestDraw();
     calculateMaskFrequency(data.winning_numbers);
@@ -928,14 +937,12 @@ async function fetchComparisonDraw(){
   const id=++checkRequest;$('checkError').textContent='';$('checkSource').textContent='회차 번호 조회 중…';$('fetchCheckDraw').disabled=true;
   invalidateComparison();$('checkNumbers').value='';$('checkBonus').value='';
   try{
-    const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
-    let response;try{response=await fetch(`https://raw.githubusercontent.com/johyunchol/lottogo-python/main/src/constant/draw_no/${round}.json`,{cache:'no-store',signal:controller.signal});}finally{clearTimeout(timer);}
-    if(!response.ok)throw Error();const data=await response.json();
+    const data=await fetchOfficialDraw(round);
     const bonus=Number(data.bonus_number),numbers=data.winning_numbers?.map(Number);
     if(!validateDraw(data)||Number(data.draw_no)!==round||!Number.isInteger(bonus)||bonus<1||bonus>45||numbers.includes(bonus))throw Error();
     if(id!==checkRequest)return;
     $('checkNumbers').value=numbers.join(', ');$('checkBonus').value=String(bonus);checkDrawLabel=`${round}회 (${data.draw_date})`;
-    $('checkSource').textContent=`${checkDrawLabel} · 공개 데이터 조회. 공식 결과와 확인해 주세요.`;
+    $('checkSource').textContent=`${checkDrawLabel} · 동행복권 조회 결과. 실제 구매 복권과 함께 확인해 주세요.`;
   }catch(_){if(id===checkRequest){$('checkSource').textContent='조회하지 못했습니다. 공식 결과를 확인해 직접 입력해 주세요.';$('checkError').textContent='미발표 회차이거나 번호 조회가 제한된 상태입니다.';}}
   finally{if(id===checkRequest)$('fetchCheckDraw').disabled=false;}
 }
