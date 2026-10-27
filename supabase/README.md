@@ -2,6 +2,7 @@
 
 The website remains on GitHub Pages. Reviews are stored in the selected Supabase
 Postgres database and read/written through five narrowly scoped RPC functions.
+One additional read-only RPC reports the supported password format.
 There is no visitor account signup. Each post has its own edit/delete password.
 
 ## Connect a real project
@@ -36,16 +37,37 @@ key in the `apikey` request header. Do not send website cookies.
 | `review_create` | `p_nickname`, `p_title`, `p_content`, `p_password` | Safe full post |
 | `review_update` | `p_id`, `p_nickname`, `p_title`, `p_content`, `p_password` | Safe full post |
 | `review_delete` | `p_id`, `p_password` | `{ "deleted": true }` |
+| `reviews_config` | none | `{ "password_digits": 4 }` |
 
 Full posts contain `id`, `nickname`, `title`, `content`, `created_at`, `updated_at`.
 List entries contain the same metadata and a 160-character `excerpt`, without
 the full `content`. Lists are newest-first, with UUID as the stable tie-breaker.
 Limits are clamped to 1–20 items and offsets to zero or greater.
 
-Validation requires a trimmed nickname of 1–20 characters, title of 1–80
-characters and content of 1–4,000 characters. Nickname/title cannot contain line
-breaks or tabs. Passwords are exact (not trimmed), 8–128 characters. Password
-changes and account-based recovery are not part of this implementation.
+Validation requires a trimmed nickname of 1–20 characters and content of
+1–4,000 characters. The title field is absent from the visitor form; the API
+adapter derives the existing internal title (up to 80 characters) from the
+leading content to preserve the database/RPC contract. Nickname/title cannot
+contain line breaks or tabs. New passwords are exactly four ASCII digits,
+including leading zeroes. Passwords are exact and are never trimmed or converted
+to numbers. Existing posts with legacy 8–128 character passwords can still be
+edited/deleted with their original passwords. Password changes and account-based
+recovery are not part of this implementation.
+
+## Upgrade an already connected project to four-digit PINs
+
+Run [migrations/20261027_review_pins.sql](migrations/20261027_review_pins.sql) in
+the project's SQL Editor. It replaces validation and RPC definitions without
+rewriting/deleting existing posts, password hashes or timestamps. Re-running it
+is safe. The unchanged per-post attempt counters and write limits still apply.
+
+The browser's public key cannot install SQL functions. Until the project owner
+applies this upgrade and `reviews_config` reports `password_digits: 4`, the new
+compose form disables submission and offers a reload button. Read/list and
+legacy edit/delete remain available. Once SQL is installed, reload the compose
+page to enable four-digit PIN creation. The UI changes can be deployed while
+this explicit database step is pending; this must not be described as a fully
+validated hosted PIN upgrade before the SQL is installed.
 
 Business failures are returned as
 `{ "error": { "code": "REVIEW_...", "message": "..." } }`, even when the HTTP

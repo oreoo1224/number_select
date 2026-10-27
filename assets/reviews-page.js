@@ -11,6 +11,7 @@
   const dateFormat = new Intl.DateTimeFormat('ko-KR', {dateStyle:'medium', timeStyle:'short', timeZone:'Asia/Seoul'});
   let currentPost = null;
   let formMode = 'create';
+  let creationReady = false;
   let saving = false;
   let deleting = false;
   let deleteReturnFocus = null;
@@ -72,16 +73,13 @@
       const link = document.createElement('a');
       link.className = 'review-row';
       link.href = urlForPost(String(post.id));
-      const title = document.createElement('h2');
-      title.className = 'review-row-title';
-      title.textContent = post.title;
       const excerpt = document.createElement('p');
       excerpt.className = 'review-row-excerpt';
-      excerpt.textContent = post.excerpt || '';
+      excerpt.textContent = post.excerpt || post.content || '';
       const meta = document.createElement('div');
       meta.className = 'review-row-meta';
       addMeta(meta, post.nickname, post.created_at);
-      link.append(title, excerpt, meta);
+      link.append(excerpt, meta);
       item.appendChild(link);
       $('reviewList').appendChild(item);
     }
@@ -110,7 +108,6 @@
 
   function displayPost(post) {
     currentPost = post;
-    $('postTitle').textContent = post.title;
     $('postNickname').textContent = post.nickname;
     $('postCreatedAt').textContent = formatDate(post.created_at);
     if (Number.isFinite(new Date(post.created_at).getTime())) $('postCreatedAt').dateTime = new Date(post.created_at).toISOString();
@@ -126,13 +123,20 @@
   function displayForm(post = null) {
     currentPost = post;
     formMode = post ? 'edit' : 'create';
+    creationReady = false;
     $('reviewFormTitle').textContent = post ? '후기 수정' : '후기 쓰기';
     $('reviewPasswordLabel').textContent = post ? '작성할 때 설정한 비밀번호' : '작성 비밀번호';
+    $('reviewPasswordLimit').textContent = post ? '작성 시 설정한 비밀번호' : '숫자 4자리';
     $('reviewPassword').autocomplete = post ? 'current-password' : 'new-password';
-    $('reviewPassword').placeholder = post ? '이 글의 작성 비밀번호' : '수정·삭제에 사용할 비밀번호';
+    $('reviewPassword').minLength = 4;
+    $('reviewPassword').maxLength = post ? 128 : 4;
+    $('reviewPassword').inputMode = post ? 'text' : 'numeric';
+    if (post) $('reviewPassword').removeAttribute('pattern');
+    else $('reviewPassword').pattern = '[0-9]{4}';
+    $('reviewPassword').placeholder = post ? '이 글의 작성 비밀번호' : '숫자 4자리';
+    $('reviewPasswordHelp').textContent = post ? '이전에 긴 비밀번호로 작성한 글은 기존 비밀번호를 그대로 입력해 주세요.' : '수정·삭제할 때 사용할 숫자 4자리를 입력해 주세요. 비밀번호는 공개되지 않습니다.';
     $('reviewFormNote').textContent = post ? '이 글을 수정하려면 작성할 때 설정한 비밀번호가 필요합니다. 비밀번호는 변경되지 않습니다.' : '작성 비밀번호는 이 글을 수정하거나 삭제할 때 필요합니다.';
     $('reviewNickname').value = post?.nickname || '';
-    $('reviewTitle').value = post?.title || '';
     $('reviewContent').value = post?.content || '';
     $('reviewPassword').value = '';
     $('reviewFormError').textContent = '';
@@ -146,22 +150,43 @@
     setState('');
   }
 
+  async function prepareNewForm() {
+    displayForm();
+    $('submitReview').disabled = true;
+    $('submitReview').textContent = '작성 설정 확인 중…';
+    setState('작성 설정을 확인하고 있습니다.');
+    let policy = null;
+    try {
+      if (typeof api.passwordPolicy === 'function') policy = await api.passwordPolicy();
+    } catch (_) { /* A missing policy keeps new writes unavailable. */ }
+    creationReady = policy?.passwordDigits === 4;
+    $('submitReview').disabled = !creationReady;
+    $('submitReview').textContent = '후기 등록';
+    if (creationReady) setState('');
+    else setState('작성 설정을 업데이트하고 있습니다. 잠시 후 다시 시도해 주세요.',false,true);
+  }
+
   function formData() {
     const nickname = $('reviewNickname').value.trim();
-    const title = $('reviewTitle').value.trim();
     const content = $('reviewContent').value.trim();
     const password = $('reviewPassword').value;
-    for (const [value,max,label] of [[nickname,20,'닉네임'],[title,80,'제목'],[content,4000,'내용']]) {
+    for (const [value,max,label] of [[nickname,20,'닉네임'],[content,4000,'내용']]) {
       if (!value || [...value].length > max) throw new Error(`${label}은 1~${max.toLocaleString('ko-KR')}자로 입력해 주세요.`);
     }
-    if ([...password].length < 8 || [...password].length > 128) throw new Error('비밀번호는 8~128자로 입력해 주세요.');
-    return {nickname,title,content,password};
+    if (formMode === 'create' && !/^[0-9]{4}$/.test(password)) throw new Error('비밀번호는 숫자 4자리로 입력해 주세요.');
+    if (formMode === 'edit' && !validExistingPassword(password)) throw new Error('작성할 때 설정한 숫자 4자리 또는 기존 비밀번호를 입력해 주세요.');
+    return {nickname,content,password};
+  }
+
+  function validExistingPassword(password) {
+    return /^[0-9]{4}$/.test(password) || ([...password].length >= 8 && [...password].length <= 128);
   }
 
   function setFormBusy(busy) {
     saving = busy;
     $('reviewForm').setAttribute('aria-busy',String(busy));
     for (const input of $('reviewForm').querySelectorAll('input,textarea,button')) input.disabled = busy;
+    $('submitReview').disabled = busy || (formMode === 'create' && !creationReady);
     $('submitReview').textContent = busy ? '저장 중…' : formMode === 'edit' ? '수정 저장' : '후기 등록';
     $('cancelReview').setAttribute('aria-disabled',String(busy));
   }
@@ -169,6 +194,10 @@
   $('reviewForm').addEventListener('submit', async event => {
     event.preventDefault();
     if (saving || !api?.isConfigured()) return;
+    if (formMode === 'create' && !creationReady) {
+      setState('작성 설정을 업데이트하고 있습니다. 잠시 후 다시 시도해 주세요.',false,true);
+      return;
+    }
     $('reviewFormError').textContent = '';
     let values;
     try { values = formData(); }
@@ -222,8 +251,8 @@
     event.preventDefault();
     if (deleting || !currentPost || !api?.isConfigured()) return;
     const password = $('deleteReviewPassword').value;
-    if ([...password].length < 8 || [...password].length > 128) {
-      $('deleteReviewError').textContent = '비밀번호는 8~128자로 입력해 주세요.';
+    if (!validExistingPassword(password)) {
+      $('deleteReviewError').textContent = '작성할 때 설정한 숫자 4자리 또는 기존 비밀번호를 입력해 주세요.';
       return;
     }
     $('deleteReviewError').textContent = '';
@@ -257,7 +286,7 @@
     $('reviewsTitle').setAttribute('aria-busy','true');
     try {
       if (params.get('write') === '1') {
-        displayForm();
+        await prepareNewForm();
       } else if (params.has('post')) {
         const id = params.get('post');
         if (!uuidPattern.test(id)) {

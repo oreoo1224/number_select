@@ -84,8 +84,21 @@
     return String(id);
   }
 
+  // Keep the existing RPC/table contract while the public form has no title.
+  function contentTitle(content) {
+    return Array.from(String(content || '').replace(/\s+/g, ' ').trim()).slice(0, 80).join('');
+  }
+
   window.ReviewsAPI = Object.freeze({
     isConfigured: () => Boolean(connection()),
+    async passwordPolicy() {
+      try {
+        const result = await rpc('reviews_config', {}, false);
+        return result && result.password_digits === 4 ? { passwordDigits: 4 } : null;
+      } catch (_) {
+        return null;
+      }
+    },
     async list({ limit = 10, offset = 0 } = {}) {
       const result = await rpc('reviews_list', { p_limit: Math.max(1, Math.min(20, Math.trunc(Number(limit) || 10))), p_offset: Math.max(0, Math.min(10000, Math.trunc(Number(offset) || 0))) }, false);
       if (!result || !Array.isArray(result.items) || !Number.isSafeInteger(Number(result.total)) || Number(result.total) < 0) throw fail('SERVICE_UNAVAILABLE');
@@ -95,11 +108,11 @@
       const result = await rpc('review_get', { p_id: requireId(id) }, false);
       return result === null ? null : post(result, true);
     },
-    async create({ nickname, title, content, password }) {
-      return post(await rpc('review_create', { p_nickname: nickname, p_title: title, p_content: content, p_password: password }, true), true);
+    async create({ nickname, content, password }) {
+      return post(await rpc('review_create', { p_nickname: nickname, p_title: contentTitle(content), p_content: content, p_password: password }, true), true);
     },
-    async update(id, { nickname, title, content, password }) {
-      return post(await rpc('review_update', { p_id: requireId(id), p_nickname: nickname, p_title: title, p_content: content, p_password: password }, true), true);
+    async update(id, { nickname, content, password }) {
+      return post(await rpc('review_update', { p_id: requireId(id), p_nickname: nickname, p_title: contentTitle(content), p_content: content, p_password: password }, true), true);
     },
     async remove(id, password) {
       const result = await rpc('review_delete', { p_id: requireId(id), p_password: password }, true);

@@ -26,12 +26,10 @@
         const link = document.createElement('a');
         link.href = `/reviews.html?post=${encodeURIComponent(post.id)}`;
         link.className = 'reviews-preview-post';
-        const title = document.createElement('span');
-        title.className = 'reviews-preview-title';
-        title.textContent = post.title;
         const excerpt = document.createElement('span');
-        excerpt.className = 'reviews-preview-excerpt';
-        excerpt.textContent = Array.from(post.excerpt.replace(/\s+/g, ' ')).slice(0, 75).join('');
+        excerpt.className = 'reviews-preview-title';
+        const content = Array.from(post.excerpt.replace(/\s+/g, ' ').trim());
+        excerpt.textContent = content.slice(0, 75).join('') + (content.length > 75 ? '…' : '');
         const meta = document.createElement('span');
         meta.className = 'reviews-preview-meta';
         const nickname = document.createElement('span');
@@ -43,7 +41,7 @@
           time.textContent = dateFormat.format(created);
         }
         meta.append(nickname, time);
-        link.append(title, excerpt, meta);
+        link.append(excerpt, meta);
         item.append(link);
         list.append(item);
       }

@@ -105,11 +105,21 @@ as $body$
   )
 $body$;
 
+create or replace function reviews_private.valid_new_password(p_password text)
+returns boolean language sql immutable
+set search_path = pg_catalog
+as $body$
+  select coalesce(pg_catalog.octet_length(p_password) = 4 and p_password ~ '^[0-9]{4}$', false)
+$body$;
+
+-- Existing posts keep their original password. New posts use the strict PIN
+-- helper above; authentication also accepts the previous 8-128 character rule.
 create or replace function reviews_private.valid_password(p_password text)
 returns boolean language sql immutable
 set search_path = pg_catalog
 as $body$
-  select coalesce(pg_catalog.char_length(p_password) between 8 and 128, false)
+  select reviews_private.valid_new_password(p_password)
+    or coalesce(pg_catalog.char_length(p_password) between 8 and 128, false)
 $body$;
 
 -- Atomic fixed-window counters. Business errors return JSON instead of raising
@@ -199,8 +209,8 @@ begin
     return reviews_private.error('REVIEW_RATE_LIMITED', '요청이 많습니다. 잠시 후 다시 시도해 주세요.');
   end if;
   if not reviews_private.valid_fields(p_nickname, p_title, p_content)
-     or not reviews_private.valid_password(p_password) then
-    return reviews_private.error('REVIEW_INVALID_INPUT', '닉네임 1~20자, 제목 1~80자, 내용 1~4,000자, 비밀번호 8~128자를 확인해 주세요.');
+     or not reviews_private.valid_new_password(p_password) then
+    return reviews_private.error('REVIEW_INVALID_INPUT', '닉네임 1~20자, 내용 1~4,000자, 숫자 4자리 작성 비밀번호를 확인해 주세요.');
   end if;
   insert into reviews_private.posts (nickname, title, content, password_hash)
   values (pg_catalog.btrim(p_nickname), pg_catalog.btrim(p_title), pg_catalog.btrim(p_content), reviews_private.hash_password(p_password))
@@ -221,7 +231,7 @@ begin
   end if;
   if p_id is null or not reviews_private.valid_fields(p_nickname, p_title, p_content)
      or not reviews_private.valid_password(p_password) then
-    return reviews_private.error('REVIEW_INVALID_INPUT', '닉네임 1~20자, 제목 1~80자, 내용 1~4,000자, 비밀번호 8~128자를 확인해 주세요.');
+    return reviews_private.error('REVIEW_INVALID_INPUT', '입력한 내용과 작성할 때 설정한 비밀번호를 확인해 주세요.');
   end if;
   select * into post from reviews_private.posts where id = p_id for update;
   if not found then
@@ -255,7 +265,7 @@ begin
     return reviews_private.error('REVIEW_RATE_LIMITED', '요청이 많습니다. 잠시 후 다시 시도해 주세요.');
   end if;
   if p_id is null or not reviews_private.valid_password(p_password) then
-    return reviews_private.error('REVIEW_INVALID_INPUT', '게시글과 비밀번호 8~128자를 확인해 주세요.');
+    return reviews_private.error('REVIEW_INVALID_INPUT', '게시글과 작성할 때 설정한 비밀번호를 확인해 주세요.');
   end if;
   select * into post from reviews_private.posts where id = p_id for update;
   if not found then
@@ -273,6 +283,14 @@ begin
 end;
 $body$;
 
+-- Public capability detection for clients waiting for the PIN migration.
+create or replace function public.reviews_config()
+returns jsonb language sql immutable
+set search_path = pg_catalog
+as $body$
+  select pg_catalog.jsonb_build_object('password_digits', 4)
+$body$;
+
 -- Explicitly remove PUBLIC's default EXECUTE and Supabase's broad defaults.
 revoke all on all functions in schema reviews_private from public, anon, authenticated;
 revoke all on function public.reviews_list(integer, integer) from public, anon, authenticated, service_role;
@@ -280,12 +298,14 @@ revoke all on function public.review_get(uuid) from public, anon, authenticated,
 revoke all on function public.review_create(text, text, text, text) from public, anon, authenticated, service_role;
 revoke all on function public.review_update(uuid, text, text, text, text) from public, anon, authenticated, service_role;
 revoke all on function public.review_delete(uuid, text) from public, anon, authenticated, service_role;
+revoke all on function public.reviews_config() from public, anon, authenticated, service_role;
 grant usage on schema public to anon, authenticated;
 grant execute on function public.reviews_list(integer, integer) to anon, authenticated;
 grant execute on function public.review_get(uuid) to anon, authenticated;
 grant execute on function public.review_create(text, text, text, text) to anon, authenticated;
 grant execute on function public.review_update(uuid, text, text, text, text) to anon, authenticated;
 grant execute on function public.review_delete(uuid, text) to anon, authenticated;
+grant execute on function public.reviews_config() to anon, authenticated;
 
 notify pgrst, 'reload schema';
 commit;
