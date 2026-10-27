@@ -116,8 +116,13 @@
 @media(max-width:700px){#step1{padding:18px 14px}.step .condition-title{font-size:22px;margin-bottom:18px}.custom-numbers{grid-template-columns:1fr;gap:15px;padding:16px}.custom-numbers h3{font-size:17px}.additional-conditions>summary{padding:16px 12px;font-size:17px}.optional-tag{font-size:10px;padding:4px 6px;margin-left:2px}.condition-summary{font-size:11px;gap:6px}.additional-content{padding:0 12px 14px}.additional-content .rule-list{grid-template-columns:1fr}.additional-content .rule{min-height:48px;padding:10px}.additional-content .rule strong{font-size:13px}.additional-content .combo-stats{padding:12px}.combo-stat-grid{grid-template-columns:1fr 1fr;gap:8px}.combo-stat-value{font-size:18px}#toStep2{flex:1}.combo-stats-title{font-size:13px}.help-dialog{padding:20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.disclosure-arrow,.custom-label input:after{transition:none}}
 </style>
+<link rel="stylesheet" href="/assets/reviews-preview.css">
+<script src="/assets/reviews-config.js" defer></script>
+<script src="/assets/reviews-api.js" defer></script>
+<script src="/assets/reviews-preview.js" defer></script>
 </head>
 <body class="is-home">
+<div class="site-shell">
 <main>
   <header class="hero" id="brandHeader">
     <button id="openHelp" class="help-button" type="button" aria-label="이용 안내 열기" title="이용 안내"><span aria-hidden="true">?</span></button>
@@ -293,8 +298,16 @@
     <p id="checkError" class="error" role="alert"></p><div id="comparisonOutput" aria-live="polite"></div>
     <p class="feature-note">번호 일치 여부를 보여 주는 참고 결과입니다. <a class="link-inline" href="https://www.dhlottery.co.kr/lt645/intro" target="_blank" rel="noopener">동행복권 공식 결과</a>와 실제 구매 복권을 최종 확인해 주세요.</p>
   </section>
-  <footer class="footer"><nav class="footer-links" aria-label="서비스 정보"><a href="/about.html">서비스 소개</a><a href="/guide.html">이용·데이터 안내</a><a href="/privacy.html">개인정보처리방침</a><a href="/about.html#contact">문의</a></nav>본 서비스는 복권 발행·판매 기관과 관련이 없습니다. 생성된 번호의 당첨을 보장하지 않으며, 당첨되지 않을 수 있습니다.<br>조건은 조합을 거를 뿐 개별 조합의 당첨 확률을 높이지 않습니다.</footer>
+  <footer class="footer"><nav class="footer-links" aria-label="서비스 정보"><a href="/reviews.html">후기 게시판</a><a href="/about.html">서비스 소개</a><a href="/guide.html">이용·데이터 안내</a><a href="/privacy.html">개인정보처리방침</a><a href="/about.html#contact">문의</a></nav>본 서비스는 복권 발행·판매 기관과 관련이 없습니다. 생성된 번호의 당첨을 보장하지 않으며, 당첨되지 않을 수 있습니다.<br>조건은 조합을 거를 뿐 개별 조합의 당첨 확률을 높이지 않습니다.</footer>
 </main>
+<aside class="reviews-preview" aria-labelledby="reviewsPreviewTitle">
+  <h2 class="reviews-preview-heading" id="reviewsPreviewTitle"><a href="/reviews.html">후기 게시판 <span aria-hidden="true">→</span></a></h2>
+  <p class="reviews-preview-intro">최근 등록된 이용 후기</p>
+  <p class="reviews-preview-status" id="reviewsPreviewStatus" role="status">최근 후기를 불러오는 중입니다.</p>
+  <ol class="reviews-preview-list" id="reviewsPreviewList"></ol>
+  <div class="reviews-preview-actions"><a href="/reviews.html">전체 후기 보기</a><a href="/reviews.html?write=1" class="reviews-preview-write" id="reviewsPreviewWrite" hidden>후기 작성</a><button id="reviewsPreviewRetry" class="reviews-preview-retry" type="button" hidden>다시 시도</button></div>
+</aside>
+</div>
 <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
 <dialog id="helpDialog" class="help-dialog" aria-labelledby="helpTitle">

@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>후기 게시판 | 행운설계소</title>
+  <meta name="description" content="행운설계소 이용 후기와 의견을 나누는 게시판입니다. 닉네임으로 글을 작성하고 작성 비밀번호로 수정·삭제할 수 있습니다.">
+  <meta name="robots" content="noindex,follow">
+  <link rel="canonical" href="https://luckzip.com/reviews.html">
+  <meta property="og:title" content="후기 게시판 | 행운설계소">
+  <meta property="og:description" content="행운설계소를 이용한 후기와 의견을 나눠 주세요.">
+  <meta property="og:url" content="https://luckzip.com/reviews.html">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
+  <link rel="stylesheet" href="/assets/reviews.css">
+  <script defer src="/assets/reviews-config.js"></script>
+  <script defer src="/assets/reviews-api.js"></script>
+  <script defer src="/assets/reviews-page.js"></script>
+</head>
+<body>
+  <header class="reviews-header">
+    <a class="reviews-brand" href="/"><img src="/assets/logo-96.webp" width="38" height="38" alt=""><span>행운설계소</span></a>
+    <nav class="reviews-nav" aria-label="사이트 메뉴">
+      <a href="/">번호 생성기</a><a href="/reviews.html" aria-current="page">후기 게시판</a><a href="/about.html">서비스 소개</a><a href="/guide.html">이용 안내</a><a href="/privacy.html">개인정보처리방침</a>
+    </nav>
+  </header>
+  <main class="reviews-main" id="mainContent">
+    <section class="reviews-card" aria-labelledby="reviewsTitle">
+      <div class="reviews-heading">
+        <div><p class="reviews-kicker">함께 나누는 이야기</p><h1 id="reviewsTitle">후기 게시판</h1></div>
+        <a id="writeReview" class="reviews-primary" href="/reviews.html?write=1" hidden>후기 쓰기</a>
+      </div>
+      <p class="reviews-lead">행운설계소를 이용한 느낌과 의견을 남겨 주세요. 닉네임과 글 내용은 모든 방문자에게 공개됩니다.</p>
+      <div id="boardState" class="reviews-state" role="status">후기 게시판을 불러오고 있습니다.</div>
+      <button id="retryReviews" class="reviews-secondary" type="button" hidden>다시 불러오기</button>
+      <noscript><p class="reviews-state">후기 게시판을 이용하려면 브라우저의 자바스크립트를 켜 주세요.</p></noscript>
+
+      <section id="reviewListView" aria-label="후기 목록" hidden>
+        <p id="reviewCount" class="reviews-count"></p>
+        <ul id="reviewList" class="reviews-list"></ul>
+        <nav id="reviewPagination" class="reviews-pagination" aria-label="후기 목록 페이지"></nav>
+      </section>
+
+      <article id="reviewDetailView" class="review-detail" aria-labelledby="postTitle" hidden>
+        <a id="detailBack" class="reviews-back" href="/reviews.html">← 후기 목록</a>
+        <h2 id="postTitle" class="review-post-title" tabindex="-1"></h2>
+        <div class="review-post-meta"><span id="postNickname"></span><time id="postCreatedAt"></time><span id="postUpdatedAt"></span></div>
+        <div id="postContent" class="review-post-content"></div>
+        <div class="review-post-actions"><a id="editReview" class="reviews-secondary" href="/reviews.html">수정</a><button id="openDeleteReview" class="reviews-danger" type="button">삭제</button></div>
+      </article>
+
+      <section id="reviewFormView" aria-labelledby="reviewFormTitle" hidden>
+        <a id="formBack" class="reviews-back" href="/reviews.html">← 후기 목록</a>
+        <h2 id="reviewFormTitle" class="review-form-title">후기 쓰기</h2>
+        <p id="reviewFormNote" class="reviews-help">작성 비밀번호는 이 글을 수정하거나 삭제할 때 필요합니다.</p>
+        <form id="reviewForm">
+          <div class="review-form-grid">
+            <label class="review-field" for="reviewNickname">닉네임<span class="reviews-field-limit">최대 20자</span><input id="reviewNickname" name="nickname" type="text" required maxlength="20" autocomplete="nickname" placeholder="게시판에 표시할 이름"></label>
+            <label class="review-field" for="reviewPassword"><span id="reviewPasswordLabel">작성 비밀번호</span><span class="reviews-field-limit">8~128자</span><input id="reviewPassword" name="password" type="password" required minlength="8" maxlength="128" autocomplete="new-password" aria-describedby="reviewPasswordHelp" placeholder="수정·삭제에 사용할 비밀번호"></label>
+          </div>
+          <p id="reviewPasswordHelp" class="reviews-help">비밀번호는 공개되지 않습니다. 다른 사람이 알기 어려운 비밀번호를 사용해 주세요.</p>
+          <label class="review-field" for="reviewTitle">제목<span class="reviews-field-limit">최대 80자</span><input id="reviewTitle" name="title" type="text" required maxlength="80" placeholder="후기 제목을 입력해 주세요"></label>
+          <label class="review-field" for="reviewContent">내용<span class="reviews-field-limit">최대 4,000자</span><textarea id="reviewContent" name="content" required maxlength="4000" rows="10" placeholder="서비스를 이용한 후기를 자유롭게 남겨 주세요."></textarea></label>
+          <p id="reviewFormError" class="reviews-error" role="alert"></p>
+          <div class="review-form-actions"><a id="cancelReview" class="reviews-secondary" href="/reviews.html">취소</a><button id="submitReview" class="reviews-primary" type="submit">후기 등록</button></div>
+        </form>
+      </section>
+    </section>
+  </main>
+  <footer class="reviews-footer"><nav aria-label="서비스 정보"><a href="/">번호 생성기</a><a href="/about.html">서비스 소개</a><a href="/guide.html">이용·데이터 안내</a><a href="/privacy.html">개인정보처리방침</a><a href="mailto:kgeon1451@gmail.com">문의</a></nav><p>행운설계소 · 생성된 번호의 당첨을 보장하지 않습니다.</p></footer>
+
+  <dialog id="deleteReviewDialog" class="reviews-dialog" aria-labelledby="deleteReviewTitle" aria-describedby="deleteReviewDescription">
+    <div class="reviews-dialog-heading"><h2 id="deleteReviewTitle">후기 삭제</h2><button id="closeDeleteReview" class="reviews-close" type="button" aria-label="삭제 창 닫기">×</button></div>
+    <p id="deleteReviewDescription">작성할 때 설정한 비밀번호를 입력해 주세요. 삭제한 글은 되돌릴 수 없습니다.</p>
+    <form id="deleteReviewForm">
+      <label class="review-field" for="deleteReviewPassword">작성 비밀번호<input id="deleteReviewPassword" name="password" type="password" required minlength="8" maxlength="128" autocomplete="current-password" autofocus></label>
+      <p id="deleteReviewError" class="reviews-error" role="alert"></p>
+      <div class="review-form-actions"><button id="cancelDeleteReview" class="reviews-secondary" type="button">취소</button><button id="confirmDeleteReview" class="reviews-danger" type="submit">삭제하기</button></div>
+    </form>
+  </dialog>
+</body>
+</html>
