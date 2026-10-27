@@ -149,7 +149,9 @@
   <section class="card fortune-card" aria-labelledby="fortuneTitle">
     <span class="fortune-decoration" aria-hidden="true">♧</span><h2 id="fortuneTitle">오늘의 행운번호</h2>
     <button id="lookupFortune" class="text-btn fortune-link" type="button" aria-controls="fortuneResults">조회하기 →</button>
-    <div id="fortuneResults" aria-live="polite"></div><button id="shareFortuneImage" class="text-btn" type="button" hidden>행운번호 이미지 공유</button>
+    <div id="fortuneResults" aria-live="polite"></div>
+    <p id="fortuneDisclaimer" class="feature-note" hidden>무작위로 생성한 번호이며, 당첨을 보장하지 않습니다.</p>
+    <button id="shareFortuneImage" class="text-btn" type="button" hidden>행운번호 이미지 공유</button>
   </section>
   </section>
   <div id="viewNav" class="view-nav" hidden><button id="goHome" class="text-btn" type="button">← 처음으로</button></div>
@@ -808,6 +810,7 @@ function showFortuneNumbers(){
     if(!keys.has(key)){keys.add(key);rows.push(row);}
   }
   $('fortuneResults').innerHTML=rows.map((row,i)=>`<div class="game"><span class="game-index">${i+1}.</span><div class="latest-balls">${row.map(n=>ballHTML(n)).join('')}</div></div>`).join('');
+  $('fortuneDisclaimer').hidden=false;
   $('lookupFortune').textContent='다시 조회하기';
   fortuneRows=rows;$('shareFortuneImage').hidden=false;
 }
