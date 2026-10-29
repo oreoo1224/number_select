@@ -286,7 +286,7 @@
 
   <section id="compareSection" class="card" hidden aria-labelledby="compareTitle">
     <h2 id="compareTitle">저장 번호 당첨 확인</h2>
-    <p class="feature-note">관리자가 등록한 회차의 번호를 조회하거나 비교할 번호를 직접 입력해 주세요. 저장된 전체 조합을 비교하며, 실제 구매 여부는 확인하지 않습니다.</p>
+    <p class="feature-note">저장된 전체 조합을 비교하며, 실제 구매 여부는 확인하지 않습니다.</p>
     <label class="check-field">비교할 회차<input id="checkRound" type="number" min="1" step="1" placeholder="예: 1243"></label>
     <button id="fetchCheckDraw" class="secondary" type="button">등록된 회차 조회</button>
     <p id="checkSource" class="feature-note" role="status"></p>
@@ -577,7 +577,8 @@ async function loadLatestDraw(){
       $('latestStatus').textContent='관리자 등록 자료 · 최근 회차 갱신 여부를 확인해 주세요.';
       $('latestStatus').classList.add('warn');
     }else{
-      $('latestStatus').textContent='관리자가 직접 등록한 추첨 결과입니다.';
+      $('latestStatus').textContent='';
+      $('latestStatus').classList.remove('registered');
     }
   }catch(e){
     latestLoadFailed = true;
