@@ -7,7 +7,7 @@
 ## 최초 설정 한 번
 
 1. 기존 `Luckzip-reviews` 프로젝트의 **SQL Editor → New query**를 엽니다.
-2. [20261029_admin_draw_results.sql](migrations/20261029_admin_draw_results.sql)의
+2. [draws.sql](draws.sql)의
    전체 내용을 붙여 넣고 **Run**을 누릅니다.
 3. 성공하면 첫 화면을 새로고침해 등록 자료가 표시되는지 확인합니다.
 
@@ -20,10 +20,14 @@
 다른 회차나 미래의 당첨번호를 임의로 생성하거나 외부 사이트에서 수집하지 않습니다.
 SQL을 다시 실행해도 기존 등록 자료와 후기 게시판은 유지됩니다.
 
+이미 `draws_private.draws`를 사용 중이라면 먼저 [이름 변경 안내](RENAME_ADMIN_TABLES.md)의
+SQL을 적용합니다. `migrations/20261029_admin_draw_results.sql`은 옛 이름의 설치 이력으로,
+이름 변경 후에는 다시 실행하지 않습니다.
+
 ## 매주 추첨 결과를 입력하는 방법
 
-1. Supabase **Table Editor**에서 스키마를 **`draws_private`**로 선택합니다.
-2. **`draws`** 테이블을 열고 **Insert → Insert row**를 선택합니다.
+1. Supabase **Table Editor**에서 스키마를 **`aalotto_number`**로 선택합니다.
+2. **`lotto`** 테이블을 열고 **Insert → Insert row**를 선택합니다.
 3. 공식 발표를 확인해 아래 값을 입력합니다.
 
 | 입력 칸 | 입력할 값 |
@@ -49,7 +53,7 @@ SQL을 다시 실행해도 기존 등록 자료와 후기 게시판은 유지됩
 ## 접근 권한
 
 - 관리자는 본인의 Supabase 계정으로 로그인해 입력·수정합니다.
-- `draws_private`는 Data API의 공개 스키마에 추가하지 않습니다.
+- `aalotto_number`는 Data API의 공개 스키마에 추가하지 않습니다.
 - 공개 사이트는 읽기 전용 `draw_result_get` 함수만 호출합니다.
 - 공개 `anon`·`authenticated` 역할과 브라우저 키에는 테이블 읽기·쓰기,
   관리 함수 실행 권한을 부여하지 않습니다.

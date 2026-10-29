@@ -12,7 +12,7 @@ import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MIGRATION = ROOT / "migrations/20261029_admin_draw_results.sql"
+MIGRATION = ROOT / "draws.sql"
 CONTAINER = f"number-select-draws-validation-{os.getpid()}"
 PASSED = 0
 
@@ -52,7 +52,7 @@ def insert(draw_no, date="(statement_timestamp() at time zone 'Asia/Seoul')::dat
     values = ",".join(literal(value) for value in (draw_no, *numbers, bonus))
     # The date expression is a fixed local-test SQL expression, never user input.
     return sql(
-        "insert into draws_private.draws(draw_no,n1,n2,n3,n4,n5,n6,bonus_number,draw_date) "
+        "insert into aalotto_number.lotto(draw_no,n1,n2,n3,n4,n5,n6,bonus_number,draw_date) "
         f"values ({values},{date});", error=error,
     )
 
@@ -88,7 +88,7 @@ def main():
         sql((ROOT / "schema.sql").read_text())
         review = json.loads(sql("select public.review_create('로컬점검','후기 보존 점검','관리자 당첨번호 설정과 독립적인 테스트 후기','0123');", "anon"))
         assert "id" in review
-        review_before = sql("select jsonb_agg(to_jsonb(p) order by id) from reviews_private.posts p;")
+        review_before = sql("select jsonb_agg(to_jsonb(p) order by id) from aareview_private.posts p;")
         sql(MIGRATION.read_text())
 
         known = get(1247)
@@ -98,18 +98,18 @@ def main():
 
         for role in ["anon", "authenticated", "service_role"]:
             for command in [
-                "select * from draws_private.draws;",
-                "insert into draws_private.draws(draw_no,draw_date,n1,n2,n3,n4,n5,n6,bonus_number) values(2000,current_date,1,2,3,4,5,6,7);",
-                "update draws_private.draws set n1=1 where draw_no=1247;",
-                "delete from draws_private.draws where draw_no=1247;",
-                "select draws_private.touch_updated_at();",
+                "select * from aalotto_number.lotto;",
+                "insert into aalotto_number.lotto(draw_no,draw_date,n1,n2,n3,n4,n5,n6,bonus_number) values(2000,current_date,1,2,3,4,5,6,7);",
+                "update aalotto_number.lotto set n1=1 where draw_no=1247;",
+                "delete from aalotto_number.lotto where draw_no=1247;",
+                "select aalotto_number.touch_updated_at();",
             ]:
                 sql(command, role, error="permission denied")
         check("anonymous/authenticated/service roles cannot read or mutate private draws or invoke helpers", True)
         sql("select public.draw_result_get(null);", "draws_no_grants", error="permission denied")
         sql("select public.draw_result_get(null);", "service_role", error="permission denied")
         check("PUBLIC default and service-role RPC execute grants are removed", True)
-        check("private table RLS is enabled without public policies", sql("select relrowsecurity from pg_class where oid='draws_private.draws'::regclass;") == "t" and sql("select count(*) from pg_policy where polrelid='draws_private.draws'::regclass;") == "0")
+        check("private table RLS is enabled without public policies", sql("select relrowsecurity from pg_class where oid='aalotto_number.lotto'::regclass;") == "t" and sql("select count(*) from pg_policy where polrelid='aalotto_number.lotto'::regclass;") == "0")
         check("read-only RPC uses a fixed definer search path", sql("select prosecdef and 'search_path=pg_catalog'=any(proconfig) from pg_proc where oid='public.draw_result_get(integer)'::regprocedure;") == "t")
 
         for values in [
@@ -134,24 +134,24 @@ def main():
         check("future KST-date entries are hidden from latest and exact-round queries", get()["draw_no"] == 1248 and get(1249) is None)
         check("RPC date comparison explicitly uses the KST calendar", "Asia/Seoul" in sql("select pg_get_functiondef('public.draw_result_get(integer)'::regprocedure);"))
 
-        before = sql("select jsonb_build_object('created_at',created_at,'updated_at',updated_at) from draws_private.draws where draw_no=1248;")
-        sql("update draws_private.draws set n6=8,bonus_number=9,created_at='2000-01-01' where draw_no=1248;")
-        after = sql("select jsonb_build_object('created_at',created_at,'updated_at',updated_at) from draws_private.draws where draw_no=1248;")
+        before = sql("select jsonb_build_object('created_at',created_at,'updated_at',updated_at) from aalotto_number.lotto where draw_no=1248;")
+        sql("update aalotto_number.lotto set n6=8,bonus_number=9,created_at='2000-01-01' where draw_no=1248;")
+        after = sql("select jsonb_build_object('created_at',created_at,'updated_at',updated_at) from aalotto_number.lotto where draw_no=1248;")
         before, after = json.loads(before), json.loads(after)
         check("owner correction is visible and timestamp updates preserve original creation time", get(1248)["winning_numbers"] == [1, 2, 3, 4, 5, 8] and get(1248)["bonus_number"] == 9 and after["created_at"] == before["created_at"] and after["updated_at"] != before["updated_at"])
 
-        sql("update draws_private.draws set n1=7 where draw_no=1247;")
-        stored_before = sql("select jsonb_agg(to_jsonb(d) order by draw_no) from draws_private.draws d;")
+        sql("update aalotto_number.lotto set n1=7 where draw_no=1247;")
+        stored_before = sql("select jsonb_agg(to_jsonb(d) order by draw_no) from aalotto_number.lotto d;")
         for _ in range(2):
             sql(MIGRATION.read_text())
-            assert sql("select jsonb_agg(to_jsonb(d) order by draw_no) from draws_private.draws d;") == stored_before
+            assert sql("select jsonb_agg(to_jsonb(d) order by draw_no) from aalotto_number.lotto d;") == stored_before
         check("repeated setup preserves every record and administrator correction including seed edits", get(1247)["winning_numbers"][0] == 7)
-        check("draw setup never changes existing review posts or password hashes", sql("select jsonb_agg(to_jsonb(p) order by id) from reviews_private.posts p;") == review_before)
+        check("draw setup never changes existing review posts or password hashes", sql("select jsonb_agg(to_jsonb(p) order by id) from aareview_private.posts p;") == review_before)
         check("existing anonymous review API remains operational", json.loads(sql(f"select public.review_get({literal(review['id'])});", "anon"))["id"] == review["id"])
 
-        sql("delete from draws_private.draws where draw_no=1248;")
+        sql("delete from aalotto_number.lotto where draw_no=1248;")
         check("owner removal immediately changes public latest without exposing future entry", get(1248) is None and get()["draw_no"] == 1247)
-        sql("delete from draws_private.draws;")
+        sql("delete from aalotto_number.lotto;")
         check("empty storage returns null for latest and exact round", get() is None and get(1247) is None)
         print(json.dumps({"passed": PASSED, "failed": 0, "hostedWrites": 0}), flush=True)
     finally:

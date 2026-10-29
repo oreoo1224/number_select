@@ -11,7 +11,7 @@ There is no visitor account signup. Each post has its own edit/delete password.
 2. Open **SQL Editor** and run the complete contents of [schema.sql](schema.sql).
    Re-running it updates the functions and grants without deleting existing posts.
 3. Keep `public` in the Data API's exposed schemas. Do **not** expose
-   `reviews_private`, add direct anonymous table grants or create permissive RLS
+   `aareview_private`, add direct anonymous table grants or create permissive RLS
    policies for those private tables.
 4. Supply the website's configuration with the project's HTTPS URL and its
    **publishable key** (or legacy public **anon key**). These browser keys are
@@ -24,6 +24,12 @@ There is no visitor account signup. Each post has its own edit/delete password.
 Until the real project is connected and this SQL is applied, a static website
 cannot retain shared visitor posts. A local-only browser fallback must not be
 presented as shared persistence.
+
+Existing installations using `reviews_private` / `draws_private.draws` must first
+apply [the administrator-name migration](RENAME_ADMIN_TABLES.md). Current storage
+names are `aareview_private.posts` and `aalotto_number.lotto`. Current setup files
+refuse the old layout rather than creating parallel empty tables. Public RPC
+names and browser settings do not change during the rename.
 
 ## API contract
 
@@ -56,10 +62,16 @@ recovery are not part of this implementation.
 
 ## Upgrade an already connected project to four-digit PINs
 
-Run [migrations/20261027_review_pins.sql](migrations/20261027_review_pins.sql) in
-the project's SQL Editor. It replaces validation and RPC definitions without
-rewriting/deleting existing posts, password hashes or timestamps. Re-running it
-is safe. The unchanged per-post attempt counters and write limits still apply.
+This is a historical upgrade for the old `reviews_private` layout. After the
+name migration, do not re-run this old migration; the current [schema.sql](schema.sql)
+already includes four-digit PIN validation and uses `aareview_private` throughout.
+
+Before the namespace rename, old installations used
+[migrations/20261027_review_pins.sql](migrations/20261027_review_pins.sql) in
+the project's SQL Editor to replace validation/RPC definitions without rewriting
+posts or password hashes. Repeating that historical upgrade is supported only
+while the old namespace still exists. Per-post attempt counters and write limits
+are retained by the current setup and by the name migration.
 
 The browser's public key cannot install SQL functions. Until the project owner
 applies this upgrade and `reviews_config` reports `password_digits: 4`, the new
@@ -160,3 +172,9 @@ Unicode password truncation resistance, committed failed attempts, shared
 concurrent request caps, pagination and migration repeatability. Review the
 reported pass/fail output; static SQL syntax checks alone do not validate the
 password/permission boundaries.
+
+For the combined schema/table rename, run `python3 supabase/tests/rename.py`.
+It creates and removes its own isolated PostgreSQL container and requires Git
+history containing pre-rename commit `09f54c9` to recreate the deployed schema.
+The suite verifies existing data, hashes, timestamps, rate-limit state, object
+identities and permissions, plus partial renames and transactional rollback.

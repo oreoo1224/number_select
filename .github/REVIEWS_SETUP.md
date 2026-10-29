@@ -6,6 +6,10 @@ GitHub Pages만으로는 글을 공용 저장소에 저장할 수 없습니다.
 
 ## 처음 연결할 때
 
+기존 `reviews_private` 저장소가 있는 프로젝트는 먼저
+[`supabase/RENAME_ADMIN_TABLES.md`](../supabase/RENAME_ADMIN_TABLES.md)의 변경 SQL을 적용합니다.
+현재 후기 관리 경로는 **Table Editor → `aareview_private` → `posts`**입니다.
+
 1. https://supabase.com/dashboard 에서 GitHub 계정으로 로그인합니다.
 2. 조직을 만들라는 화면이 나오면 개인용 조직을 만들고 **Free** 요금제를 선택합니다.
 3. **New project**에서 프로젝트 이름을 정합니다. 예: `luckzip-reviews`.
@@ -48,6 +52,10 @@ GitHub Pages만으로는 글을 공용 저장소에 저장할 수 없습니다.
 설정에는 브라우저용 공개 키만 포함하며 관리자 자격 증명은 포함하지 않습니다.
 
 ## 숫자 4자리 비밀번호로 변경
+
+아래는 `reviews_private`라는 옛 이름을 사용하던 때의 변경 이력입니다.
+이름 변경 후에는 이 파일을 다시 실행하지 않습니다. 새 설치와 현재 함수 갱신에는
+4자리 규칙이 포함된 `supabase/schema.sql`을 사용합니다.
 
 기존 프로젝트는 **SQL Editor → New query**에서
 [`supabase/migrations/20261027_review_pins.sql`](../supabase/migrations/20261027_review_pins.sql)

@@ -68,7 +68,7 @@ def main():
         text=True,
     ).strip()
     assert image == "postgres:17-alpine none", "Use the documented isolated validation container."
-    run_sql("truncate reviews_private.posts, reviews_private.request_limits;")
+    run_sql("truncate aareview_private.posts, aareview_private.request_limits;")
 
     password = "0123"
     wrong_password = "9876"
@@ -85,13 +85,13 @@ def main():
     check("missing detail returns null", call("review_get", str(uuid.uuid4())) is None)
     check("authenticated role has the same safe public interface", call("review_get", post_id, role="authenticated") == post)
 
-    stored_hash = run_sql(f"select password_hash from reviews_private.posts where id={literal(post_id)};")
+    stored_hash = run_sql(f"select password_hash from aareview_private.posts where id={literal(post_id)};")
     check("bcrypt hash is stored, never plaintext", stored_hash.startswith("$2") and len(stored_hash) == 60 and stored_hash != password)
-    run_sql("select password_hash from reviews_private.posts;", "anon", expect_error=True)
+    run_sql("select password_hash from aareview_private.posts;", "anon", expect_error=True)
     check("anonymous table reads are denied", True)
-    run_sql("update reviews_private.posts set title='tamper';", "anon", expect_error=True)
+    run_sql("update aareview_private.posts set title='tamper';", "anon", expect_error=True)
     check("anonymous direct writes are denied", True)
-    run_sql("select reviews_private.hash_password('12345678');", "anon", expect_error=True)
+    run_sql("select aareview_private.hash_password('12345678');", "anon", expect_error=True)
     check("private helper execution is denied", True)
     run_sql("do $$begin if not exists(select from pg_roles where rolname='review_no_grants') then create role review_no_grants nologin; end if; end$$;")
     run_sql(f"select public.review_get({literal(post_id)});", "review_no_grants", expect_error=True)
@@ -99,16 +99,16 @@ def main():
 
     wrong = call("review_update", post_id, "누군가", "바뀐 제목", "변조", wrong_password)
     check("different four-digit PIN cannot edit the post", error_code(wrong) == "REVIEW_PASSWORD_INCORRECT")
-    check("failed password attempt commits its counter", run_sql(f"select attempts from reviews_private.request_limits where bucket='password:{post_id}';") == "1")
+    check("failed password attempt commits its counter", run_sql(f"select attempts from aareview_private.request_limits where bucket='password:{post_id}';") == "1")
     check("wrong password leaves post unchanged", call("review_get", post_id) == post)
     updated = call("review_update", post_id, "수정닉네임", "수정한 제목", "수정한 내용", password)
     check("correct password allows update", updated["title"] == "수정한 제목" and updated["content"] == "수정한 내용")
-    check("update keeps existing password hash", run_sql(f"select password_hash from reviews_private.posts where id={literal(post_id)};") == stored_hash)
-    check("successful password check clears attempt bucket", run_sql(f"select count(*) from reviews_private.request_limits where bucket='password:{post_id}';") == "0")
+    check("update keeps existing password hash", run_sql(f"select password_hash from aareview_private.posts where id={literal(post_id)};") == stored_hash)
+    check("successful password check clears attempt bucket", run_sql(f"select count(*) from aareview_private.request_limits where bucket='password:{post_id}';") == "0")
 
     legacy_password = "가" * 30 + "tail-correct"
     legacy_wrong = "가" * 30 + "tail-wrong"
-    legacy_id = run_sql("insert into reviews_private.posts(nickname,title,content,password_hash) values ('이전작성자','기존 글','이전 비밀번호 글',reviews_private.hash_password(" + literal(legacy_password) + ")) returning id;")
+    legacy_id = run_sql("insert into aareview_private.posts(nickname,title,content,password_hash) values ('이전작성자','기존 글','이전 비밀번호 글',aareview_private.hash_password(" + literal(legacy_password) + ")) returning id;")
     check("legacy Unicode password is not truncated at byte72", error_code(call("review_update", legacy_id, "이전작성자", "변경 시도", "내용", legacy_wrong)) == "REVIEW_PASSWORD_INCORRECT")
     check("legacy password still permits an existing-post edit", call("review_update", legacy_id, "이전작성자", "기존 글 수정", "수정 내용", legacy_password)["title"] == "기존 글 수정")
     check("legacy password still permits an existing-post delete", call("review_delete", legacy_id, legacy_password) == {"deleted": True})
@@ -125,37 +125,36 @@ def main():
         ("닉\n네임", "제목", "내용", "1234"),
         (None, "제목", "내용", "1234"),
     ]:
-        run_sql("truncate reviews_private.request_limits;")
+        run_sql("truncate aareview_private.request_limits;")
         assert error_code(call("review_create", name, title, text, secret)) == "REVIEW_INVALID_INPUT"
     check("server validates fields and exact four ASCII digits for new posts", True)
 
-    run_sql("truncate reviews_private.request_limits;")
+    run_sql("truncate aareview_private.request_limits;")
     for _ in range(8):
         assert error_code(call("review_delete", post_id, wrong_password)) == "REVIEW_PASSWORD_INCORRECT"
-    check("eight failures persist across separate requests", run_sql(f"select attempts from reviews_private.request_limits where bucket='password:{post_id}';") == "8")
+    check("eight failures persist across separate requests", run_sql(f"select attempts from aareview_private.request_limits where bucket='password:{post_id}';") == "8")
     check("further password checks are blocked", error_code(call("review_delete", post_id, password)) == "REVIEW_RATE_LIMITED")
     check("rate-limited attempts cannot delete the post", call("review_get", post_id)["id"] == post_id)
-    run_sql(f"update reviews_private.request_limits set window_started_at=clock_timestamp()-interval '16 minutes' where bucket='password:{post_id}';")
+    run_sql(f"update aareview_private.request_limits set window_started_at=clock_timestamp()-interval '16 minutes' where bucket='password:{post_id}';")
     check("expired attempt window permits correct delete", call("review_delete", post_id, password) == {"deleted": True})
     check("deleted post is absent", call("review_get", post_id) is None)
 
-    run_sql("truncate reviews_private.request_limits;")
+    run_sql("truncate aareview_private.request_limits;")
     with ThreadPoolExecutor(max_workers=16) as pool:
         results = list(pool.map(lambda index: call("review_create", "동시테스트", f"후기 {index}", "동시 작성", "0707"), range(16)))
     check("concurrent creates respect shared cap atomically", sum("id" in result for result in results) == 12 and sum(error_code(result) == "REVIEW_RATE_LIMITED" for result in results) == 4)
     page1, page2 = call("reviews_list", 5, 0), call("reviews_list", 5, 5)
     check("pagination returns disjoint pages with consistent total", len(page1["items"]) == len(page2["items"]) == 5 and page1["total"] == page2["total"] == 12 and not ({post["id"] for post in page1["items"]} & {post["id"] for post in page2["items"]}))
     before = call("reviews_list", 20, 0)
-    stored_before = run_sql("select jsonb_agg(to_jsonb(p) order by id) from reviews_private.posts p;")
-    limits_before = run_sql("select jsonb_agg(to_jsonb(r) order by bucket) from reviews_private.request_limits r;")
+    stored_before = run_sql("select jsonb_agg(to_jsonb(p) order by id) from aareview_private.posts p;")
+    limits_before = run_sql("select jsonb_agg(to_jsonb(r) order by bucket) from aareview_private.request_limits r;")
     for _ in range(2):
-        run_sql((ROOT / "migrations/20261027_review_pins.sql").read_text())
-        assert run_sql("select jsonb_agg(to_jsonb(p) order by id) from reviews_private.posts p;") == stored_before
-        assert run_sql("select jsonb_agg(to_jsonb(r) order by bucket) from reviews_private.request_limits r;") == limits_before
-    check("repeating PIN upgrade preserves all post fields, hashes and attempt counters", True)
-    run_sql((ROOT / "schema.sql").read_text())
+        run_sql((ROOT / "schema.sql").read_text())
+        assert run_sql("select jsonb_agg(to_jsonb(p) order by id) from aareview_private.posts p;") == stored_before
+        assert run_sql("select jsonb_agg(to_jsonb(r) order by bucket) from aareview_private.request_limits r;") == limits_before
+    check("repeating current schema preserves all post fields, hashes and attempt counters", True)
     check("re-running migration preserves existing posts", call("reviews_list", 20, 0) == before)
-    check("RLS remains enabled on both private tables", run_sql("select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='reviews_private' and c.relkind='r' and c.relrowsecurity;") == "2")
+    check("RLS remains enabled on both private tables", run_sql("select count(*) from pg_class c join pg_namespace n on n.oid=c.relnamespace where n.nspname='aareview_private' and c.relkind='r' and c.relrowsecurity;") == "2")
     check("all five public RPCs have definer boundary and fixed search path", run_sql("select count(*) from pg_proc p join pg_namespace n on n.oid=p.pronamespace where n.nspname='public' and p.proname in ('reviews_list','review_get','review_create','review_update','review_delete') and p.prosecdef and 'search_path=pg_catalog'=any(p.proconfig);") == "5")
     print(json.dumps({"passed": PASSED, "failed": 0}), flush=True)
 
