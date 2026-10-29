@@ -1,32 +1,33 @@
-# Pending site fixes
+# Site maintenance notes
 
-Recorded on 2026-10-27. The user asked to retain the following two findings for
-later work. They are intentionally not included in the fortune disclaimer change.
+Recorded on 2026-10-27 and initially deferred at the user's request. Both source
+labelling findings below were resolved on 2026-10-29 as part of the user's switch
+to administrator-entered draw results. The original findings remain here as
+historical context; they are no longer pending fixes.
 
-## 1. Distinguish manually entered reference numbers from official results
+## 1. Resolved: distinguish visitor input from registered results
 
-- The `applyManual` click handler replaces `latestDraw.winning_numbers` with user
+- The former `applyManual` click handler replaced `latestDraw.winning_numbers` with user
   input and calls `renderLatestDraw`, preserving the previous official round,
   draw date and bonus number. Arbitrary input can consequently appear to be an
   official winning result.
 - The manual-input notice is assigned to `latestStatus`, but removing its `warn`
   class hides the notice under the current `.latest-status` CSS.
-- A future fix should keep official results separate from `manualDrawNumbers`,
-  identify manual comparison/reference numbers clearly, and avoid attaching
-  unverified official round, date or bonus information to user input.
-- Review settings summaries and generated-result descriptions as well: they
-  currently describe the previous round as automatically applied even when
-  manually entered reference numbers are being used.
-- Verify the manual-input state after lookup failures, including visible source
-  labelling, correct filtering and unchanged official-result data.
+- The visitor override and its handler have now been removed. Home results come
+  from an owner-managed table through a read-only RPC. Visitor-entered comparison
+  numbers remain local to the comparison form and never rewrite home results.
+- Registered, archived and empty states are labelled explicitly. Settings and
+  generated results identify the actual reference round/source; the overlap
+  condition is unavailable when no reference data exists.
 
-## 2. Make the automatic-lookup label match the actual behavior
+## 2. Resolved: make the result-source label match the actual behavior
 
-- The home card's markup contains `직전 회차 자동 적용` even when the previous-round
+- The former home card's markup contained `직전 회차 자동 적용` even when the previous-round
   overlap filter is disabled; the default filter mask is zero. Current home-page
   CSS hides this tag, so this is hidden wording to clean up rather than a
   currently visible incorrect message.
-- Prefer `최근 당첨번호 자동 조회` or equivalent wording when this fix is applied.
+- The label now describes administrator-entered data. There is no automatic
+  network lookup to the lottery provider, and the source note is visible.
 - The previous-round overlap rule affects generation only when its `data-bit=4`
   checkbox is enabled. Do not change filter defaults as part of a label fix.
 

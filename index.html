@@ -42,7 +42,7 @@
     .ball{width:42px;height:42px;border-radius:50%;display:grid;place-items:center;color:#fff;font-weight:900;font-variant-numeric:tabular-nums;box-shadow:inset 0 -4px 0 rgba(0,0,0,.08),0 4px 9px rgba(57,48,79,.08)}
     .mini-ball{width:29px;height:29px;font-size:11px;box-shadow:inset 0 -3px 0 rgba(0,0,0,.07)}
     .b1{background:#d9a51b}.b2{background:#4d87c7}.b3{background:#d85c66}.b4{background:#737986}.b5{background:#55a360}
-    .latest-status{display:none;font-size:12px;color:#736f81;margin:11px 0 0;line-height:1.55}.latest-status.warn{display:block;color:#9a6326}
+    .latest-status{display:none;font-size:12px;color:#736f81;margin:11px 0 0;line-height:1.55}.latest-status.registered{display:block}.latest-status.warn{display:block;color:#9a6326}
     .manual-fallback{display:none;margin-top:13px;border-top:1px dashed #e2d9e9;padding-top:13px}.manual-fallback.show{display:block}
     .manual-fallback label{font-size:13px;font-weight:800;display:block;margin-bottom:7px}.manual-fallback input{width:100%;min-height:44px;border:1px solid #d5ccdf;border-radius:12px;padding:10px 12px;background:#fff;color:var(--ink)}
     .progress{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:18px 0 10px}
@@ -119,6 +119,7 @@
 </style>
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261027-2">
 <script src="/assets/reviews-config.js" defer></script>
+<script src="/assets/draws-api.js?v=20261029-1" defer></script>
 <script src="/assets/reviews-api.js?v=20261027-2" defer></script>
 <script src="/assets/reviews-preview.js?v=20261027-2" defer></script>
 </head>
@@ -133,18 +134,13 @@
   <section id="homeScreen">
   <section class="card latest-card" aria-live="polite" aria-busy="true">
     <div class="row-between">
-      <span class="tag auto">직전 회차 자동 적용</span>
+      <span class="tag">관리자 등록 자료</span>
       <span id="drawRoundBadge" class="latest-meta">확인 중…</span>
     </div>
     <div id="latestTitle" class="latest-title">당첨 회차 확인 중…</div>
     <div id="latestDate" class="latest-meta"></div>
     <div id="latestBalls" class="latest-balls"></div>
     <p id="latestStatus" class="latest-status"></p>
-    <div id="manualFallback" class="manual-fallback">
-      <label for="manualPrevious">직전 회차 번호 직접 입력</label>
-      <input id="manualPrevious" type="text" inputmode="numeric" autocomplete="off" placeholder="예: 9, 18, 24, 38, 43, 44">
-      <div class="step-actions" style="margin-top:9px"><button id="applyManual" type="button" class="secondary">수동 번호 적용</button></div>
-    </div>
   </section>
 
   <div class="home-actions">
@@ -201,8 +197,8 @@
         <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="1,3,5,7,9,20"></span></span>
       </label>
       <label class="rule">
-        <input class="rule-check" id="overlapRule" type="checkbox" data-bit="4">
-        <span><strong>직전 회차와 3개 이상 중복 제외</strong><small class="rule-count">단독 제외 194,130개 · 2.38%</small></span>
+        <input class="rule-check" id="overlapRule" type="checkbox" data-bit="4" disabled aria-describedby="overlapAvailability">
+        <span><strong>최근 등록 회차와 3개 이상 중복 제외</strong><small id="overlapAvailability">관리자 등록 자료 확인 중…</small><small class="rule-count">단독 제외 194,130개 · 2.38%</small></span>
         <span class="example"><span class="example-label">제외 예시</span><span id="overlapExample" class="mini-balls" data-example="9,18,24,27,33,41"></span></span>
       </label>
       <label class="rule">
@@ -290,9 +286,9 @@
 
   <section id="compareSection" class="card" hidden aria-labelledby="compareTitle">
     <h2 id="compareTitle">저장 번호 당첨 확인</h2>
-    <p class="feature-note">비교할 회차의 번호를 조회하거나 직접 입력해 주세요. 저장된 전체 조합을 비교하며, 실제 구매 여부는 확인하지 않습니다.</p>
+    <p class="feature-note">관리자가 등록한 회차의 번호를 조회하거나 비교할 번호를 직접 입력해 주세요. 저장된 전체 조합을 비교하며, 실제 구매 여부는 확인하지 않습니다.</p>
     <label class="check-field">비교할 회차<input id="checkRound" type="number" min="1" step="1" placeholder="예: 1243"></label>
-    <button id="fetchCheckDraw" class="secondary" type="button">회차 번호 조회</button>
+    <button id="fetchCheckDraw" class="secondary" type="button">등록된 회차 조회</button>
     <p id="checkSource" class="feature-note" role="status"></p>
     <div class="check-grid"><label class="check-field check-wide">당첨번호 6개<input id="checkNumbers" type="text" inputmode="decimal" placeholder="예: 1, 7, 14, 22, 35, 41"></label><label class="check-field">보너스 번호<input id="checkBonus" type="number" min="1" max="45" step="1"></label></div>
     <button id="compareSaved" class="primary" type="button">저장 번호와 비교</button>
@@ -329,7 +325,7 @@
     <ol class="conditions-list">
       <li><h3>3개 이상 연속수 제외</h3><p>이어지는 숫자가 3개 이상 들어 있는 조합을 제외합니다. 연속된 숫자 2개는 허용합니다.</p><p class="condition-example">제외 예시: 12, 13, 14, 22, 32, 41</p></li>
       <li><h3>홀수 또는 짝수 5개 이상 제외</h3><p>홀수나 짝수가 한쪽으로 5개 이상 몰린 조합을 제외합니다. 홀수·짝수가 각각 2~4개인 조합이 남습니다.</p><p class="condition-example">제외 예시: 1, 3, 5, 7, 9, 20 — 홀수 5개</p></li>
-      <li><h3>직전 회차와 3개 이상 중복 제외</h3><p>직전 회차의 당첨번호 6개와 3개 이상 겹치는 조합을 제외합니다. 보너스 번호는 비교하지 않으며, 직전 번호를 직접 입력했다면 입력한 번호를 기준으로 합니다.</p><p class="condition-example">예: 직전 당첨번호 중 3개가 들어 있는 조합은 제외</p></li>
+      <li><h3>최근 등록 회차와 3개 이상 중복 제외</h3><p>첫 화면에 표시된 회차의 당첨번호 6개와 3개 이상 겹치는 조합을 제외합니다. 보너스 번호는 비교하지 않습니다. 보관 자료가 표시된 경우에는 해당 회차를 기준으로 하며, 사용할 번호 자료가 없으면 이 조건은 선택할 수 없습니다.</p><p class="condition-example">예: 표시된 당첨번호 중 3개가 들어 있는 조합은 제외</p></li>
       <li><h3>1~22 / 23~45 한쪽에 5개 이상 제외</h3><p>1~22와 23~45 중 어느 한 구간에 5개 이상 몰린 조합을 제외합니다. 두 구간에서 각각 2~4개를 고릅니다.</p><p class="condition-example">제외 예시: 2, 7, 11, 15, 20, 34 — 1~22에서 5개</p></li>
       <li><h3>10단위 구간 하나에 5개 이상 제외</h3><p>1~10, 11~20, 21~30, 31~40, 41~45로 나눴을 때 한 구간에 5개 이상 몰린 조합을 제외합니다.</p><p class="condition-example">제외 예시: 11, 12, 14, 17, 19, 36 — 11~20에서 5개</p></li>
       <li><h3>같은 끝자리 4개 이상 제외</h3><p>일의 자리 숫자가 같은 번호가 4개 이상 들어 있는 조합을 제외합니다.</p><p class="condition-example">제외 예시: 3, 13, 23, 33, 41, 44 — 끝자리 3이 4개</p></li>
@@ -371,8 +367,7 @@ const STANDALONE_EXCLUDED = {1:458420,2:1521520,4:194130,8:1521520,16:36160,32:2
 let maskFrequency = null;
 let statsWorker = null;
 let statsKey = '';
-const OFFICIAL_DRAW_URL = 'https://www.dhlottery.co.kr/lt645/selectPstLt645Info.do';
-// Offline backup from the official results; shown only when automatic lookup fails.
+// Previously verified result, shown as archive data only when our store is unavailable.
 const FALLBACK_DRAW = { draw_no: 1247, draw_date: '2026-10-24', winning_numbers: [8,14,21,22,42,45], bonus_number: 24 };
 const $ = id => document.getElementById(id);
 const fmt = n => n.toLocaleString('ko-KR');
@@ -380,8 +375,8 @@ let historyRows = [];
 let lastRows = [];
 let fortuneRows = [];
 let lastResultDescription = '';
-let latestDraw = {...FALLBACK_DRAW};
-let manualDrawNumbers = null;
+let latestDraw = null;
+let latestSource = 'loading';
 let latestLoadFailed = false;
 let storageReadable = true;
 let memoryOnly = false;
@@ -436,6 +431,12 @@ function combinationStatsFromFreq(activeMask){
 function updateCombinationStats(){
   const activeMask=getActiveMask(), stats=combinationStatsFromFreq(activeMask);
   $('statsTotal').textContent=fmt(TOTAL_COMBINATIONS);
+  if((activeMask&4)&&!latestDraw){
+    $('statsExcluded').textContent='확인 중'; $('statsRemaining').textContent='확인 중'; $('statsRatio').textContent='—';
+    $('statsState').textContent='중복 비교에 사용할 관리자 등록 자료를 확인하고 있습니다.';
+    $('statsProgressBar').style.width='0%';
+    return;
+  }
   if(!stats){
     $('statsExcluded').textContent='계산 중'; $('statsRemaining').textContent='계산 중'; $('statsRatio').textContent='—';
     return;
@@ -513,34 +514,30 @@ function calculateMaskFrequency(prevNumbers){
 }
 
 function validateDraw(d){
-  return d && Number.isInteger(Number(d.draw_no)) && Number(d.draw_no)>0 && /^\d{4}-\d{2}-\d{2}$/.test(String(d.draw_date||'')) &&
-    Array.isArray(d.winning_numbers) && d.winning_numbers.length===6 && d.winning_numbers.every(n=>Number.isInteger(Number(n))&&n>=1&&n<=45) &&
-    new Set(d.winning_numbers.map(Number)).size===6;
+  if(!d||!Number.isInteger(d.draw_no)||d.draw_no<1||!/^\d{4}-\d{2}-\d{2}$/.test(String(d.draw_date||'')))return false;
+  const date=new Date(`${d.draw_date}T00:00:00Z`);
+  return Number.isFinite(date.getTime())&&date.toISOString().slice(0,10)===d.draw_date&&
+    Array.isArray(d.winning_numbers)&&d.winning_numbers.length===6&&d.winning_numbers.every((n,i)=>Number.isInteger(n)&&n>=1&&n<=45&&(!i||n>d.winning_numbers[i-1]))&&
+    Number.isInteger(d.bonus_number)&&d.bonus_number>=1&&d.bonus_number<=45&&!d.winning_numbers.includes(d.bonus_number);
 }
-async function fetchOfficialDraw(round){
+async function fetchRegisteredDraw(round){
   const requestedRound=round===undefined?null:Number(round);
   if(requestedRound!==null&&(!Number.isInteger(requestedRound)||requestedRound<1))throw Error('invalid round');
-  const url=new URL(OFFICIAL_DRAW_URL);
-  if(requestedRound!==null)url.searchParams.set('srchLtEpsd',String(requestedRound));
-  const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),12000);
-  try{
-    const response=await fetch(url.href,{cache:'no-store',credentials:'omit',signal:controller.signal});
-    if(!response.ok)throw Error(`draw HTTP ${response.status}`);
-    const payload=await response.json(),rows=payload?.data?.list;
-    if(!Array.isArray(rows)||!rows.length)throw Error('draw unavailable');
-    const row=requestedRound===null?rows.reduce((latest,item)=>Number(item.ltEpsd)>Number(latest.ltEpsd)?item:latest):rows.find(item=>Number(item.ltEpsd)===requestedRound);
-    if(!row)throw Error('requested draw unavailable');
-    const date=String(row.ltRflYmd||'');
-    if(!/^\d{8}$/.test(date))throw Error('invalid draw date');
-    const data={draw_no:Number(row.ltEpsd),draw_date:`${date.slice(0,4)}-${date.slice(4,6)}-${date.slice(6,8)}`,winning_numbers:[1,2,3,4,5,6].map(n=>Number(row[`tm${n}WnNo`])).sort((a,b)=>a-b),bonus_number:Number(row.bnsWnNo)};
-    const bonus=data.bonus_number;
-    if(!validateDraw(data)||!Number.isInteger(bonus)||bonus<1||bonus>45||data.winning_numbers.includes(bonus))throw Error('invalid draw data');
-    if(requestedRound!==null&&data.draw_no!==requestedRound)throw Error('draw mismatch');
-    return data;
-  }finally{clearTimeout(timer);}
+  if(!window.DrawsAPI?.isConfigured())throw Error('draw store unavailable');
+  const data=requestedRound===null?await window.DrawsAPI.latest():await window.DrawsAPI.get(requestedRound);
+  if(data===null)return null;
+  if(!validateDraw(data)||(requestedRound!==null&&data.draw_no!==requestedRound))throw Error('invalid registered draw');
+  return data;
 }
 function renderLatestDraw(){
   const d = latestDraw;
+  if(!d){
+    $('drawRoundBadge').textContent='등록 대기';
+    $('latestTitle').textContent='등록된 당첨번호가 없습니다.';
+    $('latestDate').textContent=''; $('latestBalls').replaceChildren();
+    $('overlapExample').replaceChildren();
+    return;
+  }
   $('drawRoundBadge').textContent = `${fmt(Number(d.draw_no))}회`;
   $('latestTitle').textContent = `${Number(d.draw_no)}회 당첨번호`;
   $('latestDate').textContent = `${d.draw_date} 추첨`;
@@ -553,45 +550,55 @@ function staleDays(dateStr){
   const then = new Date(`${dateStr}T00:00:00+09:00`);
   return Math.floor((Date.now()-then.getTime())/86400000);
 }
+function previousDrawLabel(){
+  return latestDraw?`${fmt(latestDraw.draw_no)}회 ${latestSource==='archive'?'보관 자료':'관리자 등록 번호'}`:'당첨번호 자료 없음';
+}
+function updatePreviousRuleAvailability(){
+  const available=Boolean(latestDraw);
+  $('overlapRule').disabled=!available;
+  if(!available&&latestSource!=='loading')$('overlapRule').checked=false;
+  $('overlapAvailability').textContent=available?`${previousDrawLabel()} 기준`:latestSource==='loading'?'관리자 등록 자료 확인 중…':'관리자가 당첨번호를 등록하면 사용할 수 있습니다.';
+}
+function requirePreviousDraw(){
+  if((getActiveMask()&4)&&!latestDraw)throw Error('등록된 당첨번호를 확인한 후 중복 제외 조건을 사용해 주세요.');
+}
 async function loadLatestDraw(){
   latestLoadFailed = false;
+  $('latestStatus').classList.add('registered');
+  $('latestStatus').classList.remove('warn');
+  $('latestStatus').textContent='관리자 등록 자료를 확인하고 있습니다.';
   try{
-    const data = await fetchOfficialDraw();
+    const data = await fetchRegisteredDraw();
     latestDraw = data;
-    renderLatestDraw();
-    calculateMaskFrequency(data.winning_numbers);
-    const age = staleDays(data.draw_date);
-    if(age > 10){
-      latestLoadFailed = true;
-      $('latestStatus').textContent = '최신 번호 확인 필요';
+    latestSource=data?'admin':'empty';
+    if(!data){
+      $('latestStatus').textContent='관리자가 추첨 결과를 등록하면 이곳에 표시됩니다.';
+    }else if(staleDays(data.draw_date)>10){
+      $('latestStatus').textContent='관리자 등록 자료 · 최근 회차 갱신 여부를 확인해 주세요.';
       $('latestStatus').classList.add('warn');
-      $('manualFallback').classList.add('show');
-      $('manualPrevious').value = data.winning_numbers.join(', ');
     }else{
-      $('latestStatus').textContent = '';
-      $('latestStatus').classList.remove('warn');
-      $('manualFallback').classList.remove('show');
+      $('latestStatus').textContent='관리자가 직접 등록한 추첨 결과입니다.';
     }
   }catch(e){
     latestLoadFailed = true;
-    latestDraw = {...FALLBACK_DRAW};
-    renderLatestDraw();
-    calculateMaskFrequency(FALLBACK_DRAW.winning_numbers);
-    $('latestStatus').textContent = '자동 조회 실패 · 표시된 번호는 보관 자료입니다. 최신 회차를 확인해 직접 입력해 주세요.';
+    latestDraw = {...FALLBACK_DRAW,winning_numbers:[...FALLBACK_DRAW.winning_numbers]};
+    latestSource='archive';
+    $('latestStatus').textContent='보관 자료 · 관리자 등록 자료를 불러오지 못했습니다. 표시된 회차와 추첨일을 확인해 주세요.';
     $('latestStatus').classList.add('warn');
-    $('manualFallback').classList.add('show');
-    $('manualPrevious').value = FALLBACK_DRAW.winning_numbers.join(', ');
   }finally{
+    renderLatestDraw();
+    updatePreviousRuleAvailability();
+    calculateMaskFrequency(currentPreviousNumbers());
+    updateRuleUI();
     document.querySelector('.latest-card').setAttribute('aria-busy','false');
   }
-  updateReviewBox();
 }
 function parseSixNumbers(raw){
   const arr = raw.trim().split(/[\s,]+/).filter(Boolean).map(Number).sort((a,b)=>a-b);
   if(arr.length!==6 || arr.some(n=>!Number.isInteger(n)||n<1||n>45) || new Set(arr).size!==6) throw new Error('1~45의 서로 다른 숫자 6개를 입력해 주세요.');
   return arr;
 }
-function currentPreviousNumbers(){ return manualDrawNumbers || latestDraw.winning_numbers.map(Number); }
+function currentPreviousNumbers(){ return latestDraw?[...latestDraw.winning_numbers]:[]; }
 
 function failureMask(a, prev){
   let mask=0, odd=0, low=0, sum=0, overlap=0, run=1;
@@ -736,7 +743,7 @@ async function copyExportContent(){
   try{if(!navigator.clipboard?.writeText)throw new Error();await navigator.clipboard.writeText(el.value);$('exportStatus').textContent='내용을 복사했습니다. 메모 앱 등에 붙여 넣어 저장해 주세요.';}
   catch(_){el.focus();el.select();el.setSelectionRange(0,el.value.length);let copied=false;try{copied=document.execCommand('copy');}catch(_){}$('exportStatus').textContent=copied?'내용을 복사했습니다. 메모 앱 등에 붙여 넣어 저장해 주세요.':'내용을 선택했습니다. 길게 누른 뒤 복사하여 저장해 주세요.';}
 }
-const RULE_NAMES={1:'3개 이상 연속수 제외',2:'홀수 또는 짝수 5개 이상 제외',4:'직전 회차와 3개 이상 중복 제외',8:'1~22 / 23~45 한쪽에 5개 이상 제외',16:'10단위 구간 하나에 5개 이상 제외',32:'같은 끝자리 4개 이상 제외',64:'6개 전체가 같은 간격인 조합 제외',128:'합계 89~187만 허용'};
+const RULE_NAMES={1:'3개 이상 연속수 제외',2:'홀수 또는 짝수 5개 이상 제외',4:'최근 등록 회차와 3개 이상 중복 제외',8:'1~22 / 23~45 한쪽에 5개 이상 제외',16:'10단위 구간 하나에 5개 이상 제외',32:'같은 끝자리 4개 이상 제외',64:'6개 전체가 같은 간격인 조합 제외',128:'합계 89~187만 허용'};
 function bitCount(mask){let n=0;for(;mask;mask&=mask-1)n++;return n;}
 async function minimumRulesToRelease(custom,activeMask,previous){
   if(!custom.include.length||!activeMask)return 0;
@@ -758,6 +765,7 @@ function settingsSignature(){return JSON.stringify([getActiveMask(),$('includeEn
 async function proceedToStep2(){
   const btn=$('toStep2');if(btn.disabled)return;btn.disabled=true;btn.textContent='조건 확인 중…';
   try{
+    requirePreviousDraw();
     const custom=customNumbers(true),overlap=custom.exclude.filter(n=>custom.include.includes(n));
     custom.exclude=custom.exclude.filter(n=>!custom.include.includes(n));
     const signature=settingsSignature();
@@ -785,7 +793,7 @@ function updateRuleUI(){
 function updateReviewBox(){
   if(!$('reviewBox')) return;
   const count=activeRuleCount(), games=selectedGameCount(), overlap=Boolean(getActiveMask()&4);
-  const roundText=overlap?`${fmt(Number(latestDraw.draw_no))}회 직전 번호 자동 적용`:'직전 회차 중복 조건 미사용';
+  const roundText=overlap?`${previousDrawLabel()} 기준 중복 제외`:'등록 회차 중복 조건 미사용';
   $('reviewBox').textContent=`조건 ${count}개 · ${games}개 생성 · ${roundText}${customSummary()?' · '+customSummary():''}`;
 }
 function setStep(step){
@@ -831,6 +839,7 @@ function showFortuneNumbers(){
 function runDraw(){
   try{
     $('step2Error').textContent=''; $('resultError').textContent='';
+    requirePreviousDraw();
     const activeMask=getActiveMask(), count=selectedGameCount();
     refreshHistory();
     if(historyRows.length+count>1000) throw new Error(`누적 기록에 ${1000-historyRows.length}개만 더 저장할 수 있습니다. 생성 수를 줄여 주세요.`);
@@ -838,7 +847,7 @@ function runDraw(){
     lastRows=generate(count,prev,historyRows,activeMask);
     const first=historyRows.length+1; historyRows.push(...lastRows); renderHistory();
     $('results').innerHTML=lastRows.map((r,i)=>gameMarkup(r,first+i)).join('');
-    const roundInfo=(activeMask&4)?` · ${fmt(Number(latestDraw.draw_no))}회 직전 번호 적용`:'';
+    const roundInfo=(activeMask&4)?` · ${previousDrawLabel()} 기준 중복 제외`:'';
     $('resultSub').textContent=`조건 ${activeRuleCount()}개 · ${count}개 생성${roundInfo}${customSummary()?" · "+customSummary():""}`;
     lastResultDescription=$('resultSub').textContent;persistHistory();
     saveSettings(); showResults(); toast(`${count}개 생성 완료`);
@@ -854,7 +863,7 @@ $('brandHome').addEventListener('click',()=>setStep(0));
 $('lookupFortune').addEventListener('click',showFortuneNumbers);
 ruleChecks().forEach(el=>el.addEventListener('change',updateRuleUI));
 document.querySelectorAll('input[name="gameCount"]').forEach(el=>el.addEventListener('change',()=>{saveSettings();updateReviewBox();}));
-$('selectAll').addEventListener('click',()=>{ruleChecks().forEach(el=>el.checked=true);updateRuleUI();});
+$('selectAll').addEventListener('click',()=>{ruleChecks().forEach(el=>{if(!el.disabled)el.checked=true;});updateRuleUI();});
 $('clearRules').addEventListener('click',()=>{ruleChecks().forEach(el=>el.checked=false);updateRuleUI();});
 $('toStep2').addEventListener('click',proceedToStep2);
 $('conflictClose').addEventListener('click',acceptReleasedRules);
@@ -878,10 +887,6 @@ $('editStep1').addEventListener('click',()=>setStep(1));
 $('draw').addEventListener('click',runDraw);
 $('drawAgain').addEventListener('click',runDraw);
 $('editSettings').addEventListener('click',()=>setStep(1));
-$('applyManual').addEventListener('click',()=>{
-  try{ manualDrawNumbers=parseSixNumbers($('manualPrevious').value); latestDraw={...latestDraw,winning_numbers:[...manualDrawNumbers]}; renderLatestDraw(); calculateMaskFrequency(manualDrawNumbers); $('latestStatus').textContent='수동 입력한 직전 회차 번호를 적용하고 있습니다.'; $('latestStatus').classList.remove('warn'); toast('수동 번호를 적용했습니다.'); updateReviewBox(); }
-  catch(e){ $('latestStatus').textContent=e.message; $('latestStatus').classList.add('warn'); }
-});
 $('save').addEventListener('click',()=>{
   if(!lastRows.length) return; const lines=[`행운설계소 결과 · ${lastRows.length}개`,lastResultDescription||'저장된 추첨 결과',...lastRows.map((r,i)=>`${i+1}. ${r.join(', ')}`)]; downloadFile('행운설계소-결과.txt','\ufeff'+lines.join('\n'),'text/plain;charset=utf-8');
 });
@@ -892,11 +897,13 @@ $('clearHistory').addEventListener('click',()=>{
 
 renderExampleBalls();
 loadSettings();
+updatePreviousRuleAvailability();
 updateRuleUI();
 refreshHistory();
 renderHistory();
 if(!memoryOnly)$('storageStatus').textContent='같은 브라우저에서 누적 기록을 자동 복원합니다.';
-loadLatestDraw();
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadLatestDraw,{once:true});
+else loadLatestDraw();
 </script>
 <script>
 'use strict';
@@ -948,19 +955,23 @@ async function copySiteLink(){
 }
 let checkRequest=0,checkDrawLabel='직접 입력한 번호';
 function invalidateComparison(){ $('comparisonOutput').textContent=''; }
-function openComparison(){showResults();$('compareSection').hidden=false;if(!$('checkRound').value)$('checkRound').value=String(latestDraw.draw_no);$('compareSection').scrollIntoView({behavior:'smooth',block:'start'});}
+function openComparison(){showResults();$('compareSection').hidden=false;if(!$('checkRound').value&&latestDraw)$('checkRound').value=String(latestDraw.draw_no);$('compareSection').scrollIntoView({behavior:'smooth',block:'start'});}
 async function fetchComparisonDraw(){
   const round=Number($('checkRound').value);if(!Number.isInteger(round)||round<1){$('checkError').textContent='올바른 회차를 입력해 주세요.';return;}
-  const id=++checkRequest;$('checkError').textContent='';$('checkSource').textContent='회차 번호 조회 중…';$('fetchCheckDraw').disabled=true;
+  const id=++checkRequest;$('checkError').textContent='';$('checkSource').textContent='관리자 등록 회차 조회 중…';$('fetchCheckDraw').disabled=true;
   invalidateComparison();$('checkNumbers').value='';$('checkBonus').value='';
   try{
-    const data=await fetchOfficialDraw(round);
-    const bonus=Number(data.bonus_number),numbers=data.winning_numbers?.map(Number);
-    if(!validateDraw(data)||Number(data.draw_no)!==round||!Number.isInteger(bonus)||bonus<1||bonus>45||numbers.includes(bonus))throw Error();
+    const data=await fetchRegisteredDraw(round);
     if(id!==checkRequest)return;
+    if(!data){
+      $('checkSource').textContent=`${round}회 자료가 아직 등록되지 않았습니다.`;
+      $('checkError').textContent='비교할 당첨번호와 보너스 번호를 직접 입력해 주세요.';
+      return;
+    }
+    const bonus=data.bonus_number,numbers=data.winning_numbers;
     $('checkNumbers').value=numbers.join(', ');$('checkBonus').value=String(bonus);checkDrawLabel=`${round}회 (${data.draw_date})`;
-    $('checkSource').textContent=`${checkDrawLabel} · 동행복권 조회 결과. 실제 구매 복권과 함께 확인해 주세요.`;
-  }catch(_){if(id===checkRequest){$('checkSource').textContent='조회하지 못했습니다. 공식 결과를 확인해 직접 입력해 주세요.';$('checkError').textContent='미발표 회차이거나 번호 조회가 제한된 상태입니다.';}}
+    $('checkSource').textContent=`${checkDrawLabel} · 관리자 등록 자료. 실제 구매 복권과 함께 확인해 주세요.`;
+  }catch(_){if(id===checkRequest){$('checkSource').textContent='관리자 등록 자료를 불러오지 못했습니다.';$('checkError').textContent='비교할 번호를 직접 입력하거나 잠시 후 다시 조회해 주세요.';}}
   finally{if(id===checkRequest)$('fetchCheckDraw').disabled=false;}
 }
 function matchRank(row,numbers,bonus){
