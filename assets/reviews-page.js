@@ -125,8 +125,8 @@
     formMode = post ? 'edit' : 'create';
     creationReady = false;
     $('reviewFormTitle').textContent = post ? '후기 수정' : '후기 쓰기';
-    $('reviewPasswordLabel').textContent = post ? '작성할 때 설정한 비밀번호' : '작성 비밀번호';
-    $('reviewPasswordLimit').textContent = post ? '작성 시 설정한 비밀번호' : '숫자 4자리';
+    $('reviewPasswordLabel').textContent = '작성 비밀번호';
+    $('reviewPasswordLimit').textContent = post ? '기존 비밀번호' : '숫자 4자리';
     $('reviewPassword').autocomplete = post ? 'current-password' : 'new-password';
     $('reviewPassword').minLength = 4;
     $('reviewPassword').maxLength = post ? 128 : 4;
@@ -134,7 +134,9 @@
     if (post) $('reviewPassword').removeAttribute('pattern');
     else $('reviewPassword').pattern = '[0-9]{4}';
     $('reviewPassword').placeholder = post ? '이 글의 작성 비밀번호' : '숫자 4자리';
-    $('reviewPasswordHelp').textContent = post ? '이전에 긴 비밀번호로 작성한 글은 기존 비밀번호를 그대로 입력해 주세요.' : '수정·삭제할 때 사용할 숫자 4자리를 입력해 주세요. 비밀번호는 공개되지 않습니다.';
+    $('reviewPasswordHelp').textContent = post ? '이전에 긴 비밀번호로 작성한 글은 기존 비밀번호를 그대로 입력해 주세요.' : '';
+    $('reviewPasswordHelp').hidden = !post;
+    $('reviewPassword').setAttribute('aria-describedby',post ? 'reviewFormNote reviewPasswordHelp' : 'reviewFormNote');
     $('reviewFormNote').textContent = post ? '이 글을 수정하려면 작성할 때 설정한 비밀번호가 필요합니다. 비밀번호는 변경되지 않습니다.' : '작성 비밀번호는 이 글을 수정하거나 삭제할 때 필요합니다.';
     $('reviewNickname').value = post?.nickname || '';
     $('reviewContent').value = post?.content || '';
