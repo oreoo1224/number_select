@@ -54,7 +54,9 @@
         !Array.isArray(value.items)) throw fail('FORTUNE_INVALID_RESPONSE');
     const selectedSigns = requestedSign === null ? signs : [requestedSign];
     const expectedCount = selectedSigns.length*5;
-    if (value.items.length !== 0 && value.items.length !== expectedCount) throw fail('FORTUNE_INVALID_RESPONSE');
+    // A date may be populated one zodiac at a time. Each dialog still requires
+    // its complete five-year cohort; other signs remain in the preparation state.
+    if (value.items.length > expectedCount) throw fail('FORTUNE_INVALID_RESPONSE');
     const seen = new Set();
     const items = value.items.map(item => {
       if (!item || typeof item !== 'object' || Array.isArray(item)) throw fail('FORTUNE_INVALID_RESPONSE');
