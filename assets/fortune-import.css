@@ -1,0 +1,35 @@
+:root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#242033;background:#faf9fd;line-height:1.75;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;padding:24px 20px 44px}
+header,main{max-width:760px;margin-inline:auto}
+.brand{display:inline-flex;align-items:center;gap:9px;color:#7357f6;font-size:18px;font-weight:800;text-decoration:none}
+.brand img{border-radius:9px}
+main{margin-top:36px}
+h1{font-size:30px;line-height:1.4;letter-spacing:-.9px;margin:0 0 14px}
+h2{font-size:19px;line-height:1.5;margin:0 0 12px;letter-spacing:-.4px}
+p{margin:10px 0}
+.eyebrow{font-size:12px;color:#8061d4;font-weight:750;margin:0 0 6px}
+.lead{font-size:15px;color:#736a80;margin-bottom:24px;word-break:keep-all}
+.card{background:#fff;border:1px solid #e6e0ed;border-radius:19px;padding:25px;margin:20px 0}
+.help{font-size:13px;color:#85798d;word-break:keep-all}
+.file-label{display:block;font-size:14px;font-weight:750;margin:20px 0 8px}
+input,button,a{font:inherit;-webkit-tap-highlight-color:transparent}
+input[type=file]{display:block;width:100%;max-width:100%;padding:10px;border:1px solid #e3dbef;border-radius:11px;background:#faf8ff;font-size:14px}
+input[type=file]::file-selector-button{margin-right:12px;padding:8px 13px;border:0;border-radius:8px;background:#eee8fc;color:#6244be;cursor:pointer;font:inherit;font-weight:700}
+.selected-files{padding:0;margin:18px 0;list-style:none}
+.selected-files li{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid #eee9f4;font-size:13px;overflow-wrap:anywhere}
+.selected-files li>span{min-width:0}
+.selected-files button{flex-shrink:0;min-width:44px;min-height:40px;padding:7px 10px;border:1px solid #e9e1f2;border-radius:8px;background:#fff;color:#887496;font-size:12px;cursor:pointer}
+.actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;flex-wrap:wrap;margin-top:20px}
+.primary,.secondary{display:inline-flex;align-items:center;justify-content:center;min-height:46px;padding:10px 17px;border-radius:11px;text-decoration:none;font-size:14px;font-weight:750;cursor:pointer;text-align:center}
+.primary{background:#7357f6;border:1px solid #7357f6;color:#fff}
+.secondary{background:#faf8ff;border:1px solid #e1d7ef;color:#79658d}
+button:disabled{opacity:.5;cursor:default}
+.downloads{justify-content:flex-start}
+.error{padding:13px 15px;border:1px solid #efd6df;border-radius:10px;background:#fff8fa;color:#a1465f;font-size:14px;word-break:keep-all;overflow-wrap:anywhere}
+.result{border-color:#cbbcee}
+.instructions{padding:14px 2px 0;font-size:14px;color:#73667f;word-break:keep-all}
+code{font-family:ui-monospace,monospace;font-size:.92em;overflow-wrap:anywhere}
+[hidden]{display:none!important}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:3px solid #9a7cf6;outline-offset:4px}
+@media(max-width:600px){body{padding:18px 14px 32px}main{margin-top:28px}h1{font-size:26px}.card{padding:20px 17px}.lead{font-size:14px}.actions>*{flex:1}.downloads>*{flex-basis:100%}.primary,.secondary{padding-inline:10px}}
