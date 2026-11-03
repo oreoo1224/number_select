@@ -14,8 +14,6 @@
 
 새 CSV를 변환할 때:
 
-브라우저에서는 [운세 자료 변환](https://luckzip.com/tools/fortune-import.html)에서 원본 ZIP을 선택한 뒤 CSV를 저장합니다. 파일은 기기 안에서만 처리됩니다.
-
 ```sh
 python3 scripts/prepare-fortunes.py --output /tmp/fortunes-import 원본1.zip 원본2.zip
 ```
