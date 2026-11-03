@@ -123,6 +123,7 @@
     .horoscope-card:focus-visible{outline:3px solid #7659f4;outline-offset:4px}
     .horoscope-card .fortune-link{display:inline-flex;align-items:center;text-decoration:underline}
     .horoscope-badge{position:absolute;right:20px;top:45px;display:inline-flex;align-items:center;justify-content:center;border-radius:99px;background:#f0eaff;color:#7852dc;padding:5px 10px;font-size:12px;font-weight:750}
+    [data-fortune-date]{white-space:nowrap;font-variant-numeric:tabular-nums}
     .hero-fortune-link{display:none}
     @media(min-width:1100px){
       .home-extras>.fortune-card{min-height:156px;padding:23px 20px}
@@ -148,6 +149,7 @@
     }
 </style>
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
+<script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261029-1" defer></script>
 <script src="/assets/reviews-api.js?v=20261027-2" defer></script>
@@ -159,7 +161,7 @@
   <header class="hero" id="brandHeader">
     <button id="openHelp" class="help-button" type="button" aria-label="이용 안내 열기" title="이용 안내"><span aria-hidden="true">?</span></button>
     <button class="brandline" id="brandHome" type="button" aria-label="행운설계소 첫 화면으로 이동"><img class="brand-icon" src="/assets/logo-96.webp" width="44" height="44" alt="" decoding="async"><span>행운설계소</span></button>
-    <div id="homeIntro" class="home-intro"><div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div><h1>나만의 조합,<br><span>새로운 행운.</span></h1><a class="hero-fortune-link" href="/fortunes.html" aria-label="오늘의 운세로 이동"><span class="hero-fortune-kicker">12띠</span><span class="hero-fortune-label">오늘의<br>운세</span></a><p>원하는 조건으로 만드는 6개의 숫자</p></div>
+    <div id="homeIntro" class="home-intro"><div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div><h1>나만의 조합,<br><span>새로운 행운.</span></h1><a class="hero-fortune-link" href="/fortunes.html" aria-label="오늘의 운세로 이동" aria-describedby="mobileFortuneDate"><time id="mobileFortuneDate" class="hero-fortune-kicker" data-fortune-date></time><span class="hero-fortune-label">오늘의<br>운세</span></a><p>원하는 조건으로 만드는 6개의 숫자</p></div>
   </header>
   <section id="homeScreen">
   <section class="card latest-card" aria-live="polite" aria-busy="true">
@@ -320,10 +322,10 @@
   </section>
 </main>
 <aside class="home-extras" aria-label="오늘의 운세와 행운번호">
-  <a class="card fortune-card horoscope-card" href="/fortunes.html" aria-labelledby="horoscopeTitle">
+  <a class="card fortune-card horoscope-card" href="/fortunes.html" aria-labelledby="horoscopeTitle" aria-describedby="homeFortuneDate">
     <h2 id="horoscopeTitle">오늘의 운세</h2>
     <span class="fortune-link">운세 보기 →</span>
-    <span class="horoscope-badge" aria-hidden="true">12띠</span>
+    <time id="homeFortuneDate" class="horoscope-badge" data-fortune-date></time>
   </a>
   <section class="card fortune-card" aria-labelledby="fortuneTitle">
     <span class="fortune-decoration" aria-hidden="true">♧</span><h2 id="fortuneTitle">오늘의 행운번호</h2>
