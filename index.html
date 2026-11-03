@@ -116,6 +116,15 @@
 .help-dialog.conditions-dialog{width:min(620px,calc(100% - 28px));padding:0;overscroll-behavior:contain}.conditions-dialog .modal-heading{position:sticky;top:0;z-index:1;margin:0;padding:20px 24px;background:#fff;border-bottom:1px solid #eee8f6}.conditions-dialog .modal-heading h2{font-size:20px;line-height:1.4}.conditions-dialog-body{padding:20px 24px 24px}.conditions-intro,.conditions-note{margin:0;color:#6c6379;font-size:14px;line-height:1.75}.conditions-list{margin:20px 0;padding-left:25px}.conditions-list li{padding-left:4px;margin-bottom:20px}.conditions-list li::marker{color:#7659f4;font-weight:800}.conditions-list h3{margin:0 0 7px;font-size:15px;line-height:1.6;word-break:keep-all}.conditions-list p{margin:0;color:#625a70;font-size:14px;line-height:1.75;word-break:keep-all}.conditions-list .condition-example{margin-top:6px;color:#82778f;font-size:13px}.conditions-note{padding:14px;border:1px solid #e8e0fa;border-radius:13px;background:#f8f5ff}.conditions-dialog-body>.primary{width:100%;margin-top:20px}@media(max-width:700px){.conditions-dialog .modal-heading{padding:16px 18px}.conditions-dialog-body{padding:18px}.conditions-dialog .modal-heading h2{font-size:18px}}
 @media(max-width:700px){#step1{padding:18px 14px}.step .condition-title{font-size:22px;margin-bottom:18px}.custom-numbers{grid-template-columns:1fr;gap:15px;padding:16px}.custom-numbers h3{font-size:17px}.additional-conditions>summary{padding:16px 12px;font-size:17px}.optional-tag{font-size:10px;padding:4px 6px;margin-left:2px}.condition-summary{font-size:11px;gap:6px}.additional-content{padding:0 12px 14px}.additional-content .rule-list{grid-template-columns:1fr}.additional-content .rule{min-height:48px;padding:10px}.additional-content .rule strong{font-size:13px}.additional-content .combo-stats{padding:12px}.combo-stat-grid{grid-template-columns:1fr 1fr;gap:8px}.combo-stat-value{font-size:18px}#toStep2{flex:1}.combo-stats-title{font-size:13px}.help-dialog{padding:20px}}
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.disclosure-arrow,.custom-label input:after{transition:none}}
+    .home-extras{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;align-items:start}
+    .home-extras>.card{min-width:0;margin:0}
+    .horoscope-card{display:block;color:inherit;text-decoration:none}
+    .horoscope-card:hover{border-color:#bca5ef;box-shadow:0 8px 24px #7357f610}
+    .horoscope-card:focus-visible{outline:3px solid #7659f4;outline-offset:4px}
+    .horoscope-card .fortune-link{display:inline-flex;align-items:center;text-decoration:underline}
+    .horoscope-badge{position:absolute;right:20px;top:45px;display:inline-flex;align-items:center;justify-content:center;border-radius:99px;background:#f0eaff;color:#7852dc;padding:5px 10px;font-size:12px;font-weight:750}
+    @media(min-width:701px){.is-home .home-extras #fortuneResults .ball{width:32px;height:32px;font-size:15px}.is-home .home-extras #fortuneResults .latest-balls{gap:6px;margin-top:0}.is-home .home-extras #fortuneResults .game-index{width:20px}}
+    @media(max-width:700px){.home-extras{grid-template-columns:1fr;gap:14px}}
 </style>
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261027-2">
 <script src="/assets/reviews-config.js" defer></script>
@@ -148,6 +157,7 @@
     <button id="openResults" class="secondary home-results" type="button">결과 확인</button><button id="openCompare" class="text-btn" type="button">저장 번호 당첨 확인</button>
     <button id="openConditionsGuide" class="text-btn home-conditions-guide" type="button" aria-haspopup="dialog" aria-controls="conditionsGuideDialog">8가지 조건 알아보기</button>
   </div>
+  <div class="home-extras">
   <section class="card fortune-card" aria-labelledby="fortuneTitle">
     <span class="fortune-decoration" aria-hidden="true">♧</span><h2 id="fortuneTitle">오늘의 행운번호</h2>
     <button id="lookupFortune" class="text-btn fortune-link" type="button" aria-controls="fortuneResults">조회하기 →</button>
@@ -155,6 +165,12 @@
     <p id="fortuneDisclaimer" class="feature-note" hidden>무작위로 생성한 번호이며, 당첨을 보장하지 않습니다.</p>
     <button id="shareFortuneImage" class="text-btn" type="button" hidden>행운번호 이미지 공유</button>
   </section>
+  <a class="card fortune-card horoscope-card" href="/fortunes.html" aria-labelledby="horoscopeTitle">
+    <h2 id="horoscopeTitle">오늘의 운세</h2>
+    <span class="fortune-link">운세 보기 →</span>
+    <span class="horoscope-badge" aria-hidden="true">12띠</span>
+  </a>
+  </div>
   </section>
   <div id="viewNav" class="view-nav" hidden><button id="goHome" class="text-btn" type="button">← 처음으로</button></div>
   <nav id="progressNav" class="progress" aria-label="진행 단계" hidden>
