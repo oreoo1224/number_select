@@ -12,6 +12,8 @@ p{margin:10px 0}
 .lead{font-size:15px;color:#736a80;margin-bottom:24px;word-break:keep-all}
 .card{background:#fff;border:1px solid #e6e0ed;border-radius:19px;padding:25px;margin:20px 0}
 .help{font-size:13px;color:#85798d;word-break:keep-all}
+.help.is-complete{padding:11px 13px;border-radius:10px;background:#f0eaff;color:#6244be;font-weight:750}
+.result,.error{scroll-margin-top:16px}
 .file-label{display:block;font-size:14px;font-weight:750;margin:20px 0 8px}
 input,button,a{font:inherit;-webkit-tap-highlight-color:transparent}
 input[type=file]{display:block;width:100%;max-width:100%;padding:10px;border:1px solid #e3dbef;border-radius:11px;background:#faf8ff;font-size:14px}

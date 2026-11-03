@@ -8,9 +8,9 @@
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'">
   <title>운세 자료 변환 | 행운설계소</title>
   <link rel="icon" href="/assets/favicon-48.png" type="image/png">
-  <link rel="stylesheet" href="/assets/fortune-import.css?v=20261103-1">
+  <link rel="stylesheet" href="/assets/fortune-import.css?v=20261103-2">
   <script defer src="/assets/vendor/jszip-3.10.1.min.js"></script>
-  <script defer src="/assets/fortune-import.js?v=20261103-1"></script>
+  <script defer src="/assets/fortune-import.js?v=20261103-2"></script>
 </head>
 <body>
   <header><a class="brand" href="/"><img src="/assets/logo-96.webp" width="36" height="36" alt="">행운설계소</a></header>
@@ -24,9 +24,9 @@
       <label class="file-label" for="importFiles">ZIP·CSV 파일 추가</label>
       <input id="importFiles" type="file" accept=".zip,.csv,application/zip,application/x-zip-compressed,text/csv" multiple aria-describedby="fileHelp">
       <ul id="selectedFiles" class="selected-files" aria-label="선택한 파일"></ul>
-      <div class="actions"><button id="clearFiles" class="secondary" type="button" disabled>선택 비우기</button><button id="convertFiles" class="primary" type="button" disabled>검사하고 CSV 만들기</button></div>
       <p id="importStatus" class="help" role="status" aria-live="polite">원본 파일을 선택해 주세요.</p>
-      <p id="importError" class="error" role="alert" hidden></p>
+      <p id="importError" class="error" role="alert" tabindex="-1" hidden></p>
+      <div class="actions"><button id="clearFiles" class="secondary" type="button" disabled>선택 비우기</button><button id="convertFiles" class="primary" type="button" disabled>검사하고 CSV 만들기</button></div>
     </section>
     <section id="importResult" class="card result" aria-labelledby="resultTitle" hidden>
       <h2 id="resultTitle">2. 등록용 CSV 저장</h2>

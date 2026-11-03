@@ -11,11 +11,50 @@
   let busy = false;
   let downloadURL = null;
   let shareFile = null;
+  let completed = false;
 
   function problem(message) { return new Error(message); }
   function errorMessage(message) {
     $('importError').textContent = message;
     $('importError').hidden = !message;
+    if (message) reveal($('importError'), $('importError'));
+  }
+
+  function reveal(element, focusTarget) {
+    requestAnimationFrame(() => {
+      if (element.hidden) return;
+      element.scrollIntoView({behavior:'auto',block:'start'});
+      if (focusTarget) focusTarget.focus({preventScroll:true});
+    });
+  }
+
+  function readFile(file) {
+    return new Promise((resolve, reject) => {
+      let reader = null;
+      let settled = false;
+      const finish = (callback, value) => {
+        if (settled) return;
+        settled = true;
+        clearTimeout(timer);
+        callback(value);
+      };
+      const timer = setTimeout(() => {
+        finish(reject, problem('파일을 읽는 데 시간이 오래 걸립니다. 기기의 다운로드 폴더에 저장한 뒤 다시 선택해 주세요.'));
+        if (reader && reader.readyState === FileReader.LOADING) reader.abort();
+      }, 20000);
+      const unreadable = () => finish(reject, problem('파일을 읽지 못했습니다. 기기의 다운로드 폴더에 저장한 뒤 다시 선택해 주세요.'));
+      try {
+        if (typeof file.arrayBuffer === 'function') {
+          Promise.resolve(file.arrayBuffer()).then(value => finish(resolve, value), unreadable);
+        } else {
+          reader = new FileReader();
+          reader.onload = () => finish(resolve, reader.result);
+          reader.onerror = unreadable;
+          reader.onabort = unreadable;
+          reader.readAsArrayBuffer(file);
+        }
+      } catch (_) { unreadable(); }
+    });
   }
 
   function parseCSV(input, label) {
@@ -103,7 +142,7 @@
     for (const file of selected) {
       if (file.size > maxFileBytes) throw problem(`${file.name}: 파일 하나의 크기는 40MB 이하여야 합니다.`);
       report(`${file.name} 확인 중…`);
-      const bytes = new Uint8Array(await file.arrayBuffer());
+      const bytes = new Uint8Array(await readFile(file));
       if (/\.csv$/i.test(file.name)) {
         contentsBytes += bytes.byteLength;
         if (contentsBytes > maxContentsBytes) throw problem('압축을 푼 전체 CSV 용량은 64MB 이하여야 합니다. 기간을 나눠 선택해 주세요.');
@@ -152,6 +191,8 @@
     if (downloadURL) URL.revokeObjectURL(downloadURL);
     downloadURL = null;
     shareFile = null;
+    completed = false;
+    $('importStatus').classList.remove('is-complete');
     $('importResult').hidden = true;
     $('downloadCsv').hidden = true;
     $('downloadCsv').removeAttribute('href');
@@ -172,6 +213,7 @@
       remove.disabled = busy;
       remove.addEventListener('click', () => {
         files = files.filter(candidate => candidate !== file);
+        $('importFiles').value = '';
         resetOutput();
         errorMessage('');
         renderFiles();
@@ -183,12 +225,11 @@
     $('importFiles').disabled = busy;
     $('clearFiles').disabled = busy || !files.length;
     $('convertFiles').disabled = busy || !files.length;
-    $('convertFiles').textContent = busy ? '확인·변환 중…' : '확인하고 CSV 만들기';
+    $('convertFiles').textContent = busy ? '확인·변환 중…' : completed ? 'CSV 다시 만들기' : '확인하고 CSV 만들기';
   }
 
   $('importFiles').addEventListener('change', () => {
     const incoming = [...$('importFiles').files];
-    $('importFiles').value = '';
     if (!incoming.length || busy) return;
     resetOutput();
     errorMessage('');
@@ -206,6 +247,7 @@
   $('clearFiles').addEventListener('click', () => {
     if (busy) return;
     files = [];
+    $('importFiles').value = '';
     resetOutput();
     errorMessage('');
     renderFiles();
@@ -234,7 +276,10 @@
         }
       } catch (_) { /* File download remains available if native sharing is absent. */ }
       $('importResult').hidden = false;
+      completed = true;
+      $('importStatus').classList.add('is-complete');
       $('importStatus').textContent = '변환을 완료했습니다. CSV 다운로드를 눌러 저장해 주세요.';
+      reveal($('importResult'), $('downloadCsv'));
     } catch (error) {
       resetOutput();
       errorMessage(error instanceof Error ? error.message : '변환하지 못했습니다. 원본 파일을 다시 확인해 주세요.');
