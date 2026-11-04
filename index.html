@@ -115,11 +115,6 @@
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}.disclosure-arrow,.custom-label input:after{transition:none}}
     .home-extras{display:grid;grid-template-columns:1fr;gap:16px;align-items:start;min-width:0}
     .home-extras>.card{min-width:0;margin:0}
-    .horoscope-card{display:block;color:inherit;text-decoration:none}
-    .horoscope-card:hover{border-color:#bca5ef;box-shadow:0 8px 24px #7357f610}
-    .horoscope-card:focus-visible{outline:3px solid #7659f4;outline-offset:4px}
-    .horoscope-card .fortune-link{display:inline-flex;align-items:center;text-decoration:underline}
-    .horoscope-badge{position:absolute;right:20px;top:45px;display:inline-flex;align-items:center;justify-content:center;border-radius:99px;background:#f0eaff;color:#7852dc;padding:5px 10px;font-size:12px;font-weight:750}
     [data-fortune-date]{white-space:nowrap;font-variant-numeric:tabular-nums}
     .hero-fortune-link{display:none}
     @media(min-width:1100px){
@@ -135,17 +130,15 @@
     @media(max-width:1099px){
       .home-extras .horoscope-card{display:none}
       .home-extras{gap:14px}
-      .home-intro{display:grid;grid-template-columns:minmax(0,1fr) clamp(80px,22vw,96px);column-gap:14px;align-items:center}
+      .home-intro{display:grid;grid-template-columns:minmax(0,1fr) clamp(96px,27vw,112px);column-gap:14px;align-items:center}
       .home-intro .clover{display:none}
       .home-intro h1{grid-column:1;grid-row:1;font-size:clamp(30px,7.8vw,55px);letter-spacing:-1.5px}
       .home-intro p{grid-column:1/-1;grid-row:2}
-      .hero-fortune-link{grid-column:2;grid-row:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;aspect-ratio:1;width:100%;padding:10px;border:1px solid #8e59f4;border-radius:19px;background:linear-gradient(145deg,#7945f2,#a06cf8);box-shadow:0 8px 23px #7945f22b;color:#fff;text-align:center;text-decoration:none;line-height:1.25}
-      .hero-fortune-link:focus-visible{outline:3px solid #7357f6;outline-offset:4px}
-      .hero-fortune-kicker{font-size:10px;font-weight:700;letter-spacing:.3px;opacity:.9}
-      .hero-fortune-label{font-size:18px;font-weight:850;letter-spacing:-.3px}
+      .hero-fortune-link{grid-column:2;grid-row:1;display:grid;aspect-ratio:1;width:100%}
     }
 </style>
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
+<link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-1">
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261104-1" defer></script>
@@ -158,7 +151,17 @@
   <header class="hero" id="brandHeader">
     <button id="openHelp" class="help-button" type="button" aria-label="이용 안내 열기" aria-haspopup="dialog" aria-controls="helpDialog" title="이용 안내"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle class="help-icon-ring" cx="12" cy="12" r="10.5"/><path d="M9.1 8.8a3 3 0 0 1 5.8 1c0 2-2.9 2.8-2.9 4"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg></button>
     <button class="brandline" id="brandHome" type="button" aria-label="행운설계소 첫 화면 새로고침"><img class="brand-icon" src="/assets/logo-96.webp" width="44" height="44" alt="" decoding="async"><span>행운설계소</span></button>
-    <div id="homeIntro" class="home-intro"><div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div><h1>나만의 조합,<br><span>새로운 행운.</span></h1><a class="hero-fortune-link" href="/fortunes.html" aria-label="오늘의 운세로 이동" aria-describedby="mobileFortuneDate"><time id="mobileFortuneDate" class="hero-fortune-kicker" data-fortune-date></time><span class="hero-fortune-label">오늘의<br>운세</span></a><p>원하는 조건으로 만드는 6개의 숫자</p></div>
+    <div id="homeIntro" class="home-intro">
+      <div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div>
+      <h1>나만의 조합,<br><span>새로운 행운.</span></h1>
+      <a class="hero-fortune-link fortune-entry fortune-entry--mobile" href="/fortunes.html" aria-label="오늘의 운세로 이동" aria-describedby="mobileFortuneDate">
+        <span class="fortune-entry-heading">오늘의 운세</span>
+        <time id="mobileFortuneDate" class="fortune-entry-date" data-fortune-date></time>
+        <span class="fortune-entry-art" aria-hidden="true"><span class="fortune-entry-orb"><span class="fortune-entry-animal"></span></span><span class="fortune-entry-clouds"></span></span>
+        <span class="fortune-entry-action">운세 확인<svg class="fortune-entry-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+      </a>
+      <p>원하는 조건으로 만드는 6개의 숫자</p>
+    </div>
   </header>
   <section id="homeScreen">
   <section class="card latest-card" aria-live="polite" aria-busy="true">
@@ -314,11 +317,12 @@
   </section>
 </main>
 <aside class="home-extras" aria-label="오늘의 운세와 행운번호">
-  <a class="card fortune-card horoscope-card" href="/fortunes.html" aria-labelledby="horoscopeTitle" aria-describedby="homeFortuneDate">
-    <h2 id="horoscopeTitle">오늘의 운세</h2>
-    <span class="fortune-link">운세 보기 →</span>
-    <time id="homeFortuneDate" class="horoscope-badge" data-fortune-date></time>
-  </a>
+  <section class="card horoscope-card fortune-entry fortune-entry--desktop" aria-labelledby="horoscopeTitle">
+    <h2 id="horoscopeTitle" class="fortune-entry-heading">오늘의 운세</h2>
+    <time id="homeFortuneDate" class="fortune-entry-date" data-fortune-date></time>
+    <span class="fortune-entry-art" aria-hidden="true"><span class="fortune-entry-orb"><span class="fortune-entry-animal"></span></span><span class="fortune-entry-clouds"></span></span>
+    <a class="fortune-entry-action" href="/fortunes.html" aria-describedby="homeFortuneDate">오늘 운세 확인<svg class="fortune-entry-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+  </section>
   <section class="card fortune-card" aria-labelledby="fortuneTitle">
     <span class="fortune-decoration" aria-hidden="true">♧</span><h2 id="fortuneTitle">오늘의 행운번호</h2>
     <button id="lookupFortune" class="text-btn fortune-link" type="button" aria-controls="fortuneResults">조회하기 →</button>
