@@ -130,7 +130,7 @@
     @media(max-width:1099px){
       .home-extras .horoscope-card{display:none}
       .home-extras{gap:14px}
-      .home-intro{display:grid;grid-template-columns:minmax(0,1fr) clamp(96px,27vw,112px);column-gap:14px;align-items:center}
+      .home-intro{display:grid;grid-template-columns:minmax(0,1fr) clamp(104px,29vw,120px);column-gap:14px;align-items:center}
       .home-intro .clover{display:none}
       .home-intro h1{grid-column:1;grid-row:1;font-size:clamp(30px,7.8vw,55px);letter-spacing:-1.5px}
       .home-intro p{grid-column:1/-1;grid-row:2}
@@ -138,7 +138,7 @@
     }
 </style>
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
-<link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-1">
+<link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-2">
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261104-1" defer></script>
@@ -155,10 +155,8 @@
       <div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div>
       <h1>나만의 조합,<br><span>새로운 행운.</span></h1>
       <a class="hero-fortune-link fortune-entry fortune-entry--mobile" href="/fortunes.html" aria-label="오늘의 운세로 이동" aria-describedby="mobileFortuneDate">
-        <span class="fortune-entry-heading">오늘의 운세</span>
+        <picture class="fortune-entry-picture"><source media="(min-width:1100px)" srcset="/assets/fortune-card-desktop.webp" width="1448" height="1086"><img class="fortune-entry-artwork" src="/assets/fortune-card-mobile.webp" width="1254" height="1254" alt="" decoding="async"></picture>
         <time id="mobileFortuneDate" class="fortune-entry-date" data-fortune-date></time>
-        <span class="fortune-entry-art" aria-hidden="true"><span class="fortune-entry-orb"><span class="fortune-entry-animal"></span></span><span class="fortune-entry-clouds"></span></span>
-        <span class="fortune-entry-action">운세 확인<svg class="fortune-entry-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
       </a>
       <p>원하는 조건으로 만드는 6개의 숫자</p>
     </div>
@@ -318,10 +316,10 @@
 </main>
 <aside class="home-extras" aria-label="오늘의 운세와 행운번호">
   <section class="card horoscope-card fortune-entry fortune-entry--desktop" aria-labelledby="horoscopeTitle">
-    <h2 id="horoscopeTitle" class="fortune-entry-heading">오늘의 운세</h2>
+    <h2 id="horoscopeTitle" class="fortune-entry-heading fortune-entry-sr-only">오늘의 운세</h2>
+    <picture class="fortune-entry-picture"><source media="(min-width:1100px)" srcset="/assets/fortune-card-desktop.webp" width="1448" height="1086"><img class="fortune-entry-artwork" src="/assets/fortune-card-mobile.webp" width="1254" height="1254" alt="" decoding="async"></picture>
     <time id="homeFortuneDate" class="fortune-entry-date" data-fortune-date></time>
-    <span class="fortune-entry-art" aria-hidden="true"><span class="fortune-entry-orb"><span class="fortune-entry-animal"></span></span><span class="fortune-entry-clouds"></span></span>
-    <a class="fortune-entry-action" href="/fortunes.html" aria-describedby="homeFortuneDate">오늘 운세 확인<svg class="fortune-entry-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+    <a class="fortune-entry-action" href="/fortunes.html" aria-describedby="homeFortuneDate"><span class="fortune-entry-sr-only">오늘 운세 확인</span></a>
   </section>
   <section class="card fortune-card" aria-labelledby="fortuneTitle">
     <span class="fortune-decoration" aria-hidden="true">♧</span><h2 id="fortuneTitle">오늘의 행운번호</h2>

@@ -1,227 +1,119 @@
 .fortune-entry{
-  --fortune-entry-border:#ead9f1;
-  --fortune-entry-shadow:0 8px 24px #9b78c315,inset 0 0 0 1px #ffffff9c;
   position:relative;
-  isolation:isolate;
+  container-type:inline-size;
   overflow:hidden;
-  border:1px solid var(--fortune-entry-border);
-  border-radius:22px;
-  background:
-    radial-gradient(ellipse at 77% 31%,#fffaffee,transparent 53%),
-    radial-gradient(ellipse at 5% 8%,#fff7ebc9,transparent 63%),
-    linear-gradient(130deg,#fff0f3 0%,#f4e7fb 51%,#ebe3ff 100%);
-  box-shadow:var(--fortune-entry-shadow);
-  color:#2e2542;
+  padding:0;
+  border:0;
+  border-radius:0;
+  background:transparent;
+  box-shadow:0 5px 16px #9973d323;
+  backdrop-filter:none;
   text-decoration:none;
 }
-.fortune-entry::before{
-  content:"";
-  position:absolute;
-  inset:3px;
-  z-index:0;
-  border:1px solid #ffffff72;
-  border-radius:inherit;
-  box-shadow:inset 0 0 20px #fff8;
-  pointer-events:none;
-}
-.fortune-entry-heading{
-  color:#30233f;
-  font-weight:850;
-  letter-spacing:-.5px;
-  line-height:1.3;
-  white-space:nowrap;
-}
-.fortune-entry-date{
-  z-index:1;
-  color:#78618e;
-  font-variant-numeric:tabular-nums;
-  font-weight:650;
-  letter-spacing:-.2px;
-  line-height:1.3;
-  white-space:nowrap;
-}
-.fortune-entry-art{
-  position:absolute;
-  z-index:0;
-  display:block;
-  pointer-events:none;
-}
-.fortune-entry-orb{
-  position:absolute;
-  display:grid;
-  place-items:center;
-  border:1px solid #fffdfed9;
-  border-radius:50%;
-  background:radial-gradient(circle at 36% 28%,#fffefd 0%,#fff4fbdc 28%,#e8cdf2cf 66%,#ccadebbb 100%);
-  box-shadow:0 0 0 4px #ffffff3d,0 0 27px #e5b8f5a6,inset 0 2px 12px #fffefaeb,inset -4px -7px 16px #cda8e45c;
-}
-.fortune-entry-orb::after{
-  content:"";
-  position:absolute;
-  top:10%;
-  left:17%;
-  width:35%;
-  height:12%;
-  transform:rotate(-30deg);
-  border-radius:50%;
-  background:#ffffffad;
-  filter:blur(1px);
-}
-.fortune-entry-animal{
+.fortune-entry-picture,.fortune-entry-artwork{
   display:block;
   width:100%;
   height:100%;
-  background-image:url('/assets/zodiac-animals.webp?v=20261103-1');
-  background-size:600% 450%;
-  background-position:6.491713% 9.688240%;
-  background-repeat:no-repeat;
-  border-radius:50%;
-  mix-blend-mode:multiply;
 }
-.fortune-entry-clouds{
+.fortune-entry-artwork{object-fit:contain}
+.fortune-entry-sr-only{
   position:absolute;
-  right:0;
-  bottom:0;
-  left:0;
-  height:25%;
-  border-radius:50%;
-  background:
-    radial-gradient(ellipse at 47% 65%,#fffefa 0%,#fffdf5e6 42%,transparent 70%);
-  filter:drop-shadow(0 4px 4px #b899d32b);
+  width:1px;
+  height:1px;
+  padding:0;
+  margin:-1px;
+  overflow:hidden;
+  clip-path:inset(50%);
+  white-space:nowrap;
+  border:0;
 }
-.fortune-entry-clouds::before,.fortune-entry-clouds::after{
-  content:"";
+.fortune-entry-date{
   position:absolute;
-  bottom:22%;
-  width:56%;
-  height:120%;
-  border-radius:50%;
-  background:radial-gradient(ellipse at 50% 37%,#fffefa 0%,#fff8fbeb 55%,#eedcf3a6 100%);
-  box-shadow:inset 0 2px 4px #fff;
-}
-.fortune-entry-clouds::before{left:0;transform:rotate(-8deg)}
-.fortune-entry-clouds::after{right:0;width:49%;height:105%;transform:rotate(9deg)}
-.fortune-entry-action{
-  position:absolute;
-  z-index:2;
   display:flex;
   align-items:center;
   justify-content:center;
-  gap:8px;
-  border:1px solid #ffffff4d;
-  background:linear-gradient(110deg,#8953dc,#7442c8);
-  box-shadow:0 5px 13px #8655c32b,inset 0 1px 0 #ffffff2e;
-  color:#fff;
-  font-weight:800;
-  line-height:1.3;
-  text-decoration:none;
-  white-space:nowrap;
-}
-.fortune-entry-arrow{
-  display:block;
-  flex:none;
-  width:16px;
-  height:16px;
-  fill:none;
-  stroke:currentColor;
-  stroke-width:1.8;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
-.fortune-entry-action:focus-visible,.hero-fortune-link.fortune-entry--mobile:focus-visible{
-  outline:3px solid #7357f6;
-  outline-offset:4px;
-}
-
-.horoscope-card.fortune-entry--desktop{
-  height:230px;
-  min-height:230px;
   padding:0;
-  cursor:default;
-}
-.horoscope-card.fortune-entry--desktop:hover{
-  border-color:var(--fortune-entry-border);
-  box-shadow:var(--fortune-entry-shadow);
-}
-.fortune-entry--desktop h2.fortune-entry-heading{
-  position:absolute;
-  top:20px;
-  left:20px;
-  z-index:1;
   margin:0;
-  font-size:22px;
+  transform:translate(-50%,-50%);
+  color:#71349e;
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+  letter-spacing:-.035em;
+  white-space:nowrap;
+  pointer-events:none;
+}
+.horoscope-card.fortune-entry--desktop{
+  aspect-ratio:1378/825;
+  height:auto;
+  min-height:0;
+  padding:0;
+  border:0;
+  background:transparent;
+  border-radius:30px;
+  box-shadow:0 5px 16px #9973d323;
+}
+.fortune-entry--desktop .fortune-entry-picture{
+  position:absolute;
+  top:-15.6364%;
+  left:-2.5399%;
+  width:105.0798%;
+  height:131.6364%;
 }
 .fortune-entry--desktop .fortune-entry-date{
-  position:absolute;
-  top:60px;
-  left:20px;
-  padding:5px 9px;
-  border:1px solid #ffffffb3;
-  border-radius:999px;
-  background:#f1e7fb;
-  color:#79559b;
-  font-size:12px;
+  top:52.6061%;
+  left:31.9303%;
+  width:25.1089%;
+  height:12.4848%;
+  font-size:4.5cqw;
 }
-.fortune-entry--desktop .fortune-entry-art{top:39px;right:10px;width:126px;height:112px}
-.fortune-entry--desktop .fortune-entry-orb{top:0;right:8px;width:106px;height:106px}
 .fortune-entry--desktop .fortune-entry-action{
-  right:18px;
-  bottom:18px;
-  left:18px;
+  position:absolute;
+  top:77.2727%;
+  left:8.9985%;
+  width:44.7025%;
+  height:17.3333%;
   min-height:44px;
-  padding:10px 14px;
+  padding:0;
+  transform:translateY(-50%);
+  border:0;
   border-radius:999px;
-  font-size:15px;
-  transition:background .16s,box-shadow .16s;
+  background:transparent;
+  text-decoration:none;
 }
-.fortune-entry--desktop .fortune-entry-action:hover{
-  background:linear-gradient(110deg,#7d48d0,#6736bd);
-  box-shadow:0 6px 16px #8050bd3b,inset 0 1px 0 #ffffff2e;
+.fortune-entry-action:focus-visible{
+  outline:3px solid #6e35cc;
+  outline-offset:2px;
+  box-shadow:0 0 0 5px #ffffffbf;
 }
-
 @media(max-width:1099px){
   .hero-fortune-link.fortune-entry--mobile{
     display:block;
+    aspect-ratio:1;
     padding:0;
-    border-radius:18px;
-    text-align:left;
-    line-height:1.3;
+    border:0;
+    border-radius:16%;
+    background:transparent;
+    box-shadow:0 5px 16px #9973d323;
   }
-  .fortune-entry--mobile .fortune-entry-heading{
+  .fortune-entry--mobile .fortune-entry-picture{
     position:absolute;
-    top:8%;
-    left:8%;
-    z-index:1;
-    margin:0;
-    font-size:clamp(13px,3.5vw,14px);
-    letter-spacing:-.5px;
+    top:-3.9655%;
+    left:-3.9655%;
+    width:108.1034%;
+    height:108.1034%;
   }
   .fortune-entry--mobile .fortune-entry-date{
-    position:absolute;
-    top:38%;
-    left:8%;
-    padding:2px 3px;
-    border-radius:5px;
-    background:#ffffff59;
-    font-size:10px;
-    letter-spacing:-.35px;
+    top:43.1034%;
+    left:26.0776%;
+    width:35.0862%;
+    height:11.2069%;
+    font-size:8.1cqw;
+    letter-spacing:-.055em;
   }
-  .fortune-entry--mobile .fortune-entry-art{top:21%;right:0;width:52%;height:52%}
-  .fortune-entry--mobile .fortune-entry-orb{inset:0}
-  .fortune-entry--mobile .fortune-entry-clouds{right:-5%;left:-5%;bottom:-3%;height:23%}
-  .fortune-entry--mobile .fortune-entry-action{
-    right:7%;
-    bottom:7%;
-    left:7%;
-    min-height:21px;
-    padding:3px 5px;
-    border-radius:7px;
-    gap:4px;
-    font-size:10.5px;
-    pointer-events:none;
+  .hero-fortune-link.fortune-entry--mobile:focus-visible{
+    outline:3px solid #6e35cc;
+    outline-offset:-4px;
   }
-  .fortune-entry--mobile .fortune-entry-arrow{width:11px;height:11px}
-  .hero-fortune-link.fortune-entry--mobile:focus-visible{outline-offset:-3px}
 }
 @media(min-width:1100px){.hero-fortune-link.fortune-entry--mobile{display:none}}
-@media(prefers-reduced-motion:reduce){.fortune-entry-action{transition:none}}
