@@ -1,24 +1,141 @@
-:root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#17171c;background:#fff;color-scheme:light;line-height:1.65}
+@font-face{font-family:FortuneHeading;src:url('/assets/fonts/jua.woff2') format('woff2');font-style:normal;font-weight:400;font-display:swap}
+:root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#30223f;background:#ede5fc;color-scheme:light;line-height:1.65}
+h1,.fortunes-brand,.zodiac-name{font-family:FortuneHeading,system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif}
 *{box-sizing:border-box}
-body{margin:0;min-height:100vh;padding:28px 24px 40px;background:#fff}
+body{
+  margin:0;
+  min-height:100vh;
+  padding:30px clamp(24px,3.35vw,56px) 48px;
+  background-color:#eee7fc;
+  background-image:url('/assets/fortune-sky-desktop.webp'),linear-gradient(145deg,#f9eefa,#e3dafa 58%,#f9e5f1);
+  background-repeat:no-repeat;
+  background-position:center top;
+  background-size:cover;
+  background-attachment:fixed;
+}
 button,a{-webkit-tap-highlight-color:transparent}
 button{font:inherit;cursor:pointer}
 button:disabled{cursor:wait;opacity:.65}
-a:focus-visible,button:focus-visible{outline:3px solid #9576f7;outline-offset:4px}
+a:focus-visible,button:focus-visible{outline:3px solid #7b4eb7;outline-offset:4px}
 [hidden]{display:none!important}
-.fortunes-header,.fortunes-main{max-width:1120px;margin-inline:auto}
+.fortunes-header,.fortunes-main{max-width:1560px;margin-inline:auto}
 .fortunes-header{display:flex;align-items:center;justify-content:space-between;gap:20px}
-.fortunes-brand{display:inline-flex;align-items:center;gap:10px;color:#7357f6;text-decoration:none;font-size:21px;font-weight:800;letter-spacing:-.5px}
-.fortunes-brand img{width:38px;height:38px;border-radius:10px;object-fit:contain}
+.fortunes-brand{display:inline-flex;align-items:center;gap:12px;min-height:48px;color:#4b00cb;text-decoration:none;font-size:clamp(22px,2.1vw,32px);font-weight:400;letter-spacing:-.8px}
+.fortunes-brand img{width:48px;height:48px;border-radius:14px;object-fit:contain}
 .fortunes-close{display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;width:44px;height:44px;padding:0;border:0;border-radius:10px;background:transparent;color:#7357f6;text-decoration:none;font-size:32px;font-weight:400;line-height:1}
 .fortunes-close:hover{background:#f6f3ff}
-h1{margin:50px 0 40px;font-size:clamp(30px,4vw,46px);line-height:1.3;letter-spacing:-1.4px;text-align:center}
-.zodiac-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
-.zodiac-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:155px;padding:18px 10px;border:1px solid #e5e1eb;border-radius:20px;background:#fff;color:#17171c;text-decoration:none;box-shadow:0 4px 14px #17171c04;transition:border-color .15s,box-shadow .15s}
-.zodiac-button:hover{border-color:#a990ee;box-shadow:0 5px 18px #7357f614}
-.zodiac-art{display:flex;align-items:center;justify-content:center;width:100%;min-height:110px;font-size:clamp(23px,2.8vw,35px);line-height:1.25;font-weight:800;letter-spacing:-.8px;word-break:keep-all}
-.zodiac-name{font-size:14px;font-weight:700;line-height:1.4}
-.has-zodiac-art .zodiac-art{aspect-ratio:1;max-width:125px;min-height:0;flex-shrink:0;background-image:url('/assets/zodiac-animals.webp?v=20261103-1');background-size:600% 450%;background-position:var(--animal-x) var(--animal-y);background-repeat:no-repeat;font-size:0}
+.fortunes-header>.fortunes-close{
+  width:56px;
+  height:56px;
+  border:1px solid #ffffffc4;
+  border-radius:50%;
+  background:#ffffff69;
+  box-shadow:inset 0 0 0 3px #ffffff35,0 4px 14px #8060a612;
+  color:#81669a;
+  font-size:42px;
+  backdrop-filter:blur(8px);
+}
+.fortunes-header>.fortunes-close:hover{background:#ffffffa8;color:#65428b}
+h1{
+  position:relative;
+  margin:14px 0 24px;
+  color:#25094d;
+  font-size:clamp(40px,5.2vw,84px);
+  font-weight:400;
+  line-height:1.1;
+  letter-spacing:-2px;
+  text-align:center;
+  text-shadow:0 2px 0 #ffffff5c;
+}
+h1::after{
+  content:"";
+  position:absolute;
+  bottom:-12px;
+  left:50%;
+  width:clamp(145px,16vw,250px);
+  height:18px;
+  transform:translateX(-50%) rotate(-3deg);
+  border-bottom:4px solid #b494d8b3;
+  border-radius:0 0 50% 50%;
+  box-shadow:0 5px 0 -3px #e1b1df9c;
+  pointer-events:none;
+}
+/* Backdrop filters and card transforms isolate the white sprite cells from multiply blending. */
+.fortunes-board{
+  position:relative;
+  padding:clamp(14px,2vw,32px);
+  border:1px solid #ffffffe0;
+  border-radius:56px;
+  background:linear-gradient(135deg,#fff5fb52,#f4edff38 48%,#fff4f848);
+  box-shadow:0 0 0 2px #ffffff42,inset 0 0 28px #ffffff66,0 12px 42px #8c6ecb1a;
+}
+.fortunes-board::before{
+  content:"";
+  position:absolute;
+  inset:5px;
+  border:1px solid #ffffff7a;
+  border-radius:inherit;
+  pointer-events:none;
+}
+.zodiac-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:clamp(10px,1.3vw,22px)}
+.zodiac-button{
+  --card-tint:#f0dff7c9;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  justify-content:center;
+  gap:clamp(6px,.6vw,10px);
+  min-width:0;
+  min-height:clamp(138px,14.7vw,246px);
+  padding:clamp(9px,.96vw,16px) clamp(6px,.8vw,14px);
+  border:1px solid #ffffffeb;
+  border-radius:clamp(20px,2vw,34px);
+  background:linear-gradient(145deg,#ffffffb3,var(--card-tint) 58%,#ffffff5c);
+  color:#463153;
+  text-decoration:none;
+  box-shadow:0 0 0 1px #e6d5ef5c,inset 0 0 20px #ffffff91,0 7px 18px #a384b91a;
+  transition:border-color .18s,box-shadow .18s;
+}
+.zodiac-button::before{
+  content:"";
+  position:absolute;
+  inset:3px;
+  border:1px solid #ffffff80;
+  border-radius:inherit;
+  pointer-events:none;
+}
+.zodiac-button:nth-child(6n+2){--card-tint:#e6dffac9}
+.zodiac-button:nth-child(6n+3){--card-tint:#eee7fac9}
+.zodiac-button:nth-child(6n+4){--card-tint:#f7dfe9cf}
+.zodiac-button:nth-child(6n+5){--card-tint:#eee0f9cf}
+.zodiac-button:nth-child(6n+6){--card-tint:#ece4f7c9}
+.zodiac-button:nth-child(7){--card-tint:#f8e8dacf}
+.zodiac-button:nth-child(10){--card-tint:#f8e1dacf}
+.zodiac-button:nth-child(11){--card-tint:#f5e9d6cf}
+.zodiac-button:nth-child(12){--card-tint:#f4dfeacf}
+.zodiac-button:hover{border-color:#fff;box-shadow:0 0 0 1px #fff9,inset 0 0 22px #ffffffb3,0 10px 26px #8d6ab92b}
+.zodiac-art{display:flex;align-items:center;justify-content:center;width:100%;min-height:clamp(76px,9.6vw,160px);font-size:clamp(23px,2.8vw,35px);line-height:1.25;font-weight:800;letter-spacing:-.8px;word-break:keep-all}
+.zodiac-name{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex-shrink:0;
+  min-width:72%;
+  min-height:clamp(26px,2.5vw,40px);
+  padding:3px 9px;
+  border:1px solid #ffffffb3;
+  border-radius:999px;
+  background:linear-gradient(110deg,#ffffffb8,#fff0fa8c);
+  box-shadow:inset 0 1px 3px #fff9,0 2px 6px #ac88c010;
+  color:#38205d;
+  font-size:clamp(12px,1.4vw,23px);
+  font-weight:400;
+  line-height:1.3;
+  letter-spacing:-.45px;
+  white-space:nowrap;
+}
+.has-zodiac-art .zodiac-art{aspect-ratio:1;max-width:clamp(76px,9.6vw,160px);min-height:0;flex-shrink:0;background-image:url('/assets/zodiac-animals.webp?v=20261103-1');background-size:600% 450%;background-position:var(--animal-x) var(--animal-y);background-repeat:no-repeat;font-size:0;mix-blend-mode:multiply}
 /* Center each visible drawing rather than the whitespace of its sprite cell. */
 .zodiac-button[data-zodiac="쥐"]{--animal-x:6.491713%;--animal-y:9.688240%}
 .zodiac-button[data-zodiac="소"]{--animal-x:35.124309%;--animal-y:9.037096%}
@@ -32,7 +149,7 @@ h1{margin:50px 0 40px;font-size:clamp(30px,4vw,46px);line-height:1.3;letter-spac
 .zodiac-button[data-zodiac="닭"]{--animal-x:35.041436%;--animal-y:88.476717%}
 .zodiac-button[data-zodiac="개"]{--animal-x:64.834254%;--animal-y:89.127861%}
 .zodiac-button[data-zodiac="돼지"]{--animal-x:93.881215%;--animal-y:89.187056%}
-.fortunes-disclaimer{max-width:780px;margin:29px auto 0;color:#78737f;text-align:center;font-size:12px;line-height:1.85;word-break:keep-all}
+.fortunes-disclaimer{max-width:900px;margin:25px auto 0;color:#776184;text-align:center;font-size:13px;line-height:1.85;word-break:keep-all;text-shadow:0 1px 0 #ffffff80}
 .fortune-dialog{width:min(520px,calc(100% - 32px));max-height:calc(100dvh - 36px);margin:auto;padding:26px 28px 25px;border:1px solid #e9e7ec;border-radius:22px;background:#fff;color:#17171c;box-shadow:0 16px 70px #00000030;overflow:auto;overscroll-behavior:contain}
 .fortune-dialog::backdrop{background:#00000050}
 .fortune-dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}
@@ -49,14 +166,21 @@ h1{margin:50px 0 40px;font-size:clamp(30px,4vw,46px);line-height:1.3;letter-spac
 .fortune-retry{display:flex;align-items:center;justify-content:center;min-height:44px;margin:16px auto 0;padding:9px 17px;border:1px solid #e1d8f7;border-radius:11px;background:#faf8ff;color:#6e50dd;font-size:14px;font-weight:700}
 body.has-fortune-dialog{overflow:hidden}
 @media(max-width:700px){
-  body{padding:18px 16px 30px}
-  .fortunes-brand{gap:8px;font-size:18px}
-  .fortunes-brand img{width:34px;height:34px;border-radius:9px}
-  h1{margin:35px 0 27px;font-size:32px;letter-spacing:-1px}
-  .zodiac-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-  .zodiac-button{min-height:110px;padding:12px 7px;border-radius:15px}
-  .zodiac-art{min-height:78px;font-size:clamp(21px,5.8vw,29px);letter-spacing:-.6px}
-  .fortunes-disclaimer{margin-top:23px;font-size:11px}
+  body{padding:18px 12px 30px;background-image:url('/assets/fortune-sky-mobile.webp'),linear-gradient(160deg,#f7eafa,#e4dafa 58%,#f7e4ef);background-position:center top}
+  .fortunes-header{gap:12px;padding-inline:3px}
+  .fortunes-brand{min-height:38px;gap:8px;font-size:20px;letter-spacing:-.6px}
+  .fortunes-brand img{width:36px;height:36px;border-radius:10px}
+  .fortunes-header>.fortunes-close{width:44px;height:44px;font-size:34px}
+  h1{margin:29px 0 33px;font-size:clamp(33px,7.6vw,46px);letter-spacing:-1.3px}
+  h1::after{bottom:-10px;width:142px;height:12px;border-bottom-width:3px}
+  .fortunes-board{padding:12px 10px 14px;border-radius:28px}
+  .fortunes-board::before{inset:3px}
+  .zodiac-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .zodiac-button{gap:5px;min-height:clamp(112px,29vw,166px);padding:8px 5px 9px;border-radius:clamp(17px,4.8vw,26px)}
+  .zodiac-art{min-height:clamp(64px,19vw,112px);font-size:clamp(21px,5.8vw,29px);letter-spacing:-.6px}
+  .has-zodiac-art .zodiac-art{max-width:clamp(64px,19vw,112px)}
+  .zodiac-name{min-width:86%;min-height:26px;padding:3px 5px;font-size:clamp(12px,3.2vw,14px);letter-spacing:-.55px}
+  .fortunes-disclaimer{margin-top:16px;font-size:11px;line-height:1.75}
   .fortune-dialog{padding:21px 20px 22px;border-radius:19px}
   .fortune-dialog-heading h2{font-size:21px}
   .fortune-dialog-heading .fortunes-close{margin-right:-8px}
