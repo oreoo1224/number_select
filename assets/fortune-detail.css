@@ -1,0 +1,61 @@
+:root{font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;color:#17171c;background:#fff;color-scheme:light;line-height:1.65}
+*{box-sizing:border-box}
+body{margin:0;min-height:100vh;padding:28px 24px 30px;background:#fff}
+a,button{-webkit-tap-highlight-color:transparent}
+a:focus-visible,button:focus-visible{outline:3px solid #9576f7;outline-offset:4px}
+[hidden]{display:none!important}
+.fortune-header{display:flex;align-items:center;justify-content:space-between;gap:18px;max-width:1120px;margin-inline:auto}
+.fortune-brand{display:inline-flex;align-items:center;gap:10px;color:#7357f6;text-decoration:none;font-size:21px;font-weight:800;letter-spacing:-.5px}
+.fortune-brand img{width:38px;height:38px;border-radius:10px;object-fit:contain}
+.fortune-back{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:8px 13px;border:1px solid #e9e7ec;border-radius:10px;color:#48434f;text-decoration:none;font-size:14px;font-weight:600;white-space:nowrap}
+.fortune-back:hover{border-color:#bba9ee;background:#faf8ff}
+.fortune-main{max-width:720px;margin-inline:auto}
+.fortune-intro{margin:54px 0 30px;text-align:center}
+.fortune-eyebrow{margin:0 0 9px;color:#77717e;font-size:13px;font-weight:600;letter-spacing:.15px}
+h1{margin:0;color:#17171c;font-size:clamp(30px,4.5vw,42px);font-weight:800;line-height:1.35;letter-spacing:-1.3px;word-break:keep-all}
+.fortune-years{margin:17px 0 0;color:#17171c;font-size:15px;font-weight:700;word-break:keep-all}
+.fortune-explanation{margin:10px 0 0;color:#77717e;font-size:14px;line-height:1.85;word-break:keep-all}
+.fortune-results{padding:27px 32px 29px;border:1px solid #e9e7ec;border-radius:20px;background:#fff}
+.fortune-results h2{margin:0;font-size:19px;line-height:1.5;letter-spacing:-.5px}
+.fortune-timing{margin-top:9px}
+.fortune-timing p{margin:0;color:#55505d;font-size:13px;line-height:1.7}
+.fortune-timezone{margin-left:8px;color:#77717e;font-size:12px;white-space:nowrap}
+.fortune-timing .fortune-checked{margin-top:2px;color:#85808b;font-size:11px}
+.fortune-list{margin:10px 0 0}
+.fortune-list>div{padding:20px 0;border-bottom:1px solid #e9e7ec}
+.fortune-list>div:last-child{padding-bottom:0;border-bottom:0}
+.fortune-list dt{margin:0 0 6px;color:#111;font-size:18px;font-weight:800;line-height:1.45}
+.fortune-list dd{margin:0;color:#29272f;font-size:15px;line-height:1.85;overflow-wrap:anywhere;word-break:keep-all}
+.fortune-state{margin:18px 0 0;padding:24px 16px;border-radius:12px;background:#f8f8fa;color:#77717e;text-align:center;font-size:14px;line-height:1.8;word-break:keep-all}
+.fortune-state.is-error{color:#8c5361;background:#fff7f8}
+.fortune-retry{display:flex;align-items:center;justify-content:center;min-height:44px;margin:18px auto 0;padding:9px 17px;border:1px solid #e1d8f7;border-radius:11px;background:#faf8ff;color:#6e50dd;font:700 14px/1.65 system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;cursor:pointer}
+.fortune-other-signs{margin-top:34px}
+.fortune-other-signs h2{margin:0 0 12px;color:#77717e;font-size:13px;font-weight:600;text-align:center}
+.fortune-sign-links{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:8px}
+.fortune-sign-links a{display:flex;align-items:center;justify-content:center;min-width:0;min-height:42px;padding:7px 5px;border:1px solid #e9e7ec;border-radius:10px;color:#625d69;text-decoration:none;font-size:13px;white-space:nowrap}
+.fortune-sign-links a:hover{border-color:#bba9ee;color:#7357f6}
+.fortune-sign-links a[aria-current="page"]{border-color:#17171c;background:#fafafa;color:#111;font-weight:800}
+.fortune-footer{max-width:780px;margin:28px auto 0;color:#78737f;text-align:center;font-size:11px;line-height:1.85;word-break:keep-all}
+.fortune-footer p{margin:0}
+@media(max-width:600px){
+  body{padding:18px 16px 25px}
+  .fortune-header{gap:10px}
+  .fortune-brand{gap:8px;font-size:18px}
+  .fortune-brand img{width:34px;height:34px;border-radius:9px}
+  .fortune-back{padding:7px 10px;font-size:12px}
+  .fortune-intro{margin:37px 0 25px}
+  .fortune-eyebrow{font-size:12px}
+  h1{font-size:30px;letter-spacing:-1px}
+  .fortune-years{max-width:310px;margin:15px auto 0;font-size:14px;line-height:1.85}
+  .fortune-explanation{font-size:12px;line-height:1.85}
+  .fortune-results{padding:22px 20px 24px;border-radius:16px}
+  .fortune-results h2{font-size:18px}
+  .fortune-list>div{padding:17px 0}
+  .fortune-list dt{font-size:17px}
+  .fortune-list dd{font-size:14px;line-height:1.8}
+  .fortune-state{padding:21px 12px;font-size:13px}
+  .fortune-sign-links{grid-template-columns:repeat(4,minmax(0,1fr));gap:7px}
+  .fortune-sign-links a{min-height:44px;font-size:12px}
+  .fortune-other-signs{margin-top:28px}
+  .fortune-footer{margin-top:23px;font-size:10px}
+}

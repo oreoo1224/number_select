@@ -129,7 +129,13 @@
   }
 
   for (const button of document.querySelectorAll('.zodiac-button')) {
-    button.addEventListener('click',() => {
+    button.addEventListener('click',event => {
+      // Keep real link navigation for new tabs, modifier clicks and browsers
+      // without dialog support. A normal click retains the existing popup.
+      if (event.defaultPrevented || event.button !== 0 || event.metaKey ||
+          event.ctrlKey || event.shiftKey || event.altKey ||
+          typeof dialog.showModal !== 'function') return;
+      event.preventDefault();
       selectedSign = button.dataset.zodiac;
       returnFocus = button;
       $('fortuneDialogTitle').textContent = selectedSign+'띠 오늘의 운세';

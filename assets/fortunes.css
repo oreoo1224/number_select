@@ -14,7 +14,7 @@ a:focus-visible,button:focus-visible{outline:3px solid #9576f7;outline-offset:4p
 .fortunes-close:hover{background:#f6f3ff}
 h1{margin:50px 0 40px;font-size:clamp(30px,4vw,46px);line-height:1.3;letter-spacing:-1.4px;text-align:center}
 .zodiac-grid{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:18px}
-.zodiac-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:155px;padding:18px 10px;border:1px solid #e5e1eb;border-radius:20px;background:#fff;color:#17171c;box-shadow:0 4px 14px #17171c04;transition:border-color .15s,box-shadow .15s}
+.zodiac-button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;min-width:0;min-height:155px;padding:18px 10px;border:1px solid #e5e1eb;border-radius:20px;background:#fff;color:#17171c;text-decoration:none;box-shadow:0 4px 14px #17171c04;transition:border-color .15s,box-shadow .15s}
 .zodiac-button:hover{border-color:#a990ee;box-shadow:0 5px 18px #7357f614}
 .zodiac-art{display:flex;align-items:center;justify-content:center;width:100%;min-height:110px;font-size:clamp(23px,2.8vw,35px);line-height:1.25;font-weight:800;letter-spacing:-.8px;word-break:keep-all}
 .zodiac-name{font-size:14px;font-weight:700;line-height:1.4}
