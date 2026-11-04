@@ -10,7 +10,7 @@
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="행운설계소">
-  <title>행운설계소 | 로또 번호 생성 및 분석</title>
+  <title>행운설계소 | 무료 로또 번호 생성기 · 필수·제외 번호 설정</title>
   <style>
     :root{
       font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
@@ -45,9 +45,6 @@
     .latest-status{display:none;font-size:12px;color:#736f81;margin:11px 0 0;line-height:1.55}.latest-status.registered{display:block}.latest-status.warn{display:block;color:#9a6326}
     .manual-fallback{display:none;margin-top:13px;border-top:1px dashed #e2d9e9;padding-top:13px}.manual-fallback.show{display:block}
     .manual-fallback label{font-size:13px;font-weight:800;display:block;margin-bottom:7px}.manual-fallback input{width:100%;min-height:44px;border:1px solid #d5ccdf;border-radius:12px;padding:10px 12px;background:#fff;color:var(--ink)}
-    .progress{display:grid;grid-template-columns:1fr 1fr 1fr;gap:7px;margin:18px 0 10px}
-    .progress-item{border:1px solid #e4deee;background:rgba(255,255,255,.65);border-radius:13px;padding:10px 8px;text-align:center;font-size:12px;color:#8b8698;font-weight:800}
-    .progress-item.active{background:#765af3;color:#fff;border-color:#765af3}.progress-item.done{background:#eee9ff;color:#624bd2;border-color:#dbd1ff}
     .step{display:none;animation:fade .22s ease}.step.active{display:block}@keyframes fade{from{opacity:.45;transform:translateY(6px)}to{opacity:1;transform:none}}
     .step-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}.step-kicker{font-size:12px;font-weight:900;color:#7458e9;margin-bottom:4px}.step h2{font-size:22px;letter-spacing:-.4px;margin:0}.step-desc{font-size:13px;color:var(--muted);margin:5px 0 0;line-height:1.55}
     .toolbar{display:flex;gap:7px;flex-wrap:wrap;margin:14px 0 12px}.chip-btn{border:1px solid #ddd5ed;background:#faf8ff;color:#665c77;border-radius:999px;min-height:36px;padding:7px 11px;font-weight:800;font-size:12px;cursor:pointer}.active-count{margin-left:auto;display:grid;place-items:center;font-size:12px;font-weight:900;color:#7155df}
@@ -66,7 +63,7 @@
     .error{color:#ad3f4c;font-size:12px;min-height:18px;margin-top:9px}.footer{font-size:11px;line-height:1.75;color:#817b8a;padding:7px 3px 18px}.footer a{color:#7055df}
     .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translate(-50%,20px);background:#2e2939;color:#fff;border-radius:999px;padding:10px 15px;font-size:12px;font-weight:800;opacity:0;pointer-events:none;transition:.2s;z-index:20}.toast.show{opacity:1;transform:translate(-50%,0)}
     @media(max-width:650px){
-      h1{font-size:34px}.card{padding:17px;border-radius:19px}.rule{grid-template-columns:auto minmax(0,1fr);align-items:start}.example{grid-column:2;min-width:0;width:100%;justify-content:flex-end;text-align:right;margin-top:5px}.mini-balls{justify-content:flex-end}.count-grid{gap:6px}.count-option span{min-height:54px}.ball{width:38px;height:38px}.mini-ball{width:27px;height:27px}.game-info{flex-basis:100%;margin-left:39px}.active-count{width:100%;margin-left:0;justify-content:start}.toolbar{align-items:center}.combo-stat-grid{grid-template-columns:1fr 1fr}.combo-stat-value{font-size:14px}.progress-item{font-size:11px;padding:9px 5px}}
+      h1{font-size:34px}.card{padding:17px;border-radius:19px}.rule{grid-template-columns:auto minmax(0,1fr);align-items:start}.example{grid-column:2;min-width:0;width:100%;justify-content:flex-end;text-align:right;margin-top:5px}.mini-balls{justify-content:flex-end}.count-grid{gap:6px}.count-option span{min-height:54px}.ball{width:38px;height:38px}.mini-ball{width:27px;height:27px}.game-info{flex-basis:100%;margin-left:39px}.active-count{width:100%;margin-left:0;justify-content:start}.toolbar{align-items:center}.combo-stat-grid{grid-template-columns:1fr 1fr}.combo-stat-value{font-size:14px}}
     [hidden]{display:none!important}
     .home-actions{display:grid;gap:12px;margin:22px 0}
     .home-draw{min-height:92px;font-size:25px;border-radius:22px}
@@ -101,7 +98,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="canonical" href="https://luckzip.com/">
 <meta property="og:url" content="https://luckzip.com/">
-<meta property="og:title" content="행운설계소 | 내 조건으로 만드는 번호 조합">
+<meta property="og:title" content="행운설계소 | 무료 로또 번호 생성기 · 필수·제외 번호 설정">
 <meta property="og:description" content="포함·제외 번호 설정, 1,000개 중복 방지, 결과 이미지 공유와 저장 번호 비교.">
 <style>.feature-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.feature-actions button{flex:1;min-height:44px}.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check-field{display:block;font-size:14px;font-weight:700;margin:14px 0}.check-field input,.check-field select{width:100%;display:block;min-height:45px;border:1px solid #d8d0e6;border-radius:10px;padding:10px;margin-top:6px;background:white}.check-wide{grid-column:1/-1}.feature-note{font-size:13px;line-height:1.65;color:#746d80}.check-result{padding:13px 0;border-bottom:1px solid #eee;line-height:1.7;font-size:14px}.rank-label{font-weight:900;color:#7357f6}.image-preview{display:block;width:100%;height:auto;border:1px solid #eee;border-radius:12px}.share-options{display:flex;align-items:center;gap:12px;margin:14px 0}.share-options select{padding:9px;border:1px solid #ddd;border-radius:9px}.image-modal-panel{width:min(100%,620px)}.migration-note{margin:12px 0;font-size:13px;line-height:1.6;color:#746d80}.link-inline{color:#6a49df}.count-option input:focus-visible+span{outline:3px solid #7357f6;outline-offset:3px}@media(max-width:400px){.check-grid{grid-template-columns:1fr}.check-wide{grid-column:auto}}
 </style><style>
@@ -151,7 +148,7 @@
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
-<script src="/assets/draws-api.js?v=20261029-1" defer></script>
+<script src="/assets/draws-api.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-api.js?v=20261027-2" defer></script>
 <script src="/assets/reviews-preview.js?v=20261027-2" defer></script>
 </head>
@@ -160,13 +157,13 @@
 <main>
   <header class="hero" id="brandHeader">
     <button id="openHelp" class="help-button" type="button" aria-label="이용 안내 열기" aria-haspopup="dialog" aria-controls="helpDialog" title="이용 안내"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle class="help-icon-ring" cx="12" cy="12" r="10.5"/><path d="M9.1 8.8a3 3 0 0 1 5.8 1c0 2-2.9 2.8-2.9 4"/><circle cx="12" cy="17.5" r=".8" fill="currentColor" stroke="none"/></svg></button>
-    <button class="brandline" id="brandHome" type="button" aria-label="행운설계소 첫 화면으로 이동"><img class="brand-icon" src="/assets/logo-96.webp" width="44" height="44" alt="" decoding="async"><span>행운설계소</span></button>
+    <button class="brandline" id="brandHome" type="button" aria-label="행운설계소 첫 화면 새로고침"><img class="brand-icon" src="/assets/logo-96.webp" width="44" height="44" alt="" decoding="async"><span>행운설계소</span></button>
     <div id="homeIntro" class="home-intro"><div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div><h1>나만의 조합,<br><span>새로운 행운.</span></h1><a class="hero-fortune-link" href="/fortunes.html" aria-label="오늘의 운세로 이동" aria-describedby="mobileFortuneDate"><time id="mobileFortuneDate" class="hero-fortune-kicker" data-fortune-date></time><span class="hero-fortune-label">오늘의<br>운세</span></a><p>원하는 조건으로 만드는 6개의 숫자</p></div>
   </header>
   <section id="homeScreen">
   <section class="card latest-card" aria-live="polite" aria-busy="true">
     <div class="row-between">
-      <span class="tag">관리자 등록 자료</span>
+      <span class="tag">당첨번호</span>
       <span id="drawRoundBadge" class="latest-meta">확인 중…</span>
     </div>
     <div id="latestTitle" class="latest-title">당첨 회차 확인 중…</div>
@@ -182,11 +179,6 @@
   </div>
   </section>
   <div id="viewNav" class="view-nav" hidden><button id="goHome" class="text-btn" type="button">← 처음으로</button></div>
-  <nav id="progressNav" class="progress" aria-label="진행 단계" hidden>
-    <div id="progress1" class="progress-item active">1 · 조건 선택</div>
-    <div id="progress2" class="progress-item">2 · 생성 설정</div>
-    <div id="progress3" class="progress-item">결과</div>
-  </nav>
 
   <div id="step1Summary" class="summary-card">
     <div id="step1SummaryMain" class="summary-main">조건 8개 적용</div>
@@ -223,7 +215,7 @@
       </label>
       <label class="rule">
         <input class="rule-check" id="overlapRule" type="checkbox" data-bit="4" disabled aria-describedby="overlapAvailability">
-        <span><strong>최근 등록 회차와 3개 이상 중복 제외</strong><small id="overlapAvailability">관리자 등록 자료 확인 중…</small><small class="rule-count">단독 제외 194,130개 · 2.38%</small></span>
+        <span><strong>최근 등록 회차와 3개 이상 중복 제외</strong><small id="overlapAvailability">당첨번호 확인 중…</small><small class="rule-count">단독 제외 194,130개 · 2.38%</small></span>
         <span class="example"><span class="example-label">제외 예시</span><span id="overlapExample" class="mini-balls" data-example="9,18,24,27,33,41"></span></span>
       </label>
       <label class="rule">
@@ -472,7 +464,7 @@ function updateCombinationStats(){
   $('statsTotal').textContent=fmt(TOTAL_COMBINATIONS);
   if((activeMask&4)&&!latestDraw){
     $('statsExcluded').textContent='확인 중'; $('statsRemaining').textContent='확인 중'; $('statsRatio').textContent='—';
-    $('statsState').textContent='중복 비교에 사용할 관리자 등록 자료를 확인하고 있습니다.';
+    $('statsState').textContent='중복 비교에 사용할 당첨번호를 확인하고 있습니다.';
     $('statsProgressBar').style.width='0%';
     return;
   }
@@ -590,13 +582,13 @@ function staleDays(dateStr){
   return Math.floor((Date.now()-then.getTime())/86400000);
 }
 function previousDrawLabel(){
-  return latestDraw?`${fmt(latestDraw.draw_no)}회 ${latestSource==='archive'?'보관 자료':'관리자 등록 번호'}`:'당첨번호 자료 없음';
+  return latestDraw?`${fmt(latestDraw.draw_no)}회 당첨번호${latestSource==='archive'?' (보관 자료)':''}`:'당첨번호 자료 없음';
 }
 function updatePreviousRuleAvailability(){
   const available=Boolean(latestDraw);
   $('overlapRule').disabled=!available;
   if(!available&&latestSource!=='loading')$('overlapRule').checked=false;
-  $('overlapAvailability').textContent=available?`${previousDrawLabel()} 기준`:latestSource==='loading'?'관리자 등록 자료 확인 중…':'관리자가 당첨번호를 등록하면 사용할 수 있습니다.';
+  $('overlapAvailability').textContent=available?`${previousDrawLabel()} 기준`:latestSource==='loading'?'당첨번호 확인 중…':'당첨번호가 등록되면 사용할 수 있습니다.';
 }
 function requirePreviousDraw(){
   if((getActiveMask()&4)&&!latestDraw)throw Error('등록된 당첨번호를 확인한 후 중복 제외 조건을 사용해 주세요.');
@@ -605,15 +597,15 @@ async function loadLatestDraw(){
   latestLoadFailed = false;
   $('latestStatus').classList.add('registered');
   $('latestStatus').classList.remove('warn');
-  $('latestStatus').textContent='관리자 등록 자료를 확인하고 있습니다.';
+  $('latestStatus').textContent='당첨번호를 확인하고 있습니다.';
   try{
     const data = await fetchRegisteredDraw();
     latestDraw = data;
     latestSource=data?'admin':'empty';
     if(!data){
-      $('latestStatus').textContent='관리자가 추첨 결과를 등록하면 이곳에 표시됩니다.';
+      $('latestStatus').textContent='당첨번호가 등록되면 이곳에 표시됩니다.';
     }else if(staleDays(data.draw_date)>10){
-      $('latestStatus').textContent='관리자 등록 자료 · 최근 회차 갱신 여부를 확인해 주세요.';
+      $('latestStatus').textContent='당첨번호 · 최신 회차 갱신 여부를 확인해 주세요.';
       $('latestStatus').classList.add('warn');
     }else{
       $('latestStatus').textContent='';
@@ -623,7 +615,7 @@ async function loadLatestDraw(){
     latestLoadFailed = true;
     latestDraw = {...FALLBACK_DRAW,winning_numbers:[...FALLBACK_DRAW.winning_numbers]};
     latestSource='archive';
-    $('latestStatus').textContent='보관 자료 · 관리자 등록 자료를 불러오지 못했습니다. 표시된 회차와 추첨일을 확인해 주세요.';
+    $('latestStatus').textContent='보관 자료 · 당첨번호를 불러오지 못했습니다. 표시된 회차와 추첨일을 확인해 주세요.';
     $('latestStatus').classList.add('warn');
   }finally{
     renderLatestDraw();
@@ -843,14 +835,10 @@ function setStep(step){
   $('homeIntro').hidden=step!==0;
   $('homeScreen').hidden=step!==0;
   $('viewNav').hidden=step===0;
-  $('progressNav').hidden=step===0;
   $('step1').classList.toggle('active',step===1);
   $('step2').classList.toggle('active',step===2);
   $('step1Summary').classList.toggle('show',step===2);
   $('resultsShell').classList.toggle('show',step===3);
-  $('progress1').className='progress-item '+(step===1?'active':step>1?'done':'');
-  $('progress2').className='progress-item '+(step===2?'active':step>2?'done':'');
-  $('progress3').className='progress-item '+(step===3?'active':'');
   if(step===2) updateReviewBox();
   const target=step===0?$('brandHeader'):step===1?$('step1'):step===2?$('step2'):$('resultsShell');
   target.scrollIntoView({behavior:'smooth',block:'start'});
@@ -899,7 +887,7 @@ for(const id of ['includeNumbers','excludeNumbers'])$(id).addEventListener('inpu
 $('startDraw').addEventListener('click',()=>setStep(1));
 $('openResults').addEventListener('click',showResults);
 $('goHome').addEventListener('click',()=>setStep(0));
-$('brandHome').addEventListener('click',()=>setStep(0));
+$('brandHome').addEventListener('click',()=>location.assign('/'));
 $('lookupFortune').addEventListener('click',showFortuneNumbers);
 ruleChecks().forEach(el=>el.addEventListener('change',updateRuleUI));
 document.querySelectorAll('input[name="gameCount"]').forEach(el=>el.addEventListener('change',()=>{saveSettings();updateReviewBox();}));
@@ -998,7 +986,7 @@ function invalidateComparison(){ $('comparisonOutput').textContent=''; }
 function openComparison(){showResults();$('compareSection').hidden=false;if(!$('checkRound').value&&latestDraw)$('checkRound').value=String(latestDraw.draw_no);$('compareSection').scrollIntoView({behavior:'smooth',block:'start'});}
 async function fetchComparisonDraw(){
   const round=Number($('checkRound').value);if(!Number.isInteger(round)||round<1){$('checkError').textContent='올바른 회차를 입력해 주세요.';return;}
-  const id=++checkRequest;$('checkError').textContent='';$('checkSource').textContent='관리자 등록 회차 조회 중…';$('fetchCheckDraw').disabled=true;
+  const id=++checkRequest;$('checkError').textContent='';$('checkSource').textContent='당첨번호 조회 중…';$('fetchCheckDraw').disabled=true;
   invalidateComparison();$('checkNumbers').value='';$('checkBonus').value='';
   try{
     const data=await fetchRegisteredDraw(round);
@@ -1010,8 +998,8 @@ async function fetchComparisonDraw(){
     }
     const bonus=data.bonus_number,numbers=data.winning_numbers;
     $('checkNumbers').value=numbers.join(', ');$('checkBonus').value=String(bonus);checkDrawLabel=`${round}회 (${data.draw_date})`;
-    $('checkSource').textContent=`${checkDrawLabel} · 관리자 등록 자료. 실제 구매 복권과 함께 확인해 주세요.`;
-  }catch(_){if(id===checkRequest){$('checkSource').textContent='관리자 등록 자료를 불러오지 못했습니다.';$('checkError').textContent='비교할 번호를 직접 입력하거나 잠시 후 다시 조회해 주세요.';}}
+    $('checkSource').textContent=`${checkDrawLabel} 당첨번호 · 실제 구매 복권과 함께 확인해 주세요.`;
+  }catch(_){if(id===checkRequest){$('checkSource').textContent='당첨번호를 불러오지 못했습니다.';$('checkError').textContent='비교할 번호를 직접 입력하거나 잠시 후 다시 조회해 주세요.';}}
   finally{if(id===checkRequest)$('fetchCheckDraw').disabled=false;}
 }
 function matchRank(row,numbers,bonus){

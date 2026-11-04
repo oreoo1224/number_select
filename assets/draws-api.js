@@ -3,7 +3,7 @@
 
   const messages = {
     DRAW_NOT_CONFIGURED: '등록된 당첨번호를 불러올 준비가 되지 않았습니다.',
-    DRAW_SETUP_REQUIRED: '관리자 당첨번호 등록을 준비하고 있습니다.',
+    DRAW_SETUP_REQUIRED: '당첨번호 등록을 준비하고 있습니다.',
     DRAW_UNAVAILABLE: '등록된 당첨번호를 불러오지 못했습니다.',
     DRAW_INVALID_INPUT: '올바른 회차를 입력해 주세요.',
     DRAW_INVALID_RESPONSE: '등록된 당첨번호 형식을 확인할 수 없습니다.',
