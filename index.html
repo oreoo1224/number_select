@@ -141,6 +141,7 @@
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
 <link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-2">
 <link rel="stylesheet" href="/assets/home-lucky-number.css?v=20261105-1">
+<link rel="stylesheet" href="/assets/number-comparison.css?v=20261105-1">
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261104-1" defer></script>
@@ -178,7 +179,7 @@
 
   <div class="home-actions">
     <button id="startDraw" class="primary home-draw" type="button">추첨하기 <span aria-hidden="true">→</span></button>
-    <button id="openResults" class="secondary home-results" type="button">결과 확인</button><button id="openCompare" class="text-btn" type="button">저장 번호 당첨 확인</button>
+    <button id="openResults" class="secondary home-results" type="button">결과 확인</button><button id="openCompare" class="text-btn" type="button">당첨번호 조회</button>
     <button id="openConditionsGuide" class="text-btn home-conditions-guide" type="button" aria-haspopup="dialog" aria-controls="conditionsGuideDialog">8가지 조건 알아보기</button>
   </div>
   </section>
@@ -195,7 +196,7 @@
       <h3 id="customTitle">내 번호 설정</h3>
       <div class="custom-row"><label class="custom-label"><input id="includeEnabled" type="checkbox">필수 포함 번호</label><input id="includeNumbers" type="text" inputmode="decimal" aria-label="필수 포함 번호 입력" placeholder="예: 7, 21" disabled></div>
       <div class="custom-row"><label class="custom-label"><input id="excludeEnabled" type="checkbox">제외 번호</label><input id="excludeNumbers" type="text" inputmode="decimal" aria-label="제외 번호 입력" placeholder="예: 4, 13" disabled></div>
-      <p class="custom-hint">1~45의 숫자를 쉼표 또는 공백으로 구분해 주세요.</p>
+      <p class="custom-hint">1~45의 숫자를 쉼표·공백·마침표(.)로 구분해 주세요.</p>
       <p id="customError" class="custom-error" role="alert"></p>
     </section>
     <details id="additionalConditions" class="additional-conditions">
@@ -306,14 +307,25 @@
   </section>
 
   <section id="compareSection" class="card" hidden aria-labelledby="compareTitle">
-    <h2 id="compareTitle">저장 번호 당첨 확인</h2>
-    <p class="feature-note">저장된 전체 조합을 비교하며, 실제 구매 여부는 확인하지 않습니다.</p>
-    <label class="check-field">비교할 회차<input id="checkRound" type="number" min="1" step="1" placeholder="예: 1243"></label>
-    <button id="fetchCheckDraw" class="secondary" type="button">등록된 회차 조회</button>
+    <h2 id="compareTitle" tabindex="-1">당첨번호 조회</h2>
+    <label class="check-field">조회할 회차<input id="checkRound" type="number" min="1" step="1" placeholder="예: 1248"></label>
+    <button id="fetchCheckDraw" class="secondary" type="button">당첨번호 조회</button>
     <p id="checkSource" class="feature-note" role="status"></p>
     <div class="check-grid"><label class="check-field check-wide">당첨번호 6개<input id="checkNumbers" type="text" inputmode="decimal" placeholder="예: 1, 7, 14, 22, 35, 41"></label><label class="check-field">보너스 번호<input id="checkBonus" type="number" min="1" max="45" step="1"></label></div>
-    <button id="compareSaved" class="primary" type="button">저장 번호와 비교</button>
+    <div class="comparison-actions">
+      <button id="compareSaved" class="primary" type="button">저장 번호와 비교</button>
+      <button id="openPurchasedNumbers" class="secondary" type="button" aria-expanded="false" aria-controls="purchasedNumberPanel">구입 번호 입력</button>
+    </div>
     <p id="checkError" class="error" role="alert"></p><div id="comparisonOutput" aria-live="polite"></div>
+    <section id="purchasedNumberPanel" hidden aria-labelledby="purchasedNumbersTitle">
+      <h3 id="purchasedNumbersTitle">구입 번호 입력</h3>
+      <label class="check-field" for="purchasedNumbers">구입 번호 6개</label>
+      <input id="purchasedNumbers" type="text" inputmode="decimal" autocomplete="off" placeholder="예: 7.14.21.28.35.42" aria-describedby="purchasedNumbersHint">
+      <p id="purchasedNumbersHint" class="feature-note">쉼표·공백·마침표(.)로 구분해 주세요.</p>
+      <button id="comparePurchased" class="primary" type="button">구입 번호 확인</button>
+      <p id="purchasedError" class="error" role="alert"></p>
+      <div id="purchasedOutput" aria-live="polite"></div>
+    </section>
     <p class="feature-note">번호 일치 여부를 보여 주는 참고 결과입니다. <a class="link-inline" href="https://www.dhlottery.co.kr/lt645/intro" target="_blank" rel="noopener">동행복권 공식 결과</a>와 실제 구매 복권을 최종 확인해 주세요.</p>
   </section>
 </main>
@@ -439,7 +451,7 @@ function customNumbers(allowOverlap=false){
     if(!$(enabled).checked)return [];
     const raw=$(id).value.trim();
     if(!raw)throw new Error(label+'를 입력하거나 선택을 해제해 주세요.');
-    const parts=raw.split(/[\s,]+/).filter(Boolean);
+    const parts=raw.split(/[\s,.]+/).filter(Boolean);
     if(parts.some(x=>!/^\d+$/.test(x)||Number(x)<1||Number(x)>45))throw new Error('번호는 1~45의 정수만 입력해 주세요.');
     return [...new Set(parts.map(Number))].sort((a,b)=>a-b);
   }
@@ -634,8 +646,9 @@ async function loadLatestDraw(){
   }
 }
 function parseSixNumbers(raw){
-  const arr = raw.trim().split(/[\s,]+/).filter(Boolean).map(Number).sort((a,b)=>a-b);
-  if(arr.length!==6 || arr.some(n=>!Number.isInteger(n)||n<1||n>45) || new Set(arr).size!==6) throw new Error('1~45의 서로 다른 숫자 6개를 입력해 주세요.');
+  const parts = raw.trim().split(/[\s,.]+/).filter(Boolean);
+  const arr = parts.map(Number).sort((a,b)=>a-b);
+  if(parts.some(value=>!/^\d+$/.test(value)) || arr.length!==6 || arr.some(n=>!Number.isInteger(n)||n<1||n>45) || new Set(arr).size!==6) throw new Error('1~45의 서로 다른 숫자 6개를 입력해 주세요.');
   return arr;
 }
 function currentPreviousNumbers(){ return latestDraw?[...latestDraw.winning_numbers]:[]; }
@@ -837,8 +850,9 @@ function updateReviewBox(){
   $('reviewBox').textContent=`조건 ${count}개 · ${games}개 생성 · ${roundText}${customSummary()?' · '+customSummary():''}`;
 }
 function setStep(step){
+  if(currentStep===4&&step!==4&&typeof cancelComparisonFetch==='function')cancelComparisonFetch();
   currentStep=step;
-  $('compareSection').hidden=true;
+  $('compareSection').hidden=step!==4;
   document.body.classList.toggle('is-home',step===0);
   $('homeIntro').hidden=step!==0;
   $('homeScreen').hidden=step!==0;
@@ -848,7 +862,7 @@ function setStep(step){
   $('step1Summary').classList.toggle('show',step===2);
   $('resultsShell').classList.toggle('show',step===3);
   if(step===2) updateReviewBox();
-  const target=step===0?$('brandHeader'):step===1?$('step1'):step===2?$('step2'):$('resultsShell');
+  const target=step===0?$('brandHeader'):step===1?$('step1'):step===2?$('step2'):step===4?$('compareSection'):$('resultsShell');
   target.scrollIntoView({behavior:'smooth',block:'start'});
 }
 function showResults(){
@@ -937,7 +951,6 @@ updatePreviousRuleAvailability();
 updateRuleUI();
 refreshHistory();
 renderHistory();
-if(!memoryOnly)$('storageStatus').textContent='같은 브라우저에서 누적 기록을 자동 복원합니다.';
 if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',loadLatestDraw,{once:true});
 else loadLatestDraw();
 </script>
@@ -990,22 +1003,39 @@ async function copySiteLink(){
   catch(_){$('imageShareStatus').textContent=PUBLIC_SITE_URL;}
 }
 let checkRequest=0,checkDrawLabel='직접 입력한 번호';
-function invalidateComparison(){ $('comparisonOutput').textContent=''; }
-function openComparison(){showResults();$('compareSection').hidden=false;if(!$('checkRound').value&&latestDraw)$('checkRound').value=String(latestDraw.draw_no);$('compareSection').scrollIntoView({behavior:'smooth',block:'start'});}
-async function fetchComparisonDraw(){
-  const round=Number($('checkRound').value);if(!Number.isInteger(round)||round<1){$('checkError').textContent='올바른 회차를 입력해 주세요.';return;}
-  const id=++checkRequest;$('checkError').textContent='';$('checkSource').textContent='당첨번호 조회 중…';$('fetchCheckDraw').disabled=true;
+function invalidateComparison(){
+  $('comparisonOutput').replaceChildren();
+  $('purchasedOutput').replaceChildren();
+}
+function cancelComparisonFetch(){
+  checkRequest++;
+  if($('fetchCheckDraw').disabled)$('checkSource').textContent='';
+  $('fetchCheckDraw').disabled=false;
+}
+function openComparison({autoLoad=true}={}){
+  cancelComparisonFetch();
+  setStep(4);
+  if(!$('checkRound').value&&latestDraw)$('checkRound').value=String(latestDraw.draw_no);
+  $('compareTitle').focus({preventScroll:true});
+  if(autoLoad&&!$('checkNumbers').value)fetchComparisonDraw({allowLatest:true});
+}
+async function fetchComparisonDraw({allowLatest=false}={}){
+  const raw=$('checkRound').value.trim(),useLatest=allowLatest&&!raw;
+  const round=useLatest?undefined:Number(raw);
+  if(!useLatest&&(!/^\d+$/.test(raw)||!Number.isInteger(round)||round<1)){$('checkError').textContent='올바른 회차를 입력해 주세요.';return;}
+  const id=++checkRequest;$('checkError').textContent='';$('purchasedError').textContent='';$('checkSource').textContent='당첨번호 조회 중…';$('fetchCheckDraw').disabled=true;
   invalidateComparison();$('checkNumbers').value='';$('checkBonus').value='';
   try{
     const data=await fetchRegisteredDraw(round);
     if(id!==checkRequest)return;
     if(!data){
-      $('checkSource').textContent=`${round}회 자료가 아직 등록되지 않았습니다.`;
+      $('checkSource').textContent=useLatest?'등록된 당첨번호가 없습니다.':`${round}회 자료가 아직 등록되지 않았습니다.`;
       $('checkError').textContent='비교할 당첨번호와 보너스 번호를 직접 입력해 주세요.';
       return;
     }
     const bonus=data.bonus_number,numbers=data.winning_numbers;
-    $('checkNumbers').value=numbers.join(', ');$('checkBonus').value=String(bonus);checkDrawLabel=`${round}회 (${data.draw_date})`;
+    $('checkRound').value=String(data.draw_no);$('checkNumbers').value=numbers.join(', ');$('checkBonus').value=String(bonus);checkDrawLabel=`${data.draw_no}회 (${data.draw_date})`;
+    $('purchasedError').textContent='';
     $('checkSource').textContent=`${checkDrawLabel} 당첨번호 · 실제 구매 복권과 함께 확인해 주세요.`;
   }catch(_){if(id===checkRequest){$('checkSource').textContent='당첨번호를 불러오지 못했습니다.';$('checkError').textContent='비교할 번호를 직접 입력하거나 잠시 후 다시 조회해 주세요.';}}
   finally{if(id===checkRequest)$('fetchCheckDraw').disabled=false;}
@@ -1014,10 +1044,21 @@ function matchRank(row,numbers,bonus){
   const matches=row.filter(n=>numbers.includes(n)).length,bonusMatch=row.includes(bonus);
   return {matches,bonusMatch,rank:matches===6?1:matches===5?(bonusMatch?2:3):matches===4?4:matches===3?5:0};
 }
+function comparisonDraw(){
+  let numbers;
+  try{numbers=parseSixNumbers($('checkNumbers').value);}
+  catch(_){throw Error('당첨번호에는 1~45의 서로 다른 숫자 6개를 입력해 주세요.');}
+  const bonus=Number($('checkBonus').value);
+  if(!Number.isInteger(bonus)||bonus<1||bonus>45||numbers.includes(bonus))throw Error('보너스는 당첨번호와 다른 1~45의 숫자 하나여야 합니다.');
+  return {numbers,bonus};
+}
 function compareSavedNumbers(){
+  $('purchasedNumberPanel').hidden=true;
+  $('openPurchasedNumbers').setAttribute('aria-expanded','false');
+  $('purchasedOutput').replaceChildren();
+  $('purchasedError').textContent='';
   try{
-    const numbers=parseSixNumbers($('checkNumbers').value),bonus=Number($('checkBonus').value);
-    if(!Number.isInteger(bonus)||bonus<1||bonus>45||numbers.includes(bonus))throw Error('보너스는 당첨번호와 다른 1~45의 숫자 하나여야 합니다.');
+    const {numbers,bonus}=comparisonDraw();
     refreshHistory();if(!historyRows.length)throw Error('저장된 번호가 없습니다. 먼저 번호를 생성해 주세요.');
     const outcomes=historyRows.map((row,i)=>({index:i+1,row,...matchRank(row,numbers,bonus)}));
     const counts=[1,2,3,4,5].map(rank=>outcomes.filter(r=>r.rank===rank).length),winners=outcomes.filter(r=>r.rank).sort((a,b)=>a.rank-b.rank||a.index-b.index);
@@ -1028,6 +1069,47 @@ function compareSavedNumbers(){
     $('checkError').textContent='';return {count:outcomes.length,counts};
   }catch(e){invalidateComparison();$('checkError').textContent=e.message;return {error:e.message};}
 }
+function togglePurchasedNumbers(){
+  const open=$('purchasedNumberPanel').hidden;
+  $('purchasedNumberPanel').hidden=!open;
+  $('openPurchasedNumbers').setAttribute('aria-expanded',String(open));
+  if(open){
+    $('comparisonOutput').replaceChildren();
+    $('checkError').textContent='';
+    $('purchasedError').textContent='';
+    $('purchasedOutput').replaceChildren();
+    $('purchasedNumbers').focus();
+  }
+}
+function comparePurchasedNumbers(){
+  $('purchasedOutput').replaceChildren();
+  $('purchasedError').textContent='';
+  try{
+    const {numbers,bonus}=comparisonDraw();
+    let row;
+    try{row=parseSixNumbers($('purchasedNumbers').value);}
+    catch(_){throw Error('구입 번호에는 1~45의 서로 다른 숫자 6개를 입력해 주세요.');}
+    const outcome=matchRank(row,numbers,bonus);
+    const result=document.createElement('article');
+    result.className='purchase-result';result.dataset.rank=String(outcome.rank);
+    const heading=document.createElement('h3');heading.className='purchase-result-heading';
+    heading.textContent=outcome.rank?`${outcome.rank}등 조건 일치`:'당첨 조건 미해당';
+    const count=document.createElement('p');count.className='purchase-match-count';
+    count.textContent=`당첨번호 ${outcome.matches}개 일치${outcome.bonusMatch?' · 보너스 번호 일치':''}`;
+    const chips=document.createElement('div');chips.className='purchase-result-numbers';
+    for(const n of row){
+      const winning=numbers.includes(n),isBonus=n===bonus;
+      const chip=document.createElement('span');
+      chip.className=winning?'is-winning':isBonus?'is-bonus':'';
+      chip.textContent=String(n);
+      chip.setAttribute('aria-label',`${n}${winning?', 당첨번호 일치':isBonus?', 보너스 번호 일치':''}`);
+      chips.appendChild(chip);
+    }
+    const source=document.createElement('p');source.className='feature-note';source.textContent=`${checkDrawLabel} 기준`;
+    result.append(heading,count,chips,source);$('purchasedOutput').appendChild(result);
+    return {...outcome,numbers:row};
+  }catch(e){$('purchasedError').textContent=e.message;return {error:e.message};}
+}
 $('shareResultImage').addEventListener('click',()=>showShareImages(lastRows,'나의 번호 조합'));
 $('shareFortuneImage').addEventListener('click',()=>showShareImages(fortuneRows,'오늘의 행운번호'));
 $('imageShareClose').addEventListener('click',closeImageShare);
@@ -1035,14 +1117,19 @@ $('imagePage').addEventListener('change',renderShareImage);
 $('downloadImage').addEventListener('click',saveShareImage);
 $('nativeShareImage').addEventListener('click',shareImage);
 $('copySiteLink').addEventListener('click',copySiteLink);
-$('openCompare').addEventListener('click',openComparison);
-$('fetchCheckDraw').addEventListener('click',fetchComparisonDraw);
+$('openCompare').addEventListener('click',()=>openComparison());
+$('fetchCheckDraw').addEventListener('click',()=>fetchComparisonDraw());
 $('compareSaved').addEventListener('click',compareSavedNumbers);
-for(const id of ['checkRound','checkNumbers','checkBonus'])$(id).addEventListener('input',()=>{checkRequest++;$('fetchCheckDraw').disabled=false;checkDrawLabel='직접 입력한 번호';$('checkSource').textContent='직접 입력한 번호로 비교합니다.';invalidateComparison();});
+$('openPurchasedNumbers').addEventListener('click',togglePurchasedNumbers);
+$('comparePurchased').addEventListener('click',comparePurchasedNumbers);
+$('purchasedNumbers').addEventListener('input',()=>{$('purchasedError').textContent='';$('purchasedOutput').replaceChildren();});
+$('purchasedNumbers').addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();comparePurchasedNumbers();}});
+$('checkRound').addEventListener('input',()=>{cancelComparisonFetch();$('checkNumbers').value='';$('checkBonus').value='';checkDrawLabel='직접 입력한 번호';$('checkSource').textContent='당첨번호 조회를 눌러 해당 회차의 번호를 확인해 주세요.';$('checkError').textContent='';$('purchasedError').textContent='';invalidateComparison();});
+for(const id of ['checkNumbers','checkBonus'])$(id).addEventListener('input',()=>{cancelComparisonFetch();checkDrawLabel='직접 입력한 번호';$('checkSource').textContent='직접 입력한 번호로 비교합니다.';$('checkError').textContent='';$('purchasedError').textContent='';invalidateComparison();});
 document.addEventListener('keydown',event=>{if($('imageShareModal').hidden)return;if(event.key==='Escape'){event.preventDefault();closeImageShare();}if(event.key==='Tab'){const targets=[...$('imageShareModal').querySelectorAll('button,select')].filter(el=>!el.hidden&&!el.disabled);const first=targets[0],last=targets[targets.length-1];if(event.shiftKey&&document.activeElement===first){event.preventDefault();last.focus();}else if(!event.shiftKey&&document.activeElement===last){event.preventDefault();first.focus();}}});
 if(document.modelContext?.registerTool){
   const lifecycle=new AbortController();
-  try{Promise.resolve(document.modelContext.registerTool({name:'compare_saved_numbers',title:'저장 번호 비교',description:'입력한 당첨번호와 보너스로 현재 브라우저의 저장 번호를 비교하고 결과를 표시합니다.',inputSchema:{type:'object',properties:{numbers:{type:'array',items:{type:'integer',minimum:1,maximum:45},minItems:6,maxItems:6,uniqueItems:true},bonus:{type:'integer',minimum:1,maximum:45}},required:['numbers','bonus'],additionalProperties:false},annotations:{readOnlyHint:false},execute(input){const numbers=parseSixNumbers(Array.isArray(input.numbers)?input.numbers.join(','):'');if(!Number.isInteger(input.bonus)||input.bonus<1||input.bonus>45||numbers.includes(input.bonus))throw Error('올바른 보너스 번호가 필요합니다.');openComparison();$('checkNumbers').value=numbers.join(', ');$('checkBonus').value=String(input.bonus);checkDrawLabel='직접 입력한 번호';return compareSavedNumbers();}},{signal:lifecycle.signal})).catch(()=>{});}catch(_){}
+  try{Promise.resolve(document.modelContext.registerTool({name:'compare_saved_numbers',title:'저장 번호 비교',description:'입력한 당첨번호와 보너스로 현재 브라우저의 저장 번호를 비교하고 결과를 표시합니다.',inputSchema:{type:'object',properties:{numbers:{type:'array',items:{type:'integer',minimum:1,maximum:45},minItems:6,maxItems:6,uniqueItems:true},bonus:{type:'integer',minimum:1,maximum:45}},required:['numbers','bonus'],additionalProperties:false},annotations:{readOnlyHint:false},execute(input){const numbers=parseSixNumbers(Array.isArray(input.numbers)?input.numbers.join(','):'');if(!Number.isInteger(input.bonus)||input.bonus<1||input.bonus>45||numbers.includes(input.bonus))throw Error('올바른 보너스 번호가 필요합니다.');openComparison({autoLoad:false});invalidateComparison();$('checkError').textContent='';$('purchasedError').textContent='';$('checkNumbers').value=numbers.join(', ');$('checkBonus').value=String(input.bonus);checkDrawLabel='직접 입력한 번호';$('checkSource').textContent='직접 입력한 번호로 비교합니다.';return compareSavedNumbers();}},{signal:lifecycle.signal})).catch(()=>{});}catch(_){}
   window.addEventListener('pagehide',()=>lifecycle.abort(),{once:true});
 }
 

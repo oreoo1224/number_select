@@ -1,0 +1,143 @@
+#compareSection{border-color:#e8e0f1;background:#ffffffed}
+#compareSection #compareTitle{margin:0 0 20px;color:#30243e;font-size:26px;line-height:1.4;letter-spacing:-.6px}
+#compareSection .check-field{min-width:0;color:#55465f}
+#compareSection .check-field input{min-width:0;color:#332844;font-size:16px;line-height:1.5}
+#compareSection .check-grid{gap:0 12px}
+#compareSection #fetchCheckDraw{min-height:44px;padding:10px 14px;border:1px solid #dfd3f0;background:#f5f0ff;font-size:14px}
+#compareSection #checkSource{margin:10px 0 0;color:#806f90;font-size:13px;line-height:1.7;overflow-wrap:anywhere}
+#compareSection #checkSource:empty{margin:0}
+#compareSection .comparison-actions{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:10px;
+  margin-top:18px;
+}
+#compareSection .comparison-actions>button{
+  min-width:0;
+  min-height:48px;
+  padding:11px 10px;
+  border-radius:12px;
+  font-size:15px;
+  line-height:1.45;
+  word-break:keep-all;
+  white-space:normal;
+}
+#compareSection .comparison-actions>.primary{box-shadow:0 5px 14px #7357f626}
+#compareSection #openPurchasedNumbers{border:1px solid #d9cbed;background:#f3edfc;color:#6e4b99}
+#compareSection #openPurchasedNumbers[aria-expanded="true"]{border-color:#b79bd9;background:#ebe1fb;color:#603d8b}
+#compareSection #purchasedNumberPanel{
+  min-width:0;
+  margin-top:18px;
+  padding:18px;
+  border:1px solid #e0d3f1;
+  border-radius:16px;
+  background:linear-gradient(135deg,#faf7ff,#f5f0fc);
+}
+#compareSection #purchasedNumberPanel h3{margin:0 0 12px;color:#49325f;font-size:17px;line-height:1.5;letter-spacing:-.2px}
+#compareSection #purchasedNumberPanel label{display:block;color:#554063;font-size:14px;font-weight:800;line-height:1.5}
+#compareSection #purchasedNumberPanel .feature-note{margin:8px 0 0;font-size:12px;line-height:1.7;word-break:keep-all}
+#compareSection #purchasedNumbers{
+  display:block;
+  width:100%;
+  min-width:0;
+  min-height:48px;
+  margin-top:7px;
+  padding:11px 12px;
+  border:1px solid #d5c7e6;
+  border-radius:11px;
+  background:#fff;
+  color:#332744;
+  font-size:16px;
+  line-height:1.5;
+}
+#compareSection #purchasedNumbers::placeholder{color:#a093ae;font-size:14px}
+#compareSection #comparePurchased{
+  width:100%;
+  min-height:46px;
+  margin-top:12px;
+  padding:11px 14px;
+  border:0;
+  border-radius:11px;
+  background:linear-gradient(135deg,#7659f4,#8b69f8);
+  color:#fff;
+  font-size:15px;
+  font-weight:800;
+  line-height:1.5;
+  cursor:pointer;
+}
+#compareSection #purchasedError{min-height:0;margin:10px 0 0;color:#ad3f4c;font-size:12px;line-height:1.65;overflow-wrap:anywhere}
+#compareSection #purchasedError:empty,#compareSection #checkError:empty{min-height:0;margin:0}
+#compareSection #comparisonOutput{margin-top:14px;overflow-wrap:anywhere}
+#compareSection #comparisonOutput:empty{margin:0}
+#compareSection #comparisonOutput .check-result{padding:13px 0;border-color:#eee7f4}
+#compareSection .purchase-result{
+  min-width:0;
+  margin-top:16px;
+  padding:15px;
+  border:1px solid #e5dbee;
+  border-radius:14px;
+  background:#ffffffed;
+  box-shadow:0 3px 12px #8f74aa0a;
+  overflow-wrap:anywhere;
+}
+#compareSection .purchase-result.is-winning{border-color:#cbb4e8;background:#fdfbff}
+#compareSection .purchase-result-heading{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+  margin:0;
+  color:#463056;
+  font-size:16px;
+  font-weight:800;
+  line-height:1.5;
+}
+#compareSection .purchase-match-count{
+  display:inline-flex;
+  align-items:center;
+  min-height:28px;
+  padding:5px 9px;
+  border-radius:999px;
+  background:#f0e8fa;
+  color:#79569e;
+  font-size:12px;
+  font-weight:700;
+  line-height:1.4;
+  word-break:keep-all;
+}
+#compareSection .purchase-result-numbers{
+  display:grid;
+  grid-template-columns:repeat(6,minmax(0,1fr));
+  gap:6px;
+  width:100%;
+  max-width:258px;
+  margin-top:14px;
+}
+#compareSection .purchase-result-numbers>span{
+  display:grid;
+  place-items:center;
+  aspect-ratio:1;
+  width:auto;
+  min-width:0;
+  height:auto;
+  border:1px solid #e3dbe9;
+  border-radius:50%;
+  background:#f5f1f8;
+  box-shadow:none;
+  color:#80718e;
+  font-size:clamp(12px,2vw,15px);
+  font-weight:800;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+#compareSection .purchase-result-numbers>.is-winning{border-color:#ad8bd3;background:#eee2fc;color:#673c96}
+#compareSection .purchase-result-numbers>.is-bonus{border-color:#debd82;background:#fff4de;color:#8f6526}
+#compareSection button:focus-visible,#compareSection input:focus-visible{outline:3px solid #7357f6;outline-offset:3px}
+@media(max-width:650px){
+  #compareSection #compareTitle{font-size:24px}
+  #compareSection .comparison-actions{gap:8px}
+  #compareSection .comparison-actions>button{padding:10px 8px;font-size:13px}
+  #compareSection #purchasedNumberPanel{padding:15px}
+  #compareSection .purchase-result{padding:13px}
+}
