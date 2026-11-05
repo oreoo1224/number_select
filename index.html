@@ -4,13 +4,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#7b61ff">
-  <meta name="description" content="행운설계소에서 로또 번호를 생성하고 다양한 조건으로 번호를 선택해 보세요. 로또 당첨번호 조회와 번호 분석 기능을 제공합니다.">
+  <meta name="description" content="행운설계소에서 선호 번호와 8가지 조건으로 로또 6/45 번호를 조합해 보세요. 번호 저장과 당첨번호 비교 기능을 무료로 제공합니다.">
   <meta name="naver-site-verification" content="fef8d61673bf049daae37eb69ba089c42fd9c8d5" />
   <meta name="google-adsense-account" content="ca-pub-7780621394135550">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="default">
   <meta name="apple-mobile-web-app-title" content="행운설계소">
-  <title>행운설계소 | 무료 로또 번호 생성기 · 필수·제외 번호 설정</title>
+  <title>행운설계소 | 무료 로또 6/45 번호 조합 · 선호 번호 설정</title>
   <style>
     :root{
       font-family:system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
@@ -82,7 +82,7 @@
 
     body.is-home{background:radial-gradient(ellipse at 95% 12%,#e9ddff 0,transparent 46%),linear-gradient(160deg,#fff 0%,#f7f3ff 65%,#faf8ff 100%)}
     .is-home main{max-width:680px}.is-home .hero{padding:18px 6px 24px}.is-home .brandline{font-size:25px;letter-spacing:-1px;color:#171725;gap:12px}.is-home .spark{background:none;box-shadow:none;font-size:40px;color:#8c41ff;width:40px;height:44px}
-    .home-intro{position:relative;padding:27px 0 12px;overflow:hidden}.home-intro h1{position:relative;z-index:1;font-size:clamp(34px,7.8vw,55px);line-height:1.23;letter-spacing:-2px;margin:8px 0 17px;font-weight:900}.home-intro h1 span{color:#7836ee}.home-intro p{position:relative;z-index:1;margin:0;font-size:clamp(13px,3.2vw,18px);color:#787485}
+    .home-intro{position:relative;padding:27px 0 12px;overflow:hidden}.home-intro h1{position:relative;z-index:1;font-size:clamp(34px,7.8vw,55px);line-height:1.23;letter-spacing:-2px;margin:8px 0 17px;font-weight:900}.home-intro h1 span{color:#7836ee}.home-intro p{position:relative;z-index:1;margin:0;font-size:clamp(13px,3.2vw,18px);color:#787485}.home-intro .home-description{line-height:1.7;word-break:keep-all}.home-intro .home-independence{margin-top:8px;font-size:11px;line-height:1.7;color:#797184;word-break:keep-all}
     .clover{position:absolute;right:4px;top:14px;width:150px;height:150px;opacity:.55;transform:rotate(20deg);pointer-events:none}.leaf{position:absolute;width:64px;height:64px;background:linear-gradient(135deg,#d6b5ff,#9e64ed);border-radius:50% 50% 8% 50%}.leaf:nth-child(1){left:10px;top:10px}.leaf:nth-child(2){left:75px;top:10px;transform:rotate(90deg)}.leaf:nth-child(3){left:75px;top:75px;transform:rotate(180deg)}.leaf:nth-child(4){left:10px;top:75px;transform:rotate(270deg)}
     .is-home .latest-card{background:rgba(255,255,255,.94);padding:24px;border:1px solid #eee8fa;box-shadow:0 9px 30px #7357f608}.is-home .latest-title{font-size:20px;margin:0 0 8px;color:#181822}.is-home .latest-card .row-between{float:right}.is-home .latest-card .tag{display:none}.is-home .latest-balls{gap:8px;margin-top:18px;flex-wrap:nowrap}.is-home .ball{width:clamp(29px,8vw,54px);height:clamp(29px,8vw,54px);font-size:clamp(15px,4vw,23px);flex-shrink:0;box-shadow:0 5px 9px #00000008}.is-home .b1{background:#f5bb16}.is-home .b2{background:#2375e8}.is-home .b3{background:#ed454d}.is-home .b4{background:#7d818b}.is-home .b5{background:#26a647}
     .home-actions{gap:13px;margin:20px 0}.home-draw{background:linear-gradient(110deg,#7525f8,#9956ff);min-height:84px;font-size:27px;border-radius:21px;box-shadow:0 10px 26px #8134ed20}.home-results{min-height:65px;background:#ece3ff;color:#472183;font-size:20px;border-radius:20px}.fortune-card{position:relative;overflow:hidden;padding:24px;background:#ffffffee;border-color:#eee8fa;min-height:139px}.fortune-card h2{font-size:23px;position:relative;z-index:1}.fortune-link{color:#7836ee;font-size:18px;position:relative;z-index:1}.fortune-decoration{position:absolute;right:23px;top:18px;color:#c6a2f3;font-size:86px;line-height:1;pointer-events:none}.is-home .footer{text-align:center;line-height:1.8;color:#827d90}
@@ -98,8 +98,8 @@
 <link rel="apple-touch-icon" sizes="180x180" href="/assets/apple-touch-icon.png">
 <link rel="canonical" href="https://luckzip.com/">
 <meta property="og:url" content="https://luckzip.com/">
-<meta property="og:title" content="행운설계소 | 무료 로또 번호 생성기 · 필수·제외 번호 설정">
-<meta property="og:description" content="포함·제외 번호 설정, 1,000개 중복 방지, 결과 이미지 공유와 저장 번호 비교.">
+<meta property="og:title" content="행운설계소 | 무료 로또 6/45 번호 조합 · 선호 번호 설정">
+<meta property="og:description" content="선호 번호와 8가지 조건으로 로또 6/45 번호를 조합하고, 저장한 번호를 당첨번호와 비교하세요.">
 <style>.feature-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.feature-actions button{flex:1;min-height:44px}.check-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.check-field{display:block;font-size:14px;font-weight:700;margin:14px 0}.check-field input,.check-field select{width:100%;display:block;min-height:45px;border:1px solid #d8d0e6;border-radius:10px;padding:10px;margin-top:6px;background:white}.check-wide{grid-column:1/-1}.feature-note{font-size:13px;line-height:1.65;color:#746d80}.check-result{padding:13px 0;border-bottom:1px solid #eee;line-height:1.7;font-size:14px}.rank-label{font-weight:900;color:#7357f6}.image-preview{display:block;width:100%;height:auto;border:1px solid #eee;border-radius:12px}.share-options{display:flex;align-items:center;gap:12px;margin:14px 0}.share-options select{padding:9px;border:1px solid #ddd;border-radius:9px}.image-modal-panel{width:min(100%,620px)}.migration-note{margin:12px 0;font-size:13px;line-height:1.6;color:#746d80}.link-inline{color:#6a49df}.count-option input:focus-visible+span{outline:3px solid #7357f6;outline-offset:3px}@media(max-width:400px){.check-grid{grid-template-columns:1fr}.check-wide{grid-column:auto}}
 </style><style>
 /* Responsive condition selection */
@@ -133,7 +133,8 @@
       .home-intro{display:grid;grid-template-columns:minmax(0,1fr) clamp(104px,29vw,120px);column-gap:14px;align-items:center}
       .home-intro .clover{display:none}
       .home-intro h1{grid-column:1;grid-row:1;font-size:clamp(30px,7.8vw,55px);letter-spacing:-1.5px}
-      .home-intro p{grid-column:1/-1;grid-row:2}
+      .home-intro .home-description{grid-column:1/-1;grid-row:2}
+      .home-intro .home-independence{grid-column:1/-1;grid-row:3}
       .hero-fortune-link{grid-column:2;grid-row:1;display:grid;aspect-ratio:1;width:100%}
     }
 </style>
@@ -153,12 +154,13 @@
     <button class="brandline" id="brandHome" type="button" aria-label="행운설계소 첫 화면 새로고침"><img class="brand-icon" src="/assets/logo-96.webp" width="44" height="44" alt="" decoding="async"><span>행운설계소</span></button>
     <div id="homeIntro" class="home-intro">
       <div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div>
-      <h1>나만의 조합,<br><span>새로운 행운.</span></h1>
+      <h1>로또 6/45<br><span>번호 조합</span></h1>
       <a class="hero-fortune-link fortune-entry fortune-entry--mobile" href="/fortunes.html" aria-label="오늘의 운세로 이동" aria-describedby="mobileFortuneDate">
         <picture class="fortune-entry-picture"><source media="(min-width:1100px)" srcset="/assets/fortune-card-desktop.webp" width="1448" height="1086"><img class="fortune-entry-artwork" src="/assets/fortune-card-mobile.webp" width="1254" height="1254" alt="" decoding="async"></picture>
         <time id="mobileFortuneDate" class="fortune-entry-date" data-fortune-date></time>
       </a>
-      <p>원하는 조건으로 만드는 6개의 숫자</p>
+      <p class="home-description">선호 번호와 8가지 조건으로 번호를 조합하고, 저장한 번호를 당첨번호와 비교하세요.</p>
+      <p class="home-independence">본 서비스는 동행복권과 관계없는 독립적인 번호 조합 서비스입니다.</p>
     </div>
   </header>
   <section id="homeScreen">
