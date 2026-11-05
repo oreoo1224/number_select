@@ -141,7 +141,7 @@
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
 <link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-2">
 <link rel="stylesheet" href="/assets/home-lucky-number.css?v=20261105-1">
-<link rel="stylesheet" href="/assets/number-comparison.css?v=20261105-1">
+<link rel="stylesheet" href="/assets/number-comparison.css?v=20261105-2">
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261104-1" defer></script>
@@ -1044,6 +1044,32 @@ function matchRank(row,numbers,bonus){
   const matches=row.filter(n=>numbers.includes(n)).length,bonusMatch=row.includes(bonus);
   return {matches,bonusMatch,rank:matches===6?1:matches===5?(bonusMatch?2:3):matches===4?4:matches===3?5:0};
 }
+function createComparisonResultCard(row,outcome,numbers,bonus,recordIndex=null){
+  const result=document.createElement('article');
+  result.className='purchase-result';result.dataset.rank=String(outcome.rank);
+  if(recordIndex!==null){
+    result.classList.add('saved-comparison-result');
+    result.dataset.recordIndex=String(recordIndex);
+    const record=document.createElement('p');record.className='saved-comparison-record';
+    record.textContent=`저장 번호 ${recordIndex}번`;result.appendChild(record);
+  }
+  const heading=document.createElement('h3');heading.className='purchase-result-heading';
+  heading.textContent=outcome.rank?`${outcome.rank}등 조건 일치`:'당첨 조건 미해당';
+  const count=document.createElement('p');count.className='purchase-match-count';
+  count.textContent=`당첨번호 ${outcome.matches}개 일치${outcome.bonusMatch?' · 보너스 번호 일치':''}`;
+  const chips=document.createElement('div');chips.className='purchase-result-numbers';
+  for(const n of row){
+    const winning=numbers.includes(n),isBonus=n===bonus;
+    const chip=document.createElement('span');
+    chip.className=winning?'is-winning':isBonus?'is-bonus':'';
+    chip.textContent=String(n);
+    chip.setAttribute('aria-label',`${n}${winning?', 당첨번호 일치':isBonus?', 보너스 번호 일치':''}`);
+    chips.appendChild(chip);
+  }
+  const source=document.createElement('p');source.className='feature-note';source.textContent=`${checkDrawLabel} 기준`;
+  result.append(heading,count,chips,source);
+  return result;
+}
 function comparisonDraw(){
   let numbers;
   try{numbers=parseSixNumbers($('checkNumbers').value);}
@@ -1065,7 +1091,7 @@ function compareSavedNumbers(){
     const root=$('comparisonOutput');root.textContent='';const head=document.createElement('p');head.className='feature-note';head.textContent=`${checkDrawLabel} · 누적 ${outcomes.length}개 비교 · 회차별 구매 기록과 무관한 번호 일치 결과`;root.appendChild(head);
     const summary=document.createElement('p');summary.textContent=counts.map((n,i)=>`${i+1}등 조건 ${n}개`).join(' · ');root.appendChild(summary);
     if(!winners.length){const p=document.createElement('p');p.textContent='당첨번호와 3개 이상 일치하는 조합이 없습니다.';root.appendChild(p);}
-    winners.forEach(r=>{const div=document.createElement('div');div.className='check-result';div.textContent=`${r.index}번 · ${r.row.join(', ')} — ${r.rank}등 조건 (${r.matches}개 일치${r.matches===5&&r.bonusMatch?' + 보너스':''})`;root.appendChild(div);});
+    winners.forEach(r=>root.appendChild(createComparisonResultCard(r.row,r,numbers,bonus,r.index)));
     $('checkError').textContent='';return {count:outcomes.length,counts};
   }catch(e){invalidateComparison();$('checkError').textContent=e.message;return {error:e.message};}
 }
@@ -1090,23 +1116,7 @@ function comparePurchasedNumbers(){
     try{row=parseSixNumbers($('purchasedNumbers').value);}
     catch(_){throw Error('구입 번호에는 1~45의 서로 다른 숫자 6개를 입력해 주세요.');}
     const outcome=matchRank(row,numbers,bonus);
-    const result=document.createElement('article');
-    result.className='purchase-result';result.dataset.rank=String(outcome.rank);
-    const heading=document.createElement('h3');heading.className='purchase-result-heading';
-    heading.textContent=outcome.rank?`${outcome.rank}등 조건 일치`:'당첨 조건 미해당';
-    const count=document.createElement('p');count.className='purchase-match-count';
-    count.textContent=`당첨번호 ${outcome.matches}개 일치${outcome.bonusMatch?' · 보너스 번호 일치':''}`;
-    const chips=document.createElement('div');chips.className='purchase-result-numbers';
-    for(const n of row){
-      const winning=numbers.includes(n),isBonus=n===bonus;
-      const chip=document.createElement('span');
-      chip.className=winning?'is-winning':isBonus?'is-bonus':'';
-      chip.textContent=String(n);
-      chip.setAttribute('aria-label',`${n}${winning?', 당첨번호 일치':isBonus?', 보너스 번호 일치':''}`);
-      chips.appendChild(chip);
-    }
-    const source=document.createElement('p');source.className='feature-note';source.textContent=`${checkDrawLabel} 기준`;
-    result.append(heading,count,chips,source);$('purchasedOutput').appendChild(result);
+    $('purchasedOutput').appendChild(createComparisonResultCard(row,outcome,numbers,bonus));
     return {...outcome,numbers:row};
   }catch(e){$('purchasedError').textContent=e.message;return {error:e.message};}
 }

@@ -33,7 +33,7 @@
   border-radius:16px;
   background:linear-gradient(135deg,#faf7ff,#f5f0fc);
 }
-#compareSection #purchasedNumberPanel h3{margin:0 0 12px;color:#49325f;font-size:17px;line-height:1.5;letter-spacing:-.2px}
+#compareSection #purchasedNumberPanel>h3{margin:0 0 12px;color:#49325f;font-size:17px;line-height:1.5;letter-spacing:-.2px}
 #compareSection #purchasedNumberPanel label{display:block;color:#554063;font-size:14px;font-weight:800;line-height:1.5}
 #compareSection #purchasedNumberPanel .feature-note{margin:8px 0 0;font-size:12px;line-height:1.7;word-break:keep-all}
 #compareSection #purchasedNumbers{
@@ -69,7 +69,7 @@
 #compareSection #purchasedError:empty,#compareSection #checkError:empty{min-height:0;margin:0}
 #compareSection #comparisonOutput{margin-top:14px;overflow-wrap:anywhere}
 #compareSection #comparisonOutput:empty{margin:0}
-#compareSection #comparisonOutput .check-result{padding:13px 0;border-color:#eee7f4}
+#compareSection .saved-comparison-record{margin:0 0 6px;color:#806c91;font-size:12px;font-weight:700;line-height:1.5}
 #compareSection .purchase-result{
   min-width:0;
   margin-top:16px;
@@ -87,12 +87,14 @@
   justify-content:space-between;
   flex-wrap:wrap;
   gap:8px;
-  margin:0;
-  color:#463056;
-  font-size:16px;
+  margin:0 0 12px;
+  color:#49325f;
+  font-size:17px;
   font-weight:800;
   line-height:1.5;
+  letter-spacing:-.2px;
 }
+#compareSection .purchase-result>.feature-note{margin:8px 0 0;font-size:12px;line-height:1.7;word-break:keep-all}
 #compareSection .purchase-match-count{
   display:inline-flex;
   align-items:center;
