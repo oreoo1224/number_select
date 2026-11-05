@@ -140,6 +140,7 @@
 </style>
 <link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
 <link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-2">
+<link rel="stylesheet" href="/assets/home-lucky-number.css?v=20261105-1">
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261104-1" defer></script>
@@ -323,9 +324,12 @@
     <time id="homeFortuneDate" class="fortune-entry-date" data-fortune-date></time>
     <a class="fortune-entry-action" href="/fortunes.html" aria-describedby="homeFortuneDate"><span class="fortune-entry-sr-only">오늘 운세 확인</span></a>
   </section>
-  <section class="card fortune-card" aria-labelledby="fortuneTitle">
-    <span class="fortune-decoration" aria-hidden="true">♧</span><h2 id="fortuneTitle">오늘의 행운번호</h2>
-    <button id="lookupFortune" class="text-btn fortune-link" type="button" aria-controls="fortuneResults">조회하기 →</button>
+  <section class="card fortune-card lucky-number-card" aria-labelledby="fortuneTitle">
+    <div class="lucky-number-header">
+      <h2 id="fortuneTitle">오늘의 행운번호</h2>
+      <img class="lucky-number-clover" src="/assets/lucky-number-clover.webp" width="1263" height="1245" alt="" aria-hidden="true" decoding="async">
+      <button id="lookupFortune" class="lucky-number-button" type="button" aria-controls="fortuneResults"><span id="lookupFortuneLabel" class="lucky-number-button-label">행운번호 보기</span><svg class="lucky-number-arrow" viewBox="0 0 16 16" fill="none" aria-hidden="true" focusable="false"><path d="m6 3 5 5-5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+    </div>
     <div id="fortuneResults" aria-live="polite"></div>
     <p id="fortuneDisclaimer" class="feature-note" hidden>무작위로 생성한 번호이며, 당첨을 보장하지 않습니다.</p>
     <button id="shareFortuneImage" class="text-btn" type="button" hidden>행운번호 이미지 공유</button>
@@ -865,7 +869,7 @@ function showFortuneNumbers(){
   }
   $('fortuneResults').innerHTML=rows.map((row,i)=>`<div class="game"><span class="game-index">${i+1}.</span><div class="latest-balls">${row.map(n=>ballHTML(n)).join('')}</div></div>`).join('');
   $('fortuneDisclaimer').hidden=false;
-  $('lookupFortune').textContent='다시 조회하기';
+  $('lookupFortuneLabel').textContent='다시 보기';
   fortuneRows=rows;$('shareFortuneImage').hidden=false;
 }
 function runDraw(){
