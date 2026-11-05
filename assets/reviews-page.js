@@ -240,6 +240,7 @@
   $('cancelDeleteReview').addEventListener('click',closeDelete);
   $('deleteReviewDialog').addEventListener('cancel',event => { if (deleting) event.preventDefault(); });
   $('deleteReviewDialog').addEventListener('close',() => {
+    if ($('deleteReviewDialog').open) return;
     $('deleteReviewPassword').value = '';
     $('deleteReviewError').textContent = '';
     deleteReturnFocus?.focus({preventScroll:true});
@@ -314,5 +315,27 @@
     }
   }
 
-  init();
+  function initializeNavigation() {
+    const dialog = $('deleteReviewDialog');
+    const canOpen = () => Boolean(currentPost && api?.isConfigured() && !$('reviewDetailView').hidden);
+    window.LuckzipHistory?.create({
+      key:'reviews',
+      root:{dialog:null},
+      normalize:value => ({dialog:value?.dialog === 'delete' && canOpen() ? 'delete' : null}),
+      read:() => ({dialog:dialog.open ? 'delete' : null}),
+      layer:value => value.dialog || '',
+      restore:value => {
+        if (value.dialog === 'delete' && canOpen()) {
+          if (!dialog.open) {
+            deleteReturnFocus = $('openDeleteReview');
+            $('deleteReviewPassword').value = '';
+            $('deleteReviewError').textContent = '';
+            dialog.showModal();
+          }
+        } else if (dialog.open) dialog.close();
+      },
+    });
+  }
+
+  init().then(initializeNavigation);
 })();

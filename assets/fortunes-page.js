@@ -128,6 +128,21 @@
     return operation;
   }
 
+  const zodiacButtons = new Map([...document.querySelectorAll('.zodiac-button')].map(button => [button.dataset.zodiac,button]));
+  function openFortune(sign, focus = true) {
+    const button = zodiacButtons.get(sign);
+    if (!button) return;
+    selectedSign = sign;
+    returnFocus = button;
+    $('fortuneDialogTitle').textContent = sign+'띠 오늘의 운세';
+    showLoading();
+    if (!dialog.open) dialog.showModal();
+    document.body.classList.add('has-fortune-dialog');
+    if (focus) $('fortuneDialogTitle').focus({preventScroll:true});
+    if (fresh()) render();
+    else if (!pending) load();
+  }
+
   for (const button of document.querySelectorAll('.zodiac-button')) {
     button.addEventListener('click',event => {
       // Keep real link navigation for new tabs, modifier clicks and browsers
@@ -136,15 +151,7 @@
           event.ctrlKey || event.shiftKey || event.altKey ||
           typeof dialog.showModal !== 'function') return;
       event.preventDefault();
-      selectedSign = button.dataset.zodiac;
-      returnFocus = button;
-      $('fortuneDialogTitle').textContent = selectedSign+'띠 오늘의 운세';
-      showLoading();
-      dialog.showModal();
-      document.body.classList.add('has-fortune-dialog');
-      $('fortuneDialogTitle').focus({preventScroll:true});
-      if (fresh()) render();
-      else if (!pending) load();
+      openFortune(button.dataset.zodiac);
     });
   }
   $('closeFortuneDialog').addEventListener('click',() => dialog.close());
@@ -154,6 +161,7 @@
     if (event.clientX < bounds.left || event.clientX > bounds.right || event.clientY < bounds.top || event.clientY > bounds.bottom) dialog.close();
   });
   dialog.addEventListener('close',() => {
+    if (dialog.open) return;
     selectedSign = null;
     document.body.classList.remove('has-fortune-dialog');
     clearResults();
@@ -176,6 +184,17 @@
       invalidate();
       load();
     }
+  });
+  window.LuckzipHistory?.create({
+    key:'fortunes',
+    root:{sign:null},
+    normalize:value => ({sign:zodiacButtons.has(value?.sign) ? value.sign : null}),
+    read:() => ({sign:dialog.open ? selectedSign : null}),
+    layer:value => value.sign || '',
+    restore:value => {
+      if (value.sign) openFortune(value.sign,false);
+      else if (dialog.open) dialog.close();
+    },
   });
   load();
 })();

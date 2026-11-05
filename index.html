@@ -142,6 +142,7 @@
 <link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-2">
 <link rel="stylesheet" href="/assets/home-lucky-number.css?v=20261105-1">
 <link rel="stylesheet" href="/assets/number-comparison.css?v=20261105-2">
+<script src="/assets/ui-history.js?v=20261105-1" defer></script>
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261104-1" defer></script>
@@ -432,6 +433,7 @@ let latestLoadFailed = false;
 let storageReadable = true;
 let memoryOnly = false;
 let currentStep = 0;
+let homeNavigation = null;
 
 function ballClass(n){ return `b${Math.min(5, Math.ceil(n / 10))}`; }
 function ballHTML(n, mini=false){ return `<span class="ball ${mini?'mini-ball ':''}${ballClass(n)}">${n}</span>`; }
@@ -849,7 +851,7 @@ function updateReviewBox(){
   const roundText=overlap?`${previousDrawLabel()} 기준 중복 제외`:'등록 회차 중복 조건 미사용';
   $('reviewBox').textContent=`조건 ${count}개 · ${games}개 생성 · ${roundText}${customSummary()?' · '+customSummary():''}`;
 }
-function setStep(step){
+function setStep(step,{scroll=true}={}){
   if(currentStep===4&&step!==4&&typeof cancelComparisonFetch==='function')cancelComparisonFetch();
   currentStep=step;
   $('compareSection').hidden=step!==4;
@@ -863,9 +865,9 @@ function setStep(step){
   $('resultsShell').classList.toggle('show',step===3);
   if(step===2) updateReviewBox();
   const target=step===0?$('brandHeader'):step===1?$('step1'):step===2?$('step2'):step===4?$('compareSection'):$('resultsShell');
-  target.scrollIntoView({behavior:'smooth',block:'start'});
+  if(scroll)target.scrollIntoView({behavior:'smooth',block:'start'});
 }
-function showResults(){
+function showResults({scroll=true}={}){
   refreshHistory(); renderHistory();
   if(!lastRows.length){
     $('results').innerHTML='<div class="empty">아직 이번 추첨 결과가 없습니다. 저장된 번호는 아래 누적 기록에서 확인해 주세요.</div>';
@@ -873,7 +875,7 @@ function showResults(){
   }
   if(lastRows.length){$('results').innerHTML=lastRows.map((r,i)=>gameMarkup(r,i+1)).join('');$('resultSub').textContent=lastResultDescription;}
   $('save').disabled=!lastRows.length;$('shareResultImage').disabled=!lastRows.length;
-  setStep(3);
+  setStep(3,{scroll});
 }
 function showFortuneNumbers(){
   const rows=[], keys=new Set();
@@ -909,7 +911,7 @@ for(const id of ['includeNumbers','excludeNumbers'])$(id).addEventListener('inpu
 $('startDraw').addEventListener('click',()=>setStep(1));
 $('openResults').addEventListener('click',showResults);
 $('goHome').addEventListener('click',()=>setStep(0));
-$('brandHome').addEventListener('click',()=>location.assign('/'));
+$('brandHome').addEventListener('click',()=>{homeNavigation?.reset();location.assign('/');});
 $('lookupFortune').addEventListener('click',showFortuneNumbers);
 ruleChecks().forEach(el=>el.addEventListener('change',updateRuleUI));
 document.querySelectorAll('input[name="gameCount"]').forEach(el=>el.addEventListener('change',()=>{saveSettings();updateReviewBox();}));
@@ -1012,11 +1014,11 @@ function cancelComparisonFetch(){
   if($('fetchCheckDraw').disabled)$('checkSource').textContent='';
   $('fetchCheckDraw').disabled=false;
 }
-function openComparison({autoLoad=true}={}){
+function openComparison({autoLoad=true,scroll=true,focus=true}={}){
   cancelComparisonFetch();
-  setStep(4);
+  setStep(4,{scroll});
   if(!$('checkRound').value&&latestDraw)$('checkRound').value=String(latestDraw.draw_no);
-  $('compareTitle').focus({preventScroll:true});
+  if(focus)$('compareTitle').focus({preventScroll:true});
   if(autoLoad&&!$('checkNumbers').value)fetchComparisonDraw({allowLatest:true});
 }
 async function fetchComparisonDraw({allowLatest=false}={}){
@@ -1163,8 +1165,65 @@ if(document.modelContext?.registerTool){
   const conditionsGuideTrigger=document.getElementById('openConditionsGuide');
   conditionsGuideTrigger.addEventListener('click',()=>{if(!conditionsGuide.open){conditionsGuide.showModal();conditionsGuide.scrollTop=0;}});
   for(const id of ['closeConditionsGuide','confirmConditionsGuide'])document.getElementById(id).addEventListener('click',()=>conditionsGuide.close());
-  conditionsGuide.addEventListener('close',()=>conditionsGuideTrigger.focus({preventScroll:true}));
+  conditionsGuide.addEventListener('close',()=>{if(!conditionsGuide.open)conditionsGuideTrigger.focus({preventScroll:true});});
   conditionsGuide.addEventListener('click',event=>{if(event.target===conditionsGuide){const r=conditionsGuide.getBoundingClientRect();if(event.clientX<r.left||event.clientX>r.right||event.clientY<r.top||event.clientY>r.bottom)conditionsGuide.close();}});
+})();
+</script>
+<script>
+(() => {
+  function connectNavigation(){
+    // Only public screen identifiers belong in browser history. Number inputs,
+    // generated combinations and saved records stay in their existing stores.
+    const dialogs=['helpDialog','conditionsGuideDialog'];
+    const overlays=['imageShareModal','exportModal','conflictModal'];
+    const layers=[...dialogs,...overlays];
+    const root={step:0,purchased:false,layer:null};
+    function read(){
+      return {
+        step:currentStep,
+        purchased:currentStep===4&&!$('purchasedNumberPanel').hidden,
+        layer:dialogs.find(id=>$(id).open)||overlays.find(id=>!$(id).hidden)||null,
+      };
+    }
+    function restore(state){
+      if(currentStep!==state.step){
+        if(state.step===3)showResults({scroll:false});
+        else if(state.step===4)openComparison({scroll:false,focus:false});
+        else setStep(state.step,{scroll:false});
+      }
+      $('purchasedNumberPanel').hidden=!state.purchased;
+      $('openPurchasedNumbers').setAttribute('aria-expanded',String(state.purchased));
+      for(const id of dialogs){
+        const dialog=$(id);
+        if(state.layer===id){if(!dialog.open)dialog.showModal();}
+        else if(dialog.open)dialog.close();
+      }
+      for(const id of overlays){
+        const overlay=$(id),wasOpen=!overlay.hidden;
+        const available=id==='exportModal'?!!exportPayload:
+          id==='imageShareModal'?sharingRows.length>0:$('releasedRules').children.length>0;
+        const open=state.layer===id&&available;
+        overlay.hidden=!open;
+        if(open&&!wasOpen){
+          const focusId=id==='exportModal'?'exportClose':id==='imageShareModal'?'imageShareClose':'conflictConfirm';
+          $(focusId).focus({preventScroll:true});
+        }else if(wasOpen&&!open){
+          const trigger=id==='exportModal'?exportFocus:id==='imageShareModal'?sharingReturnFocus:$('toStep2');
+          if(trigger?.getClientRects().length)trigger.focus({preventScroll:true});
+        }
+      }
+    }
+    homeNavigation=window.LuckzipHistory.create({
+      key:'home',root,read,restore,
+      layer:state=>state.layer||(state.purchased?'purchased':''),
+      normalize(value){
+        const step=Number.isInteger(value.step)&&value.step>=0&&value.step<=4?value.step:0;
+        return {step,purchased:step===4&&value.purchased===true,layer:layers.includes(value.layer)?value.layer:null};
+      },
+    });
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',connectNavigation,{once:true});
+  else connectNavigation();
 })();
 </script>
 </body>
