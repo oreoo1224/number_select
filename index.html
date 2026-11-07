@@ -142,7 +142,9 @@
 <link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-2">
 <link rel="stylesheet" href="/assets/home-lucky-number.css?v=20261105-1">
 <link rel="stylesheet" href="/assets/number-comparison.css?v=20261105-2">
+<link rel="stylesheet" href="/assets/condition-help.css?v=20261107-1">
 <script src="/assets/ui-history.js?v=20261105-1" defer></script>
+<script src="/assets/condition-help.js?v=20261107-1" defer></script>
 <script src="/assets/home-fortune-date.js?v=20261104-1" defer></script>
 <script src="/assets/reviews-config.js" defer></script>
 <script src="/assets/draws-api.js?v=20261104-1" defer></script>
@@ -209,46 +211,70 @@
       <span id="activeCount" class="active-count">0 / 8개 적용</span>
     </div>
     <div class="rule-list">
-      <label class="rule">
-        <input class="rule-check" type="checkbox" data-bit="1">
-        <span><strong>3개 이상 연속수 제외</strong><small class="rule-count">단독 제외 458,420개 · 5.63%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="12,13,14,22,32,41"></span></span>
-      </label>
-      <label class="rule">
-        <input class="rule-check" type="checkbox" data-bit="2">
-        <span><strong>홀수 또는 짝수 5개 이상 제외</strong><small class="rule-count">단독 제외 1,521,520개 · 18.68%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="1,3,5,7,9,20"></span></span>
-      </label>
-      <label class="rule">
-        <input class="rule-check" id="overlapRule" type="checkbox" data-bit="4" disabled aria-describedby="overlapAvailability">
-        <span><strong>최근 등록 회차와 3개 이상 중복 제외</strong><small id="overlapAvailability">당첨번호 확인 중…</small><small class="rule-count">단독 제외 194,130개 · 2.38%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span id="overlapExample" class="mini-balls" data-example="9,18,24,27,33,41"></span></span>
-      </label>
-      <label class="rule">
-        <input class="rule-check" type="checkbox" data-bit="8">
-        <span><strong>1~22 / 23~45 한쪽에 5개 이상 제외</strong><small class="rule-count">단독 제외 1,521,520개 · 18.68%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="2,7,11,15,20,34"></span></span>
-      </label>
-      <label class="rule">
-        <input class="rule-check" type="checkbox" data-bit="16">
-        <span><strong>10단위 구간 하나에 5개 이상 제외</strong><small class="rule-count">단독 제외 36,160개 · 0.44%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="11,12,14,17,19,36"></span></span>
-      </label>
-      <label class="rule">
-        <input class="rule-check" type="checkbox" data-bit="32">
-        <span><strong>같은 끝자리 4개 이상 제외</strong><small class="rule-count">단독 제외 23,800개 · 0.29%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="3,13,23,33,41,44"></span></span>
-      </label>
-      <label class="rule">
-        <input class="rule-check" type="checkbox" data-bit="64">
-        <span><strong>6개 전체가 같은 간격인 조합 제외</strong><small class="rule-count">단독 제외 180개 · 0.002%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="5,10,15,20,25,30"></span></span>
-      </label>
-      <label class="rule">
-        <input class="rule-check" type="checkbox" data-bit="128">
-        <span><strong>합계 89~187만 허용</strong><small class="rule-count">단독 제외 808,718개 · 9.93%</small></span>
-        <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="1,2,3,4,5,6"></span></span>
-      </label>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" type="checkbox" data-bit="1">
+          <span><strong>3개 이상 연속수 제외</strong><small class="rule-count">단독 제외 458,420개 · 5.63%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="12,13,14,22,32,41"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="1" aria-label="3개 이상 연속수 제외 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" type="checkbox" data-bit="2">
+          <span><strong>홀수 또는 짝수 5개 이상 제외</strong><small class="rule-count">단독 제외 1,521,520개 · 18.68%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="1,3,5,7,9,20"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="2" aria-label="홀수 또는 짝수 5개 이상 제외 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" id="overlapRule" type="checkbox" data-bit="4" disabled aria-describedby="overlapAvailability">
+          <span><strong>최근 등록 회차와 3개 이상 중복 제외</strong><small id="overlapAvailability">당첨번호 확인 중…</small><small class="rule-count">단독 제외 194,130개 · 2.38%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span id="overlapExample" class="mini-balls" data-example="9,18,24,27,33,41"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="4" aria-label="최근 등록 회차와 3개 이상 중복 제외 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" type="checkbox" data-bit="8">
+          <span><strong>1~22 / 23~45 한쪽에 5개 이상 제외</strong><small class="rule-count">단독 제외 1,521,520개 · 18.68%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="2,7,11,15,20,34"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="8" aria-label="1~22 / 23~45 한쪽에 5개 이상 제외 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" type="checkbox" data-bit="16">
+          <span><strong>10단위 구간 하나에 5개 이상 제외</strong><small class="rule-count">단독 제외 36,160개 · 0.44%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="11,12,14,17,19,36"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="16" aria-label="10단위 구간 하나에 5개 이상 제외 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" type="checkbox" data-bit="32">
+          <span><strong>같은 끝자리 4개 이상 제외</strong><small class="rule-count">단독 제외 23,800개 · 0.29%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="3,13,23,33,41,44"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="32" aria-label="같은 끝자리 4개 이상 제외 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" type="checkbox" data-bit="64">
+          <span><strong>6개 전체가 같은 간격인 조합 제외</strong><small class="rule-count">단독 제외 180개 · 0.002%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="5,10,15,20,25,30"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="64" aria-label="6개 전체가 같은 간격인 조합 제외 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
+      <div class="rule">
+        <label class="rule-choice">
+          <input class="rule-check" type="checkbox" data-bit="128">
+          <span><strong>합계 89~187만 허용</strong><small class="rule-count">단독 제외 808,718개 · 9.93%</small></span>
+          <span class="example"><span class="example-label">제외 예시</span><span class="mini-balls" data-example="1,2,3,4,5,6"></span></span>
+        </label>
+        <button class="condition-help-button" type="button" data-condition-help="128" aria-label="합계 89~187만 허용 설명" aria-expanded="false"><svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.7-2.5 2-2.5 3.5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/><circle cx="12" cy="16" r="1" fill="currentColor"/></svg></button>
+      </div>
     </div>
     <div class="combo-stats" aria-live="polite">
       <div class="combo-stats-head"><span class="combo-stats-title">선택 조건에 따른 경우의 수</span><span id="statsState" class="combo-stats-state">정확한 조합 수 계산 중…</span></div>
@@ -1176,13 +1202,14 @@ if(document.modelContext?.registerTool){
     // generated combinations and saved records stay in their existing stores.
     const dialogs=['helpDialog','conditionsGuideDialog'];
     const overlays=['imageShareModal','exportModal','conflictModal'];
-    const layers=[...dialogs,...overlays];
+    const ruleHelpLayers=[...document.querySelectorAll('[data-condition-help]')].map(button=>'ruleHelp-'+button.dataset.conditionHelp);
+    const layers=[...dialogs,...overlays,...ruleHelpLayers];
     const root={step:0,purchased:false,layer:null};
     function read(){
       return {
         step:currentStep,
         purchased:currentStep===4&&!$('purchasedNumberPanel').hidden,
-        layer:dialogs.find(id=>$(id).open)||overlays.find(id=>!$(id).hidden)||null,
+        layer:dialogs.find(id=>$(id).open)||overlays.find(id=>!$(id).hidden)||window.ConditionHelp?.historyLayer||null,
       };
     }
     function restore(state){
@@ -1191,6 +1218,10 @@ if(document.modelContext?.registerTool){
         else if(state.step===4)openComparison({scroll:false,focus:false});
         else setStep(state.step,{scroll:false});
       }
+      if(state.step===1&&ruleHelpLayers.includes(state.layer)){
+        $('additionalConditions').open=true;
+        window.ConditionHelp?.open(state.layer.slice('ruleHelp-'.length),{pinned:true,ensureVisible:true});
+      }else window.ConditionHelp?.close();
       $('purchasedNumberPanel').hidden=!state.purchased;
       $('openPurchasedNumbers').setAttribute('aria-expanded',String(state.purchased));
       for(const id of dialogs){
@@ -1213,6 +1244,7 @@ if(document.modelContext?.registerTool){
         }
       }
     }
+    document.addEventListener('conditionhelpchange',()=>homeNavigation?.sync());
     homeNavigation=window.LuckzipHistory.create({
       key:'home',root,read,restore,
       layer:state=>state.layer||(state.purchased?'purchased':''),

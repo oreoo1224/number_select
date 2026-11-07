@@ -1,0 +1,68 @@
+.additional-content .rule{
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  gap:4px;
+  cursor:default;
+}
+.rule-choice{
+  display:grid;
+  grid-template-columns:22px minmax(0,1fr);
+  align-items:center;
+  align-self:stretch;
+  gap:9px;
+  min-width:0;
+  cursor:pointer;
+}
+.condition-help-button{
+  display:grid;
+  place-items:center;
+  flex:none;
+  width:32px;
+  height:36px;
+  padding:0;
+  border:0;
+  border-radius:9px;
+  background:transparent;
+  color:#867499;
+  cursor:help;
+  touch-action:manipulation;
+}
+.condition-help-button svg{display:block;width:20px;height:20px;pointer-events:none}
+.condition-help-button:hover,.condition-help-button[aria-expanded="true"]{
+  background:#f0eaff;
+  color:#6b4bd4;
+}
+.condition-help-button:focus-visible{outline:3px solid #7357f6;outline-offset:2px}
+.condition-help-tooltip{
+  position:fixed;
+  z-index:60;
+  width:min(310px,calc(100vw - 24px));
+  margin:0;
+  padding:14px 15px;
+  overflow:auto;
+  overscroll-behavior:contain;
+  border:1px solid #dcd1f2;
+  border-radius:14px;
+  background:#fff;
+  box-shadow:0 8px 28px rgba(62,38,104,.16);
+  color:#544961;
+  font:13px/1.65 system-ui,-apple-system,"Apple SD Gothic Neo","Noto Sans KR",sans-serif;
+  text-align:left;
+  overflow-wrap:anywhere;
+  word-break:keep-all;
+}
+.condition-help-tooltip[hidden]{display:none!important}
+.condition-help-tooltip strong{display:block;margin:0 0 7px;color:#342744;font-size:14px;line-height:1.5}
+.condition-help-tooltip p{margin:0}
+.condition-help-tooltip .condition-help-example{
+  margin-top:9px;
+  padding-top:9px;
+  border-top:1px solid #eee8f7;
+  color:#765c90;
+  font-size:12px;
+}
+.condition-help-tooltip .condition-help-source{margin-top:7px;color:#7554b3;font-size:12px}
+@media(max-width:700px){
+  .condition-help-button{width:36px;height:36px;cursor:pointer}
+  .condition-help-tooltip{font-size:13px}
+}
