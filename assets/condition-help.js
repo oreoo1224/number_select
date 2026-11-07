@@ -100,6 +100,39 @@
     if (activeButton && frame === null) frame = requestAnimationFrame(position);
   }
 
+  const overlapGuideExample = guides[2]?.querySelector('.condition-example');
+  const overlapFallback = overlapGuideExample?.textContent || '';
+  function updateOverlapExample() {
+    if (!overlapGuideExample) return;
+    const winning = [...document.querySelectorAll('#latestBalls .ball')].slice(0,6).map(ball => Number(ball.textContent));
+    if (winning.length !== 6 || new Set(winning).size !== 6 || winning.some(n => !Number.isInteger(n) || n < 1 || n > 45)) {
+      overlapGuideExample.textContent = overlapFallback;
+      return;
+    }
+    const marked = winning.slice(0,3);
+    const others = Array.from({length:45},(_,i) => i+1).filter(n => !winning.includes(n)).slice(0,3);
+    const label = document.createElement('span');
+    label.className = 'condition-example-label';
+    label.textContent = '제외 예시';
+    const row = document.createElement('span');
+    row.className = 'condition-example-numbers';
+    for (const n of [...marked,...others].sort((a,b) => a-b)) {
+      const number = document.createElement('span');
+      number.className = 'condition-example-number';
+      number.textContent = String(n);
+      if (marked.includes(n)) {
+        number.classList.add('is-marked');
+        number.setAttribute('aria-label',`${n}, 당첨번호와 중복`);
+      }
+      row.appendChild(number);
+    }
+    const note = document.createElement('span');
+    note.className = 'condition-example-note';
+    note.textContent = '해당 회차 당첨번호와 3개 중복';
+    overlapGuideExample.replaceChildren(label,row,note);
+  }
+  updateOverlapExample();
+
   function fill(button) {
     const guide = guideFor.get(button);
     if (!guide) return false;
@@ -107,7 +140,8 @@
     const text = guide.querySelector('p:not(.condition-example)')?.textContent || '';
     description.textContent = button.dataset.conditionHelp === '4' ?
       (text.match(/[^.!?]+[.!?]?/g) || [text]).slice(0,2).join(' ').trim() : text;
-    example.textContent = guide.querySelector('.condition-example')?.textContent || '';
+    const guideExample = guide.querySelector('.condition-example');
+    example.replaceChildren(...[...(guideExample?.childNodes || [])].map(node => node.cloneNode(true)));
     example.hidden = !example.textContent;
     source.textContent = button.dataset.conditionHelp === '4' ?
       document.getElementById('overlapAvailability')?.textContent || '' : '';
@@ -195,6 +229,7 @@
   window.visualViewport?.addEventListener('scroll',schedulePosition);
   const availability = document.getElementById('overlapAvailability');
   if (availability) new MutationObserver(() => {
+    updateOverlapExample();
     if (activeButton?.dataset.conditionHelp === '4') { fill(activeButton); schedulePosition(); }
   }).observe(availability,{childList:true,characterData:true,subtree:true});
 

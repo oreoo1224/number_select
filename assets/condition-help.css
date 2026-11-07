@@ -66,3 +66,52 @@
   .condition-help-button{width:36px;height:36px;cursor:pointer}
   .condition-help-tooltip{font-size:13px}
 }
+.condition-example-label,.condition-example-note{
+  display:block;
+  color:#756b80;
+  font-size:12px;
+  line-height:1.6;
+}
+.condition-example-numbers{
+  display:flex;
+  align-items:center;
+  flex-wrap:nowrap;
+  gap:8px;
+  margin:6px 0 4px;
+}
+.condition-example-number{
+  position:relative;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 32px;
+  width:32px;
+  height:32px;
+  color:#26233a;
+  font-size:15px;
+  font-weight:650;
+  font-variant-numeric:tabular-nums;
+  line-height:1;
+}
+.conditions-list .condition-example-number{
+  flex-shrink:1;
+  min-width:24px;
+  height:auto;
+  aspect-ratio:1;
+}
+.condition-example-number.is-marked::after{
+  content:'';
+  position:absolute;
+  inset:1px;
+  border:2px solid #d64b50;
+  border-radius:48% 53% 47% 51%;
+  transform:rotate(-8deg);
+  pointer-events:none;
+}
+.condition-example-number.is-marked:nth-child(even)::after{
+  border-radius:52% 47% 51% 48%;
+  transform:rotate(6deg);
+}
+@media(max-width:360px){
+  .condition-example-numbers{gap:6px}
+}
