@@ -117,7 +117,7 @@
     .home-extras>.card{min-width:0;margin:0}
     [data-fortune-date]{white-space:nowrap;font-variant-numeric:tabular-nums}
     .hero-fortune-link{display:none}
-    @media(min-width:1100px){
+    @media(min-width:960px){
       .home-extras>.fortune-card{min-height:156px;padding:23px 20px}
       .home-extras .fortune-card h2{font-size:20px;line-height:1.5}
       .home-extras .fortune-link{font-size:17px}
@@ -127,7 +127,7 @@
       .is-home .home-extras #fortuneResults .latest-balls{gap:5px;margin-top:0}
       .is-home .home-extras #fortuneResults .game-index{width:16px;flex-shrink:0}
     }
-    @media(max-width:1099px){
+    @media(max-width:959px){
       .home-extras .horoscope-card{display:none}
       .home-extras{gap:14px}
       .home-intro{display:grid;grid-template-columns:minmax(0,1fr) clamp(104px,29vw,120px);column-gap:14px;align-items:center}
@@ -138,8 +138,8 @@
       .hero-fortune-link{grid-column:2;grid-row:1;display:grid;aspect-ratio:1;width:100%}
     }
 </style>
-<link rel="stylesheet" href="/assets/reviews-preview.css?v=20261104-1">
-<link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261104-2">
+<link rel="stylesheet" href="/assets/reviews-preview.css?v=20261107-1">
+<link rel="stylesheet" href="/assets/home-fortune-card.css?v=20261107-1">
 <link rel="stylesheet" href="/assets/home-lucky-number.css?v=20261105-1">
 <link rel="stylesheet" href="/assets/number-comparison.css?v=20261105-2">
 <link rel="stylesheet" href="/assets/condition-help.css?v=20261107-2">
@@ -161,7 +161,7 @@
       <div class="clover" aria-hidden="true"><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i><i class="leaf"></i></div>
       <h1>로또 6/45<br><span>번호 조합</span></h1>
       <a class="hero-fortune-link fortune-entry fortune-entry--mobile" href="/fortunes.html" aria-label="오늘의 운세로 이동" aria-describedby="mobileFortuneDate">
-        <picture class="fortune-entry-picture"><source media="(min-width:1100px)" srcset="/assets/fortune-card-desktop.webp" width="1448" height="1086"><img class="fortune-entry-artwork" src="/assets/fortune-card-mobile.webp" width="1254" height="1254" alt="" decoding="async"></picture>
+        <picture class="fortune-entry-picture"><source media="(min-width:960px)" srcset="/assets/fortune-card-desktop.webp" width="1448" height="1086"><img class="fortune-entry-artwork" src="/assets/fortune-card-mobile.webp" width="1254" height="1254" alt="" decoding="async"></picture>
         <time id="mobileFortuneDate" class="fortune-entry-date" data-fortune-date></time>
       </a>
       <p class="home-description">선호 번호와 8가지 조건으로 번호를 조합하고, 저장한 번호를 당첨번호와 비교하세요.</p>
@@ -359,7 +359,7 @@
 <aside class="home-extras" aria-label="오늘의 운세와 행운번호">
   <section class="card horoscope-card fortune-entry fortune-entry--desktop" aria-labelledby="horoscopeTitle">
     <h2 id="horoscopeTitle" class="fortune-entry-heading fortune-entry-sr-only">오늘의 운세</h2>
-    <picture class="fortune-entry-picture"><source media="(min-width:1100px)" srcset="/assets/fortune-card-desktop.webp" width="1448" height="1086"><img class="fortune-entry-artwork" src="/assets/fortune-card-mobile.webp" width="1254" height="1254" alt="" decoding="async"></picture>
+    <picture class="fortune-entry-picture"><source media="(min-width:960px)" srcset="/assets/fortune-card-desktop.webp" width="1448" height="1086"><img class="fortune-entry-artwork" src="/assets/fortune-card-mobile.webp" width="1254" height="1254" alt="" decoding="async"></picture>
     <time id="homeFortuneDate" class="fortune-entry-date" data-fortune-date></time>
     <a class="fortune-entry-action" href="/fortunes.html" aria-describedby="homeFortuneDate"><span class="fortune-entry-sr-only">오늘 운세 확인</span></a>
   </section>
