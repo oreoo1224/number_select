@@ -64,6 +64,9 @@
     const result = await api.list({limit:pageSize, offset:(pageNumber - 1) * pageSize});
     const items = Array.isArray(result?.items) ? result.items : [];
     const total = Number.isFinite(Number(result?.total)) ? Math.max(0, Number(result.total)) : items.length;
+    const pageCount = Math.max(1, Math.ceil(total / pageSize));
+    if (pageNumber > pageCount || (pageNumber > 1 && !items.length)) window.ReviewsSEO?.exclude();
+    else window.ReviewsSEO?.allow();
     $('reviewList').replaceChildren();
     $('reviewPagination').replaceChildren();
     $('reviewCount').textContent = `총 ${total.toLocaleString('ko-KR')}개의 후기`;
@@ -89,7 +92,6 @@
     } else {
       setState('');
     }
-    const pageCount = Math.max(1, Math.ceil(total / pageSize));
     if (pageCount > 1 || pageNumber > 1) {
       const previous = document.createElement(pageNumber > 1 ? 'a' : 'span');
       previous.textContent = '← 이전';
@@ -107,6 +109,7 @@
   }
 
   function displayPost(post) {
+    window.ReviewsSEO?.setPost(post);
     currentPost = post;
     $('postNickname').textContent = post.nickname;
     $('postCreatedAt').textContent = formatDate(post.created_at);
@@ -121,6 +124,7 @@
   }
 
   function displayForm(post = null) {
+    window.ReviewsSEO?.exclude();
     currentPost = post;
     formMode = post ? 'edit' : 'create';
     creationReady = false;
@@ -293,12 +297,14 @@
       } else if (params.has('post')) {
         const id = params.get('post');
         if (!uuidPattern.test(id)) {
+          window.ReviewsSEO?.exclude();
           setState('후기를 찾을 수 없습니다. 주소를 확인해 주세요.',true);
           return;
         }
         setState('후기를 불러오고 있습니다.');
         const post = await api.get(id);
         if (!post || String(post.id).toLowerCase() !== id.toLowerCase()) {
+          window.ReviewsSEO?.exclude();
           setState('후기를 찾을 수 없습니다. 삭제된 글인지 확인해 주세요.',true);
           return;
         }
@@ -308,6 +314,7 @@
         await loadList();
       }
     } catch (error) {
+      if (error?.code === 'REVIEW_NOT_FOUND') window.ReviewsSEO?.exclude();
       showView(null);
       setState(messageFor(error,'후기를 불러오지 못했습니다. 잠시 후 다시 시도해 주세요.'),true,true);
     } finally {
