@@ -71,6 +71,8 @@
     .home-results{min-height:54px;font-size:16px;border-radius:16px}
     #openCompare{justify-self:center;min-height:48px;padding:10px 20px;font-size:18px;line-height:1.5}
     .home-conditions-guide{justify-self:center;min-height:44px;padding:8px 14px;font-size:14px;text-decoration:underline;text-underline-offset:4px}
+    .home-guide-links{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px 12px}
+    .home-ranks-guide{display:inline-flex;align-items:center;min-height:44px;padding:8px 4px;color:#674bdc;font-size:14px;font-weight:700;text-underline-offset:4px}
     .fortune-card h2{font-size:20px;margin:0 0 8px}
     .fortune-link{padding:8px 0;min-height:44px;font-size:15px;text-decoration:underline;text-underline-offset:5px}
     .view-nav{margin:16px 0 0}
@@ -185,7 +187,10 @@
   <div class="home-actions">
     <button id="startDraw" class="primary home-draw" type="button">추첨하기 <span aria-hidden="true">→</span></button>
     <button id="openResults" class="secondary home-results" type="button">결과 확인</button><button id="openCompare" class="text-btn" type="button">당첨번호 조회</button>
-    <button id="openConditionsGuide" class="text-btn home-conditions-guide" type="button" aria-haspopup="dialog" aria-controls="conditionsGuideDialog">8가지 조건 알아보기</button>
+    <div class="home-guide-links">
+      <button id="openConditionsGuide" class="text-btn home-conditions-guide" type="button" aria-haspopup="dialog" aria-controls="conditionsGuideDialog">8가지 조건 알아보기</button>
+      <a class="home-ranks-guide" href="/lotto-ranks.html">당첨 등수 안내</a>
+    </div>
   </div>
   </section>
   <div id="viewNav" class="view-nav" hidden><button id="goHome" class="text-btn" type="button">← 처음으로</button></div>
@@ -337,6 +342,7 @@
 
   <section id="compareSection" class="card" hidden aria-labelledby="compareTitle">
     <h2 id="compareTitle" tabindex="-1">당첨번호 조회</h2>
+    <p class="feature-note"><a class="link-inline" href="/lotto-ranks.html">보너스 번호·당첨 등수 안내</a></p>
     <label class="check-field">조회할 회차<input id="checkRound" type="number" min="1" step="1" placeholder="예: 1248"></label>
     <button id="fetchCheckDraw" class="secondary" type="button">당첨번호 조회</button>
     <p id="checkSource" class="feature-note" role="status"></p>
@@ -1247,6 +1253,12 @@ if(document.modelContext?.registerTool){
       }
     }
     document.addEventListener('conditionhelpchange',()=>homeNavigation?.sync());
+    const comparisonEntry=new URL(location.href);
+    const requestedComparison=comparisonEntry.searchParams.get('view')==='compare';
+    if(requestedComparison){
+      comparisonEntry.searchParams.delete('view');
+      history.replaceState(history.state,'',comparisonEntry.pathname+comparisonEntry.search+comparisonEntry.hash);
+    }
     homeNavigation=window.LuckzipHistory.create({
       key:'home',root,read,restore,
       layer:state=>state.layer||(state.purchased?'purchased':''),
@@ -1255,6 +1267,7 @@ if(document.modelContext?.registerTool){
         return {step,purchased:step===4&&value.purchased===true,layer:layers.includes(value.layer)?value.layer:null};
       },
     });
+    if(requestedComparison&&currentStep!==4)openComparison({scroll:false});
   }
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',connectNavigation,{once:true});
   else connectNavigation();

@@ -1,0 +1,71 @@
+.rank-guide .rank-table caption{
+  margin-bottom:8px;
+  color:#756b80;
+  font-size:12px;
+  text-align:left;
+}
+.rank-column{width:68px}
+.rank-table th[scope="row"]{white-space:nowrap}
+.rank-fiction-note{font-size:13px;color:#7b6a88}
+.rank-reference,.rank-example{
+  min-width:0;
+  padding:16px;
+  border:1px solid #e7e0f2;
+  border-radius:15px;
+  background:#fdfbff;
+}
+.rank-reference{margin:14px 0}
+.rank-reference h3,.rank-example h3{font-size:14px;line-height:1.6}
+.rank-numbers{display:flex;align-items:center;gap:6px;margin:11px 0;flex-wrap:wrap}
+.rank-number{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  flex:0 0 28px;
+  width:28px;
+  height:28px;
+  border:1px solid #dfd5f3;
+  border-radius:50%;
+  background:#f1ecff;
+  color:#60468f;
+  font-size:14px;
+  font-weight:750;
+  line-height:1;
+  font-variant-numeric:tabular-nums;
+}
+.rank-number.is-match{border-color:#c9e3d3;background:#eaf5ee;color:#266b48}
+.rank-number.is-bonus{border-color:#ecd6aa;background:#fff0d5;color:#875e22}
+.rank-number.is-unmatched{border-color:#e5e0ea;background:#f4f1f7;color:#746c7e}
+.rank-reference .rank-bonus-label{display:flex;align-items:center;gap:10px;margin:0;font-size:13px}
+.rank-example-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:14px 0 24px}
+.rank-example p{margin:0;font-size:13px;line-height:1.75}
+.rank-actions{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-top:24px}
+.rank-primary{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:10px;
+  min-height:48px;
+  padding:11px 17px;
+  border:1px solid #7357f6;
+  border-radius:12px;
+  background:#7357f6;
+  color:#fff;
+  font-size:14px;
+  font-weight:750;
+  line-height:1.6;
+  text-align:center;
+  text-decoration:none;
+}
+.rank-primary:hover{background:#6649e3;border-color:#6649e3}
+@media(max-width:600px){
+  .rank-column{width:49px}
+  .rank-example-grid{grid-template-columns:1fr;gap:11px}
+  .rank-reference,.rank-example{padding:13px}
+  .rank-actions{gap:13px}
+  .rank-primary{width:100%;padding-inline:10px}
+}
+@media print{
+  .rank-reference,.rank-example{break-inside:avoid}
+  .rank-actions{display:none}
+}
