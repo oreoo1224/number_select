@@ -19,3 +19,10 @@ python3 scripts/prepare-fortunes.py --output /tmp/fortunes-import 원본1.zip �
 ```
 
 이미 가져온 기간은 다시 중복 가져오지 않습니다. 기존 문구는 Table Editor에서 수정합니다.
+
+가져오기 전에 `validation.json`의 `text_repetition`을 확인합니다. 같은 문구의 두 번째
+이후 등장 횟수는 `repeated_rows`, 날짜별로 센 횟수는 `repeated_rows_within_dates`에
+표시됩니다. 같은 출생연도에서 전날 문구가 반복된 행은 `same_birth_year_as_previous_day`,
+60개 문구가 모두 같은 연속 날짜 쌍은 `identical_adjacent_date_pairs`에서 확인할 수 있습니다.
+비교에는 유니코드와 공백을 정규화한 문구를 사용합니다. 보고서에는 집계만 표시하고 원본
+문구는 그대로 유지합니다. 의미가 비슷한 문장은 원본에서 직접 확인합니다.

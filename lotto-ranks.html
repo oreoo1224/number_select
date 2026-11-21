@@ -4,18 +4,21 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <script src="/assets/display-mode.js?v=20261107-1"></script>
-  <title>로또 보너스 번호·당첨 등수 안내 | 행운설계소</title>
-  <meta name="description" content="로또 6/45 보너스 번호는 언제 적용될까요? 1등부터 5등까지의 기준과 2등·3등의 차이를 가상 번호 예시로 확인하세요.">
+  <title>로또 6/45 당첨 기준·등수별 확률·회차 통계 | 행운설계소</title>
+  <meta name="description" content="로또 6/45의 등수별 당첨 확률과 보너스 번호 적용 기준을 확인하고, 등록 자료가 충분할 때 번호별 출현 횟수와 홀짝·합계·연속 번호를 최근 10회와 직전 10회로 비교합니다.">
   <meta name="robots" content="index,follow">
   <link rel="canonical" href="https://luckzip.com/lotto-ranks.html">
-  <meta property="og:title" content="로또 보너스 번호·당첨 등수 안내 | 행운설계소">
-  <meta property="og:description" content="보너스 번호로 달라지는 2등·3등, 번호 예시로 쉽게 확인해 보세요.">
+  <meta property="og:title" content="로또 6/45 당첨 기준·등수별 확률·회차 통계 | 행운설계소">
+  <meta property="og:description" content="로또 6/45의 당첨 등수별 조합 수와 보너스 번호 예시, 등록 당첨번호 통계의 계산 범위를 확인하세요.">
   <meta property="og:url" content="https://luckzip.com/lotto-ranks.html">
   <meta property="og:type" content="article">
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/favicon-48.png">
   <link rel="stylesheet" href="/assets/info-pages.css">
-  <link rel="stylesheet" href="/assets/lotto-ranks.css?v=20261111-1">
+  <link rel="stylesheet" href="/assets/lotto-ranks.css?v=20261121-1">
   <link rel="stylesheet" href="/assets/display-mode.css?v=20261107-1">
+  <script src="/assets/reviews-config.js" defer></script>
+  <script src="/assets/draws-api.js?v=20261104-1" defer></script>
+  <script src="/assets/draw-statistics.js?v=20261121-1" defer></script>
 </head>
 <body>
   <header>
@@ -28,24 +31,36 @@
   </header>
   <main>
     <article class="rank-guide">
-      <p class="eyebrow">로또 6/45 알아보기</p>
-      <h1>로또 보너스 번호는 언제 적용될까요?</h1>
-      <p class="lead">보너스 번호는 <strong>당첨번호 5개가 맞았을 때 2등과 3등을 구분</strong>하는 데 사용합니다. 먼저 당첨번호 6개와 몇 개가 일치하는지 확인한 뒤, 필요한 경우 보너스 번호를 비교하면 됩니다.</p>
+      <h1>로또 6/45 당첨 기준과 회차 통계</h1>
+      <p class="lead">로또 6/45에서는 1부터 45까지 서로 다른 번호 6개를 고릅니다. 한 회차에 당첨번호 6개와 보너스 번호 1개를 추첨하며, 보너스 번호는 <strong>당첨번호 5개가 맞았을 때 2등과 3등을 구분</strong>하는 데 사용합니다.</p>
+      <p class="content-updated">내용 업데이트 <time datetime="2026-11-21">2026년 11월 21일</time></p>
+      <p><a href="#draw-statistics">등록 당첨번호 통계로 이동</a></p>
 
       <h2>몇 개가 맞아야 당첨인가요?</h2>
+      <p>공정한 추첨에서 전체 8,145,060개 조합은 같은 확률로 뽑힙니다. 1게임의 등수별 확률은 표의 조합 수를 8,145,060으로 나눈 값입니다. 1등 확률은 8,145,060분의 1입니다. <a href="/guide.html#combinations">전체 조합 수의 계산 과정</a>도 확인할 수 있습니다.</p>
       <table class="rank-table">
-        <caption>로또 6/45 당첨 등수 기준</caption>
-        <colgroup><col class="rank-column"><col></colgroup>
-        <thead><tr><th scope="col">등수</th><th scope="col">당첨 기준</th></tr></thead>
+        <caption>추첨 결과 하나를 기준으로 각 등수에 해당하는 구입 번호 조합 수</caption>
+        <colgroup><col class="rank-column"><col><col class="rank-count-column"></colgroup>
+        <thead><tr><th scope="col">등수</th><th scope="col">당첨 기준</th><th scope="col">조합 수</th></tr></thead>
         <tbody>
-          <tr><th scope="row">1등</th><td>당첨번호 6개 일치</td></tr>
-          <tr><th scope="row">2등</th><td>당첨번호 5개와 보너스 번호 일치</td></tr>
-          <tr><th scope="row">3등</th><td>당첨번호 5개 일치, 보너스 번호 불일치</td></tr>
-          <tr><th scope="row">4등</th><td>당첨번호 4개 일치</td></tr>
-          <tr><th scope="row">5등</th><td>당첨번호 3개 일치</td></tr>
+          <tr><th scope="row">1등</th><td>당첨번호 6개 일치</td><td>1</td></tr>
+          <tr><th scope="row">2등</th><td>당첨번호 5개와 보너스 번호 일치</td><td>6</td></tr>
+          <tr><th scope="row">3등</th><td>당첨번호 5개 일치, 보너스 번호 불일치</td><td>228</td></tr>
+          <tr><th scope="row">4등</th><td>당첨번호 4개 일치</td><td>11,115</td></tr>
+          <tr><th scope="row">5등</th><td>당첨번호 3개 일치</td><td>182,780</td></tr>
         </tbody>
       </table>
-      <p>당첨번호가 3개 또는 4개 맞은 경우에는 보너스 번호가 맞아도 등수가 올라가지 않습니다.</p>
+      <details class="rank-explanation">
+        <summary>등수별 조합 수 계산 보기</summary>
+        <ul>
+          <li><strong>1등.</strong> 당첨번호 6개를 그대로 선택하는 조합은 1개입니다.</li>
+          <li><strong>2등.</strong> 6개 중 빠질 당첨번호를 고르는 6가지에 보너스 번호를 붙입니다.</li>
+          <li><strong>3등.</strong> 빠질 당첨번호는 6가지, 나머지 한 번호는 당첨번호와 보너스를 제외한 38가지입니다. 6 × 38 = 228입니다.</li>
+          <li><strong>4등.</strong> 당첨번호 6개 중 4개를 고르는 15가지와 당첨번호 밖의 39개 중 2개를 고르는 741가지를 곱합니다.</li>
+          <li><strong>5등.</strong> 당첨번호 6개 중 3개를 고르는 20가지와 당첨번호 밖의 39개 중 3개를 고르는 9,139가지를 곱합니다.</li>
+        </ul>
+        <p>4등과 5등의 계산에는 보너스 번호가 39개 후보에 포함됩니다. 당첨번호가 3개 또는 4개 맞으면 보너스 번호가 맞아도 등수는 그대로입니다.</p>
+      </details>
 
       <h2>2등과 3등을 번호로 비교해 보세요</h2>
       <p class="rank-fiction-note">아래는 설명용 가상 번호입니다. 실제 회차의 당첨 결과가 아닙니다.</p>
@@ -79,11 +94,21 @@
         <li>당첨번호 2개와 보너스 번호가 맞거나 보너스 번호만 맞은 경우에는 당첨 등수에 해당하지 않습니다.</li>
         <li>번호를 비교할 때는 반드시 같은 회차의 당첨번호와 보너스 번호를 사용하세요.</li>
       </ul>
-      <p>구입한 번호를 직접 입력하면 위 기준으로 비교할 수 있습니다. 실제 당첨 여부는 구매한 복권과 <a href="https://www.dhlottery.co.kr/" target="_blank" rel="noopener">동행복권 공식 안내</a>를 최종 확인해 주세요.</p>
+      <p>구입한 번호를 직접 입력하면 위 기준으로 비교할 수 있습니다. 실제 당첨 여부는 구매한 복권과 <a href="https://www.dhlottery.co.kr/lt645/result" target="_blank" rel="noopener">동행복권 공식 결과</a>를 최종 확인해 주세요.</p>
       <div class="rank-actions">
         <a class="rank-primary" href="/?view=compare">내 구입 번호 당첨 확인하기 <span aria-hidden="true">→</span></a>
         <a href="/">번호 조합하러 가기</a>
       </div>
+
+      <section id="draw-statistics" aria-labelledby="drawStatisticsTitle">
+        <h2 id="drawStatisticsTitle">등록 당첨번호의 최근 10회와 직전 10회</h2>
+        <p>행운설계소에 등록된 최신 회차부터 연속 20회가 있으면, 길이가 같은 두 기간으로 나눠 비교합니다. 보너스 번호는 집계에서 제외합니다. 중간 회차가 빠지면 두 기간의 비교 통계를 표시하지 않습니다.</p>
+        <p>출현 횟수와 분포는 조회한 기간의 기록입니다. 다음 회차에서 어떤 번호가 나올지 판단하는 근거로 사용할 수 없습니다.</p>
+        <button id="loadDrawStatistics" class="rank-primary" type="button" hidden>등록 자료로 통계 확인</button>
+        <p id="drawStatisticsStatus" class="draw-statistics-status" role="status"></p>
+        <div id="drawStatisticsResult"></div>
+        <noscript><p>등록 당첨번호를 조회하려면 JavaScript를 사용해야 합니다.</p></noscript>
+      </section>
     </article>
   </main>
   <footer>

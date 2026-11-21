@@ -39,3 +39,17 @@ After `오늘의 행운번호` is generated, display the following below the res
 
 Hide that notice until the first lookup and avoid duplicate notices on repeat
 lookups.
+
+## 당첨번호와 운세 갱신 점검
+
+- 당첨번호를 등록할 때 동행복권 발표와 회차, 추첨일, 기본 당첨번호 6개,
+  보너스 번호를 대조한다. 등록 뒤 홈과 당첨번호 조회에서 같은 값을 확인한다.
+  [당첨번호 등록 안내](../supabase/DRAWS_SETUP.md)
+- 당첨 등수 페이지는 최신 등록 회차부터 연속 20개 회차를 확인한 뒤 최근 10회와
+  앞선 10회를 집계한다. 자료가 부족하다는 안내가 나오면 누락 회차를 공식 결과와
+  대조한다. 집계 대상과 기간이 화면에 올바르게 표시되는지도 확인한다.
+- 운세 자료를 등록하기 전에 날짜별 12띠·60개 문구와 중복 검사 결과를 확인한다.
+  등록 뒤 한국 시간으로 날짜가 바뀌면 목록과 띠별 페이지에서 새 날짜와 문구를 확인한다.
+  [운세 등록 안내](../supabase/FORTUNES_SETUP.md)
+- 공개 본문을 바꾸면 해당 URL의 `sitemap.xml` 수정일과 본문의 날짜를 확인한다.
+  누락 주소가 404로 응답하는지, 사이트맵에는 색인 대상 URL만 있는지도 확인한다.

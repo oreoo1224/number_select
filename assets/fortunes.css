@@ -150,6 +150,10 @@ h1::after{
 .zodiac-button[data-zodiac="개"]{--animal-x:64.834254%;--animal-y:89.127861%}
 .zodiac-button[data-zodiac="돼지"]{--animal-x:93.881215%;--animal-y:89.187056%}
 .fortunes-disclaimer{max-width:900px;margin:25px auto 0;color:#776184;text-align:center;font-size:13px;line-height:1.85;word-break:keep-all;text-shadow:0 1px 0 #ffffff80}
+.fortunes-source{max-width:620px;margin:16px auto 0;padding:0 16px;border:1px solid #d9caee;border-radius:14px;background:#faf7ff;color:#4b375a;font-size:14px;line-height:1.75;word-break:keep-all}
+.fortunes-source summary{min-height:44px;padding-block:10px;color:#4b2375;font-weight:700;cursor:pointer}
+.fortunes-source summary:focus-visible{outline:3px solid #7b4eb7;outline-offset:3px}
+.fortunes-source p{margin:4px 0 12px}
 .fortune-dialog{width:min(520px,calc(100% - 32px));max-height:calc(100dvh - 36px);margin:auto;padding:26px 28px 25px;border:1px solid #e9e7ec;border-radius:22px;background:#fff;color:#17171c;box-shadow:0 16px 70px #00000030;overflow:auto;overscroll-behavior:contain}
 .fortune-dialog::backdrop{background:#00000050}
 .fortune-dialog-heading{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:5px}
@@ -164,6 +168,7 @@ h1::after{
 .fortunes-state{margin:16px 0 3px;padding:20px 14px;border-radius:12px;background:#f8f8fa;color:#77717e;text-align:center;font-size:14px;line-height:1.8;word-break:keep-all}
 .fortunes-state.is-error{color:#8c5361;background:#fff7f8}
 .fortune-retry{display:flex;align-items:center;justify-content:center;min-height:44px;margin:16px auto 0;padding:9px 17px;border:1px solid #e1d8f7;border-radius:11px;background:#faf8ff;color:#6e50dd;font-size:14px;font-weight:700}
+.fortune-dialog-note{margin:14px 0 0;color:#625a6d;font-size:13px}
 body.has-fortune-dialog{overflow:hidden}
 @media(max-width:700px){
   body{padding:18px 12px 30px;background-image:url('/assets/fortune-sky-mobile.webp'),linear-gradient(160deg,#f7eafa,#e4dafa 58%,#f7e4ef);background-position:center top}
@@ -180,7 +185,7 @@ body.has-fortune-dialog{overflow:hidden}
   .zodiac-art{min-height:clamp(64px,19vw,112px);font-size:clamp(21px,5.8vw,29px);letter-spacing:-.6px}
   .has-zodiac-art .zodiac-art{max-width:clamp(64px,19vw,112px)}
   .zodiac-name{min-width:86%;min-height:26px;padding:3px 5px;font-size:clamp(12px,3.2vw,14px);letter-spacing:-.55px}
-  .fortunes-disclaimer{margin-top:16px;font-size:11px;line-height:1.75}
+  .fortunes-disclaimer{margin-top:16px;font-size:13px;line-height:1.75}
   .fortune-dialog{padding:21px 20px 22px;border-radius:19px}
   .fortune-dialog-heading h2{font-size:21px}
   .fortune-dialog-heading .fortunes-close{margin-right:-8px}

@@ -8,6 +8,7 @@ import io
 import json
 from pathlib import Path
 import re
+import unicodedata
 import zipfile
 
 
@@ -80,6 +81,26 @@ def write_csv(path, rows):
         writer.writerows(rows)
 
 
+def repetition_counts(rows, dates):
+    texts_by_date = {date: {} for date in dates}
+    for date, _, year, text in rows:
+        texts_by_date[date][year] = ' '.join(unicodedata.normalize('NFC', text).split())
+    daily_texts = list(texts_by_date.values())
+    distinct_texts = {text for year_texts in daily_texts for text in year_texts.values()}
+    previous_day_matches = 0
+    identical_day_pairs = 0
+    for previous, current in zip(daily_texts, daily_texts[1:]):
+        previous_day_matches += sum(previous.get(year) == text for year, text in current.items())
+        identical_day_pairs += previous == current
+    return {
+        'distinct_texts': len(distinct_texts),
+        'repeated_rows': len(rows) - len(distinct_texts),
+        'repeated_rows_within_dates': sum(len(day) - len(set(day.values())) for day in daily_texts),
+        'same_birth_year_as_previous_day': previous_day_matches,
+        'identical_adjacent_date_pairs': identical_day_pairs,
+    }
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--output', type=Path, required=True,
@@ -106,6 +127,7 @@ def main():
     report = {
         'start': dates[0], 'end': dates[-1], 'days': len(dates), 'rows': len(rows),
         'rows_per_day': 60,
+        'text_repetition': repetition_counts(rows, dates),
         'birth_years': {sign: [year for year in range(1948, 2008)
                               if SIGNS[(year - 4) % 12] == sign] for sign in SIGNS},
     }

@@ -115,3 +115,40 @@
 @media(max-width:360px){
   .condition-example-numbers{gap:6px}
 }
+.conditions-list li + li{
+  border-top:1px solid #eee8f7;
+  padding-top:16px;
+}
+.conditions-list .condition-count{
+  color:#553a98;
+  margin-top:9px;
+  font-variant-numeric:tabular-nums;
+}
+.conditions-list .condition-method{
+  margin-top:5px;
+}
+.conditions-combined{
+  color:#625a70;
+  margin:24px 0 16px;
+  font-size:14px;
+  line-height:1.75;
+  word-break:keep-all;
+}
+.conditions-combined h3{
+  color:#342744;
+  margin:0 0 6px;
+  font-size:15px;
+}
+.conditions-combined p{
+  margin:0 0 8px;
+}
+.conditions-related{
+  margin:8px 0 0;
+  font-size:14px;
+  word-break:keep-all;
+}
+.conditions-related a{
+  display:inline-flex;
+  align-items:center;
+  min-height:44px;
+}
