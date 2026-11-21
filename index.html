@@ -667,7 +667,8 @@ function renderLatestDraw(){
   $('latestTitle').textContent = `${Number(d.draw_no)}회 당첨번호`;
   $('latestDate').textContent = `${d.draw_date} 추첨`;
   $('latestBalls').innerHTML = d.winning_numbers.map(n=>ballHTML(Number(n))).join('') + (d.bonus_number ? `<span class="plus">+</span>${ballHTML(Number(d.bonus_number))}` : '');
-  const ex = [...d.winning_numbers.slice(0,3), 27,33,41].slice(0,6);
+  const nonWinning = Array.from({length:45},(_,i)=>i+1).filter(n=>!d.winning_numbers.includes(n));
+  const ex = [...d.winning_numbers.slice(0,3), ...nonWinning.slice(0,3)].sort((a,b)=>a-b);
   $('overlapExample').dataset.example = ex.join(',');
   $('overlapExample').innerHTML = ex.map(n=>ballHTML(Number(n),true)).join('');
 }
