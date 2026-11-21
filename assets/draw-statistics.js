@@ -2,26 +2,117 @@
   'use strict';
 
   const api = window.DrawsAPI;
-  const button = document.getElementById('loadDrawStatistics');
+  const buttons = [...document.querySelectorAll('[data-statistics-period]')];
   const status = document.getElementById('drawStatisticsStatus');
   const result = document.getElementById('drawStatisticsResult');
-  const periodSize = 10;
-  const requiredDraws = 2 * periodSize;
-  const batchSize = 4;
-  const sumRanges = [[21, 59], [60, 89], [90, 119], [120, 149], [150, 179], [180, 209], [210, 239], [240, 255]];
+  if (!buttons.length || !status || !result) return;
 
-  async function readDraws(latest) {
-    const draws = [latest];
-    for (let offset = 1; offset < requiredDraws; offset += batchSize) {
-      const size = Math.min(batchSize, requiredDraws - offset);
-      const batch = await Promise.all(Array.from({ length: size }, (_, index) => api.get(latest.draw_no - offset - index)));
-      for (const draw of batch) {
-        if (!draw) return draws;
-        if (draw.draw_date >= draws[draws.length - 1].draw_date) throw new Error('Draw dates out of order');
+  const recentCount = 10;
+  const requestBatchSize = 4;
+  const sumRanges = [[21, 59], [60, 89], [90, 119], [120, 149], [150, 179], [180, 209], [210, 239], [240, 255]];
+  const numberFormat = new Intl.NumberFormat('ko-KR');
+  let archivePromise;
+
+  async function loadArchive() {
+    const response = await fetch('/assets/draw-history.json', { signal: AbortSignal.timeout?.(8000) });
+    if (!response.ok) throw new Error('Archive unavailable');
+
+    const { start, draws } = await response.json();
+    if (start !== 1 || !Array.isArray(draws) || draws.length < recentCount) throw new Error('Invalid archive');
+
+    const koreanDate = new Intl.DateTimeFormat('en', {
+      timeZone: 'Asia/Seoul', year: 'numeric', month: '2-digit', day: '2-digit',
+    }).formatToParts(new Date());
+    const datePart = type => koreanDate.find(part => part.type === type).value;
+    const today = `${datePart('year')}-${datePart('month')}-${datePart('day')}`;
+
+    let precedingDate = '';
+    return draws.map((row, index) => {
+      if (!Array.isArray(row) || row.length !== 7) throw new Error('Invalid archive row');
+      const [date, ...numbers] = row;
+      if (typeof date !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(date) || date <= precedingDate || date > today ||
+          new Date(`${date}T00:00:00Z`).toISOString().slice(0, 10) !== date ||
+          numbers.some((number, position) => !Number.isInteger(number) || number < 1 || number > 45 ||
+            (position > 0 && number <= numbers[position - 1]))) {
+        throw new Error('Invalid archive row');
+      }
+      precedingDate = date;
+      return { draw_no: index + start, draw_date: date, winning_numbers: numbers };
+    });
+  }
+
+  function readArchive() {
+    if (!archivePromise) {
+      archivePromise = loadArchive().catch(() => {
+        archivePromise = null;
+        return [];
+      });
+    }
+    return archivePromise;
+  }
+
+  async function readLatest() {
+    try {
+      if (api?.isConfigured()) return { latest: await api.latest(), unavailable: false };
+    } catch (_) {
+      // A validated archive can still be used during a live lookup failure.
+    }
+    return { latest: null, unavailable: true };
+  }
+
+  async function readSupplement(latest, firstRound, precedingDate) {
+    const draws = [];
+    for (let round = firstRound; round <= latest.draw_no; round += requestBatchSize) {
+      const size = Math.min(requestBatchSize, latest.draw_no - round + 1);
+      const batch = await Promise.allSettled(Array.from({ length: size }, (_, index) => {
+        const requested = round + index;
+        return requested === latest.draw_no ? latest : api.get(requested);
+      }));
+      for (const entry of batch) {
+        const draw = entry.value;
+        if (!draw || (precedingDate && draw.draw_date <= precedingDate)) return draws;
         draws.push(draw);
+        precedingDate = draw.draw_date;
       }
     }
     return draws;
+  }
+
+  async function selectDraws(period, archive, lookup) {
+    const { latest, unavailable } = lookup;
+    const lastArchived = archive.at(-1);
+    const archivedRound = lastArchived?.draw_no ?? 0;
+    const recent = period === 'recent';
+    const archivedDraws = recent ? archive.slice(-recentCount) : archive;
+    const archiveSource = '동행복권 당첨결과 보관 자료';
+
+    if (!latest || latest.draw_no <= archivedRound) {
+      const notice = unavailable ? '최신 등록 자료 조회에 실패해 보관 자료를 사용했습니다.' : '';
+      return { draws: archivedDraws, source: archiveSource, notice };
+    }
+
+    if (!recent && !archivedRound) return { draws: [], source: '', notice: '' };
+
+    const firstSelected = recent ? latest.draw_no - recentCount + 1 : 1;
+    if (firstSelected < 1) return { draws: [], source: '', notice: '' };
+    const firstSupplement = Math.max(firstSelected, archivedRound + 1);
+    const earlier = archive.slice(firstSelected - 1);
+    const supplement = await readSupplement(latest, firstSupplement, earlier.at(-1)?.draw_date);
+    const complete = supplement.at(-1)?.draw_no === latest.draw_no;
+    const gapNotice = '최신 회차까지 연속 자료를 확인하지 못했습니다.';
+    if (!supplement.length || (recent && !complete)) {
+      return {
+        draws: archivedDraws,
+        source: archiveSource,
+        notice: `${gapNotice} 보관 자료를 사용했습니다.`,
+      };
+    }
+
+    return {
+      draws: earlier.concat(supplement),
+      source: earlier.length ? `${archiveSource}와 행운설계소 추가 등록 자료` : '행운설계소 등록 자료',
+      notice: complete ? '' : `${gapNotice} 확인된 연속 구간을 집계했습니다.`,
+    };
   }
 
   function summarize(draws) {
@@ -50,15 +141,16 @@
     return element;
   }
 
-  function comparison(title, category, labels, recent, previous, note) {
+  function breakdown(title, category, labels, counts, note) {
     const details = document.createElement('details');
     details.className = 'draw-statistics-panel';
-    details.append(createText('summary', title), createText('p', note));
+    details.append(createText('summary', title));
+    if (note) details.append(createText('p', note));
 
     const table = document.createElement('table');
     table.append(createText('caption', `${title} (단위 회)`));
     const header = table.createTHead().insertRow();
-    for (const label of [category, '최근 10회', '직전 10회']) {
+    for (const label of [category, '회차 수']) {
       const cell = createText('th', label);
       cell.scope = 'col';
       header.append(cell);
@@ -68,67 +160,59 @@
       const row = body.insertRow();
       const cell = createText('th', label);
       cell.scope = 'row';
-      row.append(cell, createText('td', recent[index]), createText('td', previous[index]));
+      row.append(cell, createText('td', numberFormat.format(counts[index])));
     });
     details.append(table);
     return details;
   }
 
-  function describePeriod(label, draws) {
-    const oldest = draws[draws.length - 1];
-    const newest = draws[0];
-    return createText('li', `${label} ${oldest.draw_no}~${newest.draw_no}회 (${oldest.draw_date} ~ ${newest.draw_date})`);
-  }
-
-  function render(draws) {
-    const recentDraws = draws.slice(0, periodSize);
-    const previousDraws = draws.slice(periodSize);
-    const recent = summarize(recentDraws);
-    const previous = summarize(previousDraws);
-    const periods = document.createElement('ul');
-    periods.append(describePeriod('최근 10회', recentDraws), describePeriod('직전 10회', previousDraws));
-
+  function render({ draws, source, notice }, period) {
+    const first = draws[0];
+    const last = draws.at(-1);
+    const count = numberFormat.format(draws.length);
+    const range = `${numberFormat.format(first.draw_no)}~${numberFormat.format(last.draw_no)}회`;
+    const stats = summarize(draws);
     result.append(
-      periods,
-      comparison('번호별 출현 횟수', '번호', recent.frequency.map((_, index) => index + 1), recent.frequency, previous.frequency,
-        '각 번호가 해당 기간의 당첨번호 6개 안에 들어간 회차 수입니다.'),
-      comparison('홀짝 분포', '홀수 : 짝수', recent.odd.map((_, index) => `${index} : ${6 - index}`), recent.odd, previous.odd,
-        '한 회차에 나온 홀수 개수와 짝수 개수를 한 쌍으로 집계합니다.'),
-      comparison('번호 합계 분포', '합계 구간', sumRanges.map(([low, high]) => `${low}~${high}`), recent.sum, previous.sum,
-        '회차마다 당첨번호 6개를 더해 해당하는 합계 구간에 한 번 더합니다.'),
-      comparison('연속 번호 출현', '연속 번호 쌍', ['한 쌍 이상', '없음'], recent.consecutive, previous.consecutive,
-        '차이가 1인 번호 쌍이 있으면 해당 회차를 한 번 집계합니다. 12·13·14처럼 한 회차에 여러 쌍이 있을 때도 횟수는 1회입니다.'),
+      createText('h2', period === 'recent' ? '최근 10회 집계' : '1회부터 집계'),
+      createText('p', `${range} (${first.draw_date} ~ ${last.draw_date}) · 총 ${count}회`),
+      createText('p', `집계 자료 · ${source}`),
+      breakdown('번호별 출현 횟수', '번호', stats.frequency.map((_, index) => index + 1), stats.frequency),
+      breakdown('홀짝 분포', '홀수 : 짝수', stats.odd.map((_, index) => `${index} : ${6 - index}`), stats.odd),
+      breakdown('번호 합계 분포', '합계 구간', sumRanges.map(([low, high]) => `${low}~${high}`), stats.sum),
+      breakdown('연속 번호 출현', '연속 번호 쌍', ['한 쌍 이상', '없음'], stats.consecutive,
+        '연속된 번호 쌍이 여러 개여도 한 회차로 셉니다.'),
     );
+    status.textContent = notice || '집계 완료.';
   }
 
-  if (!api?.isConfigured()) {
-    status.textContent = '등록 당첨번호 조회를 사용할 수 없습니다.';
-    return;
-  }
-
-  button.hidden = false;
-  button.addEventListener('click', async () => {
-    button.disabled = true;
+  async function showStatistics(button) {
+    const period = button.dataset.statisticsPeriod;
+    buttons.forEach(control => {
+      control.disabled = true;
+      control.setAttribute('aria-pressed', String(control === button));
+    });
     result.replaceChildren();
-    status.textContent = '등록 당첨번호를 확인하는 중입니다.';
+    status.textContent = '회차 자료를 확인하는 중입니다.';
 
     try {
-      const latest = await api.latest();
-      if (!latest) {
-        status.textContent = '조회할 수 있는 등록 당첨번호가 없습니다.';
-        return;
+      const [archive, latest] = await Promise.all([readArchive(), readLatest()]);
+      const selection = await selectDraws(period, archive, latest);
+      if (selection.draws.length) {
+        render(selection, period);
+      } else {
+        status.textContent = period === 'recent'
+          ? '연속된 최근 10회 자료를 확인하지 못했습니다.'
+          : '1회부터 이어지는 당첨번호 자료를 확인하지 못했습니다.';
       }
-      const draws = latest.draw_no >= requiredDraws ? await readDraws(latest) : [latest];
-      if (draws.length < requiredDraws) {
-        status.textContent = `최신 등록 ${latest.draw_no}회(${latest.draw_date})부터 연속 ${draws.length}회를 확인했습니다. 두 기간을 비교하려면 연속 20회가 필요합니다.`;
-        return;
-      }
-      render(draws);
-      status.textContent = '연속 20회의 등록 결과를 확인했습니다. 항목을 펼치면 집계 결과를 볼 수 있습니다.';
     } catch (_) {
-      status.textContent = '등록 당첨번호를 확인하지 못했습니다. 잠시 후 다시 조회해 주세요.';
+      status.textContent = '회차 자료를 불러오지 못했습니다. 다시 선택해 주세요.';
     } finally {
-      button.disabled = false;
+      buttons.forEach(control => { control.disabled = false; });
     }
+  }
+
+  buttons.forEach(button => {
+    button.hidden = false;
+    button.addEventListener('click', () => showStatistics(button));
   });
 }());

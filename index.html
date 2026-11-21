@@ -72,6 +72,9 @@
     #openCompare{justify-self:center;min-height:48px;padding:10px 20px;font-size:18px;line-height:1.5}
     .home-conditions-guide{justify-self:center;min-height:44px;padding:8px 14px;font-size:14px;text-decoration:underline;text-underline-offset:4px}
     .home-guide-links{display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:2px 12px}
+    .home-statistics-link{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:48px;padding:10px 16px;border:1px solid #e2d8fc;border-radius:13px;background:#f7f3ff;color:#593cb8;font-size:14px;font-weight:800;text-decoration:none}
+    .home-statistics-link:hover{background:#eee7ff}
+    .home-statistics-link:focus-visible{outline:3px solid #7357f6;outline-offset:3px}
     .home-ranks-guide{display:inline-flex;align-items:center;min-height:44px;padding:8px 4px;color:#674bdc;font-size:14px;font-weight:700;text-underline-offset:4px}
     .fortune-card h2{font-size:20px;margin:0 0 8px}
     .fortune-link{padding:8px 0;min-height:44px;font-size:15px;text-decoration:underline;text-underline-offset:5px}
@@ -189,8 +192,8 @@
     <div class="home-guide-links">
       <button id="openConditionsGuide" class="text-btn home-conditions-guide" type="button" aria-haspopup="dialog" aria-controls="conditionsGuideDialog">8가지 조건 알아보기</button>
       <a class="home-ranks-guide" href="/lotto-ranks.html">당첨 등수 안내</a>
-      <a class="home-ranks-guide" href="/lotto-ranks.html#draw-statistics">당첨번호 통계</a>
     </div>
+    <a class="home-statistics-link" href="/lotto-statistics.html">당첨번호 통계 <span aria-hidden="true">→</span></a>
   </div>
   </section>
   <div id="viewNav" class="view-nav" hidden><button id="goHome" class="text-btn" type="button">← 처음으로</button></div>

@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script src="/assets/display-mode.js?v=20261107-1"></script>
+  <title>로또 당첨번호 통계 | 행운설계소</title>
+  <meta name="description" content="로또 6/45 최근 10회와 1회부터의 전체 당첨번호 통계. 번호별 출현 횟수, 홀짝, 합계, 연속 번호를 확인하세요.">
+  <link rel="canonical" href="https://luckzip.com/lotto-statistics.html">
+  <meta property="og:title" content="로또 당첨번호 통계 | 행운설계소">
+  <meta property="og:description" content="최근 10회 또는 1회부터의 당첨번호 통계를 확인하세요.">
+  <meta property="og:url" content="https://luckzip.com/lotto-statistics.html">
+  <meta property="og:type" content="website">
+  <link rel="icon" type="image/png" href="/assets/favicon-48.png">
+  <link rel="stylesheet" href="/assets/info-pages.css">
+  <link rel="stylesheet" href="/assets/display-mode.css?v=20261107-1">
+  <link rel="stylesheet" href="/assets/lotto-statistics.css?v=20261121-1">
+  <script src="/assets/reviews-config.js" defer></script>
+  <script src="/assets/draws-api.js?v=20261104-1" defer></script>
+  <script src="/assets/draw-statistics.js?v=20261121-2" defer></script>
+</head>
+<body>
+  <header>
+    <a class="brand" href="/"><img src="/assets/logo-96.webp" width="38" height="38" alt="">행운설계소</a>
+    <nav class="nav" aria-label="사이트 안내">
+      <a href="/">번호 생성기</a>
+      <a href="/lotto-statistics.html" aria-current="page">당첨번호 통계</a>
+      <a href="/lotto-ranks.html">당첨 등수 안내</a>
+    </nav>
+  </header>
+  <main>
+    <article class="statistics-page">
+      <h1>당첨번호 통계</h1>
+      <p class="lead">최근 10회 또는 1회부터의 전체 회차를 조회하세요.</p>
+      <div class="statistics-controls" role="group" aria-label="조회 기간">
+        <button type="button" data-statistics-period="recent" aria-pressed="false" aria-controls="drawStatisticsResult" hidden>최근 10회</button>
+        <button type="button" data-statistics-period="all" aria-pressed="false" aria-controls="drawStatisticsResult" hidden>전체 회차</button>
+      </div>
+      <p id="drawStatisticsStatus" role="status"></p>
+      <div id="drawStatisticsResult"></div>
+      <noscript><p>통계를 조회하려면 JavaScript를 켜 주세요.</p></noscript>
+      <p class="statistics-source">출처는 <a href="https://www.dhlottery.co.kr/lt645/result">동행복권 추첨 결과</a>입니다. 보너스 번호는 집계에서 제외합니다. 지난 결과로 다음 당첨번호를 예측할 수는 없습니다.</p>
+    </article>
+  </main>
+  <footer>
+    <nav class="footer-links" aria-label="서비스 정보" data-display-mode-footer>
+      <span class="footer-information-links"><a href="/reviews.html">후기 게시판</a><a href="/about.html">서비스 소개</a><a href="/guide.html">이용·데이터 안내</a><a href="/privacy.html">개인정보처리방침</a><a href="/about.html#contact">문의</a></span>
+      <button class="display-mode-toggle" data-display-mode-toggle type="button">PC 버전</button>
+    </nav>
+  </footer>
+</body>
+</html>

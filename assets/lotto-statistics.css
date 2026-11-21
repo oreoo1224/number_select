@@ -1,0 +1,43 @@
+.statistics-controls {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  max-width: 400px;
+  margin: 20px 0;
+}
+.statistics-controls button {
+  min-height: 48px;
+  padding: 8px;
+  border: 1px solid #d9cdf9;
+  border-radius: 12px;
+  background: #f7f3ff;
+  color: #5639ac;
+  font: inherit;
+  font-weight: 750;
+  cursor: pointer;
+}
+.statistics-controls button:hover { background: #eee7ff; }
+.statistics-controls button[aria-pressed="true"] {
+  background: #6949d9;
+  border-color: #6949d9;
+  color: #fff;
+}
+.statistics-controls button:disabled { cursor: wait; }
+#drawStatisticsStatus:empty { margin: 0; }
+.draw-statistics-panel {
+  margin: 10px 0;
+  padding: 0 14px;
+  border: 1px solid #e7e0f2;
+  border-radius: 12px;
+  background: #fdfbff;
+}
+.draw-statistics-panel summary {
+  padding: 10px 0;
+  color: #553a96;
+  font-weight: 700;
+  cursor: pointer;
+}
+.draw-statistics-panel summary:focus-visible { outline: 3px solid #7357f6; }
+.draw-statistics-panel table { margin: 0 0 14px; }
+.draw-statistics-panel :is(th, td):last-child { text-align: right; font-variant-numeric: tabular-nums; }
+.statistics-source { margin: 22px 0 0; font-size: 13px; }
